@@ -12,7 +12,7 @@ function Button({
   ...passProps
 }) {
   const baseStyle =
-    "px-4 py-2 font-medium rounded-lg  focus:outline-none transition";
+    "px-4 py-2 font-medium  focus:outline-none transition";
   const props = { onClick, ...passProps };
 
   if (href) {
