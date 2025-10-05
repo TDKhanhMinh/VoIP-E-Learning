@@ -12,8 +12,9 @@ const submissionSchema = mongoose.Schema({
     required: true,
   },
   file_url: { type: String, required: true },
-  score: { type: Float16Array, default: 0 },
+  score: { type: Number, default: 0, min: 0, max: 10 },
   feedback: { type: String, default: null },
+  graded: { type: Boolean, default: false },
 });
 
 const Submission = mongoose.model("Submission", submissionSchema);

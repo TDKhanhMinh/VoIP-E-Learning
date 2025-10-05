@@ -15,7 +15,7 @@ const announcementSchema = mongoose.Schema(
       required: true,
     },
   },
-  { timestamps }
+  { timestamps: true }
 );
 
 const Annoucement = mongoose.model("Annoucement", announcementSchema);

@@ -1,11 +1,13 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { initAdmin } from "../service/initAdmin.js";
 
 dotenv.config();
 
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
+    await initAdmin();
     console.log("MongoDB connected...", mongoose.connection.name);
   } catch (err) {
     console.error(err.message);
