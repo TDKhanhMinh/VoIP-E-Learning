@@ -9,11 +9,11 @@ const attendanceSchema = mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["Present", "Absent", "Late"],
-    default: "Absent",
+    enum: ["present", "absent", "late"],
+    default: "absent",
   },
+  lession: { type: Number, required: true },
   attend_at: { type: Date, default: null },
-  attend_date: { type: Date, default: null },
 });
 
 const Attendance = mongoose.model("Attendance", attendanceSchema);

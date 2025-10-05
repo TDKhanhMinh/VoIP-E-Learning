@@ -9,6 +9,7 @@ const materialSchema = mongoose.Schema(
       ref: "Class",
       required: true,
     },
+
     upload_by: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -17,3 +18,5 @@ const materialSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+const Material = mongoose.model("Meterial", materialSchema);
+export default Material;

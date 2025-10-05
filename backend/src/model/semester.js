@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const semesterSchema = mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   start_date: { type: Date },
   end_date: { type: Date },
 });
