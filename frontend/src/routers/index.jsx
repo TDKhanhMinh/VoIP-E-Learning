@@ -1,6 +1,119 @@
 import { createBrowserRouter } from "react-router-dom";
+import MainLayout from "../layout/MainLayout";
+import Attendance from "../pages/Student/Attendance";
+import Notification from "../pages/Student/Notification";
+import OnlineTest from "../pages/Student/OnlineTest";
+import HomeworkLayout from "../layout/HomeworkLayout";
+import CourseDetail from "../pages/Student/CourseDetails";
+import HomeCourse from "../pages/Student/HomeCourse";
+import Home from "../pages/Student/Home";
+import AuthLayout from "../layout/AuthLayout";
+import Login from "../pages/Login";
+import AdminLayout from "../layout/AdminLayout";
+import AdminDashboard from "../pages/Admin/AdminDashboard";
+import ManageClasses from './../pages/Admin/ManageClasses';
+import ManageCourses from './../pages/Admin/ManageCourses';
+import ManageSemester from './../pages/Admin/ManageSemesters';
+import ManageUsers from './../pages/Admin/ManageUsers';
+import TeacherDashboard from "../pages/Teacher/TeacherDashboard";
+import ManageAssignments from "../pages/Teacher/ManageAssignments";
+import ManageAttendance from "../pages/Teacher/ManageAttendance";
+import ManageSubmissions from "../pages/Teacher/ManageSubmissions";
+import TeacherClasses from "../pages/Teacher/TeacherClasses";
+import TeacherClassDetails from "../pages/Teacher/TeacherClassDetails";
+import TeacherLayout from "../layout/TeacherLayout";
+import TeacherSchedule from "../pages/Teacher/TeacherSchedule";
 
-const publicRoutes = createBrowserRouter([])
+const publicRoutes = createBrowserRouter([
+  {
+    element: <AuthLayout />,
+    children: [
+      {
+        index: true, element: <Login />
+      },
+
+    ],
+  },
+  {
+    element: <MainLayout />,
+    path: "home",
+    children: [
+      {
+        index: true, element: <Home />
+      },
+      {
+        path: "attendance", element: <Attendance />
+      },
+      {
+        path: "notification", element: <Notification />
+      },
+      {
+        path: "online-test", element: <OnlineTest />
+      },
+    ],
+  },
+  {
+    element: <AdminLayout />,
+    path: "admin",
+    children: [
+      {
+        index: true, element: <AdminDashboard />
+      },
+      {
+        path: "classes", element: <ManageClasses />
+      },
+      {
+        path: "courses", element: <ManageCourses />
+      },
+      {
+        path: "semesters", element: <ManageSemester />
+      },
+      {
+        path: "users", element: <ManageUsers />
+      },
+    ],
+  },
+  {
+    element: <TeacherLayout />,
+    path: "teacher",
+    children: [
+      {
+        index: true, element: <TeacherDashboard />
+      },
+      {
+        path: "assignments", element: <ManageAssignments />
+      },
+      {
+        path: "attendances", element: <ManageAttendance />
+      },
+      {
+        path: "submissions", element: <ManageSubmissions />
+      },
+      {
+        path: "classes", element: <TeacherClasses />
+      },
+      {
+        path: "schedule", element: <TeacherSchedule />
+      },
+      {
+        path: "class-details/:id", element: <TeacherClassDetails />
+      },
+    ],
+  },
+  {
+    element: <HomeworkLayout />,
+    path: "course",
+    children: [
+      {
+        path: "home", element: <HomeCourse />
+      },
+      {
+        path: "course-details/:id", element: <CourseDetail />
+      },
+
+    ],
+  },
+])
 const privateRoutes = []
 
 export { publicRoutes, privateRoutes }
