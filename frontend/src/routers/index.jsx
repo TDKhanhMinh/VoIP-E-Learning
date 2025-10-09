@@ -23,6 +23,7 @@ import TeacherClasses from "../pages/Teacher/TeacherClasses";
 import TeacherClassDetails from "../pages/Teacher/TeacherClassDetails";
 import TeacherLayout from "../layout/TeacherLayout";
 import TeacherSchedule from "../pages/Teacher/TeacherSchedule";
+import ClassDetail from "../pages/Admin/ManageClassDetails";
 
 const publicRoutes = createBrowserRouter([
   {
@@ -71,8 +72,12 @@ const publicRoutes = createBrowserRouter([
       {
         path: "users", element: <ManageUsers />
       },
+      {
+        path: "classes/class-details/:id", element: <ClassDetail />
+      },
     ],
   },
+  
   {
     element: <TeacherLayout />,
     path: "teacher",

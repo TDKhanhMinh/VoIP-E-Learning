@@ -1,11 +1,17 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { ToastContainer } from "react-toastify";
 import { SIDEBAR_DATA } from "../assets/sidebar-data";
 import Navbar from "../components/NavBar";
 import { MdLogout } from "react-icons/md";
+import { authService } from "../services/authService";
 function MainLayout() {
+    const navigate = useNavigate();
 
+    const handlerLogout = async () => {
+        await authService.logout();
+        navigate("/", { state: { isLogin: false } });
+    };
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -26,7 +32,8 @@ function MainLayout() {
                             ))
                         }
                     </ul>
-                    <Button className="flex justify-start hover:bg-gray-200 container mt-2">
+                    <Button onClick={handlerLogout}
+                        className="flex justify-start hover:bg-gray-200 container mt-2">
                         <div className="flex items-center justify-center space-x-4">
                             <MdLogout />
                             <span>Thoát</span>

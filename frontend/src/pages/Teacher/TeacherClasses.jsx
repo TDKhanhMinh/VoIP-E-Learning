@@ -1,12 +1,15 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Button from "../../components/Button";
 
 export default function TeacherClasses() {
-    const [classes] = useState([
-        { id: 1, name: "Lập trình Web N01", semester: "HK1-2024", students: 45 },
-        { id: 2, name: "Cơ sở dữ liệu N02", semester: "HK1-2024", students: 50 },
-    ]);
+    const [classes, setClasses] = useState([]);
+
+    useEffect(() => {
+        const fetchClasses = async () => {
+
+        };
+        fetchClasses();
+    }, [])
 
     return (
         <div className="p-6">

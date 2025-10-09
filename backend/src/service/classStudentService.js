@@ -29,33 +29,94 @@ export const getClassStudents = async (class_id) => {
   return students;
 };
 
+// export const createClassStudent = async (data) => {
+//   const [joiningClass, student] = await Promise.all([
+//     Class.findById(data.class),
+//     User.findOne({ _id: data.student, available: true }),
+//   ]);
+//   if (!joiningClass || !student) {
+//     const error = new Error("Invalid class or student id");
+//     error.statusCode = 404;
+//     throw error;
+//   }
+//   const existed = await ClassStudent.findOne({
+//     class: joiningClass._id,
+//     student: student._id,
+//   });
+//   console.log(existed);
+//   if (existed) {
+//     const error = new Error("Student already joined class");
+//     error.statusCode = 400;
+//     throw error;
+//   }
+//   const classStudent = await ClassStudent.create({
+//     ...data,
+//     joined_at: Date.now(),
+//   });
+//   return classStudent;
+// };
+
 export const createClassStudent = async (data) => {
-  const [joiningClass, student] = await Promise.all([
-    Class.findById(data.class),
-    User.findOne({ _id: data.student, available: true }),
-  ]);
-  if (!joiningClass || !student) {
-    const error = new Error("Invalid class or student id");
+  const joiningClass = await Class.findById(data.class);
+  if (!joiningClass) {
+    const error = new Error("Invalid class id");
     error.statusCode = 404;
     throw error;
   }
-  const existed = await ClassStudent.findOne({
-    class: joiningClass._id,
-    student: student._id,
-  });
-  console.log(existed);
-  if (existed) {
-    const error = new Error("Student already joined class");
+
+  const studentIds = Array.isArray(data.student)
+    ? data.student
+    : [data.student];
+
+  if (!studentIds || studentIds.length === 0) {
+    const error = new Error("No student(s) provided");
     error.statusCode = 400;
     throw error;
   }
-  const classStudent = await ClassStudent.create({
-    ...data,
-    joined_at: Date.now(),
-  });
-  return classStudent;
-};
 
+  const validStudents = await User.find({
+    _id: { $in: studentIds },
+    available: true,
+  });
+
+  if (validStudents.length === 0) {
+    const error = new Error("No valid student found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const existing = await ClassStudent.find({
+    class: joiningClass._id,
+    student: { $in: validStudents.map((s) => s._id) },
+  });
+
+  const existingIds = existing.map((e) => e.student.toString());
+
+  const newStudents = validStudents.filter(
+    (s) => !existingIds.includes(s._id.toString())
+  );
+
+  if (newStudents.length === 0) {
+    const error = new Error("All students already joined this class");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const enrollments = newStudents.map((s) => ({
+    class: joiningClass._id,
+    student: s._id,
+    joined_at: Date.now(),
+  }));
+
+  const created = await ClassStudent.insertMany(enrollments, { ordered: false });
+
+  return {
+    class: joiningClass._id,
+    added: created.length,
+    skipped: existingIds.length,
+    message: `${created.length} student(s) added successfully`,
+  };
+};
 export const deleteClassStudent = async (id) => {
   const classStudent = await ClassStudent.findByIdAndDelete(id);
   if (!classStudent) {

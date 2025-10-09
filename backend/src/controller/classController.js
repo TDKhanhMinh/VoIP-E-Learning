@@ -8,6 +8,7 @@ export const getAll = asyncHandler(async (req, res) => {
 
 export const createClass = asyncHandler(async (req, res) => {
   const data = req.body;
+  console.log(data);
   const newClass = await service.createClass(data);
   res.status(201).json(newClass);
 });

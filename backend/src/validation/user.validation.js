@@ -14,3 +14,4 @@ export const updateUserSchema = Joi.object({
   available: Joi.bool().allow("null"),
   role: Joi.valid("student", "teacher").default("student").allow(null),
 });
+

@@ -11,6 +11,7 @@ import { authorizeRoles } from "../middlewares/authorizeRole.js";
 
 const router = express.Router();
 
+
 router.get("/", controller.getAll);
 router.get("/:id", controller.getCourseById);
 router.post(

@@ -44,7 +44,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/semester", semesterRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/class", classRoutes);
-app.use("/api/class-student", classStudentRoutes);
+app.use("/api/enrollment", classStudentRoutes);
 app.use("/api/material", materialRoutes);
 app.use("/api/assignment", assignmentRoutes);
 app.use("/api/submission", submissionRoutes);

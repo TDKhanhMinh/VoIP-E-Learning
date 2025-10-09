@@ -8,3 +8,4 @@ router.get("/google/callback", controller.googleCallback);
 router.post("/login", controller.login);
 
 export default router;
+
