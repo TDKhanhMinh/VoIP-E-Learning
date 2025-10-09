@@ -1,5 +1,9 @@
+import VideoRoom from "../../components/VideoRoom";
+
 function Home() {
-    return ( <></> );
+    return (<>
+        <VideoRoom />
+    </>);
 }
 
 export default Home;
