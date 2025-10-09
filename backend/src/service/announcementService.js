@@ -7,6 +7,16 @@ export const getAll = async () => {
   return announcements;
 };
 
+export const findById = async (id) => {
+  const announcement = await Annoucement.findById(id);
+  if (!announcement) {
+    const error = new Error("Announcement with id ${id} not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return announcement;
+};
+
 export const createAnnouncement = async (data) => {
   const [announcingClass, creator] = await Promise.all([
     Class.findById(data.class),

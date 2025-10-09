@@ -29,6 +29,16 @@ export const getClassStudents = async (class_id) => {
   return students;
 };
 
+export const findById = async (id) => {
+  const classStudent = await ClassStudent.findById(id);
+  if (!classStudent) {
+    const error = new Error("Announcement with id ${id} not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return classStudent;
+};
+
 export const createClassStudent = async (data) => {
   const [joiningClass, student] = await Promise.all([
     Class.findById(data.class),

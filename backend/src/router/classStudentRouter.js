@@ -8,7 +8,8 @@ import { createClassStudentSchema } from "../validation/classStudent.validation.
 
 const router = express.Router();
 
-router.get("/:class_id", controller.getClassStudents);
+router.get("/class/:class_id", controller.getClassStudents);
+router.get("/:id", controller.findById);
 router.post(
   "/",
   protect,

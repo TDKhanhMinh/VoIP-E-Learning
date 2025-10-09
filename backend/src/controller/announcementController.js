@@ -6,6 +6,12 @@ export const getAll = asyncHandler(async (req, res) => {
   res.status(200).json(announcements);
 });
 
+export const findById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const announcement = await service.findById(id);
+  res.status(200).json(announcement);
+});
+
 export const createAnnouncement = asyncHandler(async (req, res) => {
   const data = req.body;
   const user_id = req.user._id;

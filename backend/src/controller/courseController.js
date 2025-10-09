@@ -6,9 +6,6 @@ export const getAll = asyncHandler(async (req, res) => {
 
   if (code) {
     const course = await service.getCourseByCode(code);
-    if (!course) {
-      return res.status(404).json({ message: `Course code ${code} not found` });
-    }
     return res.json(course);
   }
 
