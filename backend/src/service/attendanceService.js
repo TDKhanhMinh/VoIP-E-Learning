@@ -7,6 +7,16 @@ export const getAll = async () => {
   return attendances;
 };
 
+export const findById = async (id) => {
+  const attendance = await Attendance.findById(id);
+  if (!attendance) {
+    const error = new Error("Announcement with id ${id} not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return attendance;
+};
+
 export const createAttendance = async (data) => {
   const [attendingClass, student] = await Promise.all([
     Class.findById(data.class),

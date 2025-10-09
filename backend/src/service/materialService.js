@@ -1,11 +1,20 @@
 import Material from "../model/material.js";
 import Class from "../model/class.js";
 import User from "../model/user.js";
-import mongoose from "mongoose";
 
 export const getAll = async () => {
   const materials = await Material.find().sort({ createdAt: -1 });
   return materials;
+};
+
+export const findById = async (id) => {
+  const material = await Material.findById(id);
+  if (!material) {
+    const error = new Error("Announcement with id ${id} not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return material;
 };
 
 export const getClassMaterial = async (class_id) => {

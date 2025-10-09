@@ -6,6 +6,12 @@ export const getAll = asyncHandler(async (req, res) => {
   res.status(200).json(classes);
 });
 
+export const findById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const announcement = await service.findById(id);
+  res.status(200).json(announcement);
+});
+
 export const createClass = asyncHandler(async (req, res) => {
   const data = req.body;
   console.log(data);

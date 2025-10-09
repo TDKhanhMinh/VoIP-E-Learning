@@ -18,7 +18,7 @@ export const getCourseById = async (id) => {
 export const getCourseByCode = async (code) => {
   const course = await Course.findOne({ code });
   if (!course) {
-    const error = new Error(`Course with cod ${code} not found`);
+    const error = new Error(`Course with code ${code} not found`);
     error.statusCode = 404;
     throw error;
   }

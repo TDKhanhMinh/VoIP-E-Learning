@@ -7,6 +7,16 @@ export const getAll = async () => {
   return submission;
 };
 
+export const findById = async (id) => {
+  const submission = await Submission.findById(id);
+  if (!submission) {
+    const error = new Error("Announcement with id ${id} not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return submission;
+};
+
 export const creatSubmission = async (data) => {
   const [assignment, student] = await Promise.all([
     Assignment.findById(data.assignment),

@@ -9,7 +9,8 @@ import { createMaterialSchema } from "../validation/material.validation.js";
 const router = express.Router();
 
 router.get("/", controller.getAll);
-router.get("/:class_id", controller.getClassMaterial);
+router.get("/class/:class_id", controller.getClassMaterial);
+router.get("/:id", controller.findById);
 router.post(
   "/",
   protect,

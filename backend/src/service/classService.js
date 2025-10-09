@@ -8,6 +8,16 @@ export const getAll = async () => {
   return classes;
 };
 
+export const findById = async (id) => {
+  const findingClass = await Class.findById(id);
+  if (!findingClass) {
+    const error = new Error("Announcement with id ${id} not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return findingClass;
+};
+
 export const createClass = async (data) => {
   console.log(data);
   const [semester, teacher, course] = await Promise.all([

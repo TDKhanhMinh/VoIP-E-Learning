@@ -5,6 +5,16 @@ export const getAll = async () => {
   return semesters;
 };
 
+export const findById = async (id) => {
+  const semester = await Semester.findById(id);
+  if (!semester) {
+    const error = new Error("Announcement with id ${id} not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return semester;
+};
+
 export const createSemester = async (data) => {
   await validateName(data.name);
   const semester = await Semester.create({ ...data });

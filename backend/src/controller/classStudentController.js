@@ -7,6 +7,12 @@ export const getClassStudents = asyncHandler(async (req, res) => {
   res.status(200).json(classStudents);
 });
 
+export const findById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const announcement = await service.findById(id);
+  res.status(200).json(announcement);
+});
+
 export const createClassStudent = asyncHandler(async (req, res) => {
   const data = req.body;
   const classStudent = await service.createClassStudent(data);

@@ -6,6 +6,16 @@ export const getAll = async () => {
   return assignments;
 };
 
+export const findById = async (id) => {
+  const assignment = await Assignment.findById(id);
+  if (!assignment) {
+    const error = new Error("Announcement with id ${id} not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return assignment;
+};
+
 export const createAssignment = async (data) => {
   const postingClass = await Class.findById(data.class);
   if (!postingClass) {

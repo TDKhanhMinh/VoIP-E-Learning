@@ -29,32 +29,15 @@ export const getClassStudents = async (class_id) => {
   return students;
 };
 
-// export const createClassStudent = async (data) => {
-//   const [joiningClass, student] = await Promise.all([
-//     Class.findById(data.class),
-//     User.findOne({ _id: data.student, available: true }),
-//   ]);
-//   if (!joiningClass || !student) {
-//     const error = new Error("Invalid class or student id");
-//     error.statusCode = 404;
-//     throw error;
-//   }
-//   const existed = await ClassStudent.findOne({
-//     class: joiningClass._id,
-//     student: student._id,
-//   });
-//   console.log(existed);
-//   if (existed) {
-//     const error = new Error("Student already joined class");
-//     error.statusCode = 400;
-//     throw error;
-//   }
-//   const classStudent = await ClassStudent.create({
-//     ...data,
-//     joined_at: Date.now(),
-//   });
-//   return classStudent;
-// };
+export const findById = async (id) => {
+  const classStudent = await ClassStudent.findById(id);
+  if (!classStudent) {
+    const error = new Error("Announcement with id ${id} not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return classStudent;
+};
 
 export const createClassStudent = async (data) => {
   const joiningClass = await Class.findById(data.class);
