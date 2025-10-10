@@ -8,8 +8,8 @@ export const getAll = asyncHandler(async (req, res) => {
 
 export const findById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const announcement = await service.findById(id);
-  res.status(200).json(announcement);
+  const attendances = await service.findByClassId(id);
+  res.status(200).json(attendances);
 });
 
 export const createAttendance = asyncHandler(async (req, res) => {
@@ -30,3 +30,4 @@ export const deleteAttendance = asyncHandler(async (req, res) => {
   const attendance = await service.deleteAttendance(id);
   res.status(200).json(attendance);
 });
+

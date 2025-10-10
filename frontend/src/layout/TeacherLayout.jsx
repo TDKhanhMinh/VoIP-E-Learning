@@ -171,7 +171,7 @@ export default function TeacherLayout() {
                                         <button
                                             onClick={() => {
                                                 setShowProfileMenu(false);
-                                                // Navigate to profile
+                                                
                                             }}
                                             className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors text-sm text-gray-700"
                                         >
@@ -180,7 +180,7 @@ export default function TeacherLayout() {
                                         <button
                                             onClick={() => {
                                                 setShowProfileMenu(false);
-                                                // Navigate to settings
+                                                
                                             }}
                                             className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors text-sm text-gray-700"
                                         >
@@ -206,7 +206,7 @@ export default function TeacherLayout() {
 
                 
                 <main className="flex-1 overflow-y-auto">
-                    <div className="p-6">
+                    <div className="">
                         <ToastContainer
                             position="top-right"
                             autoClose={3000}

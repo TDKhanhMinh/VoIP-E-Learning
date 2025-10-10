@@ -16,6 +16,22 @@ export const findById = async (id) => {
   return assignment;
 };
 
+export const getAssignmentByClassId = async (classId) => {
+
+  const assignments = await Assignment.find({ class: classId })
+    .populate("class", "name")
+    .sort({ createdAt: -1 });
+
+  if (!assignments || assignments.length === 0) {
+    const error = new Error(`No assignments found for class ${classId}`);
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return assignments;
+};
+
+
 export const createAssignment = async (data) => {
   const postingClass = await Class.findById(data.class);
   if (!postingClass) {

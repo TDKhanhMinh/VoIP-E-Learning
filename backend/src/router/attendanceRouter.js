@@ -6,6 +6,7 @@ import { validate } from "../middlewares/validate.js";
 import { authorizeRoles } from "../middlewares/authorizeRole.js";
 import {
   createAttendanceSchema,
+  createMultipleAttendanceSchema,
   updateAttendanceSchema,
 } from "../validation/attendance.validation.js";
 
@@ -17,7 +18,7 @@ router.post(
   "/",
   protect,
   authorizeRoles("admin", "teacher"),
-  validate(createAttendanceSchema),
+  validate(createMultipleAttendanceSchema),
   controller.createAttendance
 );
 router.put(

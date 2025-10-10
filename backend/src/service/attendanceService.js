@@ -17,23 +17,76 @@ export const findById = async (id) => {
   return attendance;
 };
 
-export const createAttendance = async (data) => {
-  const [attendingClass, student] = await Promise.all([
-    Class.findById(data.class),
-    User.findById(data.student),
-  ]);
-  if (!attendingClass || !student) {
-    const error = new Error("Invalid class or student");
+export const findByClassId = async (classId) => {
+  const attendances = await Attendance.find({ class: classId })
+    .populate("student", "full_name email")
+    .populate("class", "name")
+    .sort({ lesson: -1, attend_at: -1 });
+
+  if (!attendances || attendances.length === 0) {
+    const error = new Error(`No attendance records found for class ${classId}`);
     error.statusCode = 404;
     throw error;
   }
-  const attendance = await Attendance.create({
-    ...data,
-    attend_at: new Date(),
+
+  return attendances;
+};
+
+// export const createAttendance = async (data) => {
+//   const [attendingClass, student] = await Promise.all([
+//     Class.findById(data.class),
+//     User.findById(data.student),
+//   ]);
+//   if (!attendingClass || !student) {
+//     const error = new Error("Invalid class or student");
+//     error.statusCode = 404;
+//     throw error;
+//   }
+//   const attendance = await Attendance.create({
+//     ...data,
+//     attend_at: new Date(),
+//   });
+
+//   return attendance;
+// };
+
+export const createAttendance = async (data) => {
+  const attendingClass = await Class.findById(data.class);
+  if (!attendingClass) throw new Error("Invalid class ID");
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  const existingToday = await Attendance.findOne({
+    class: data.class,
+    attend_at: { $gte: today, $lt: tomorrow },
   });
 
-  return attendance;
+  if (existingToday) {
+    const error = new Error("Class has already been marked attendance today");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const lastAttendance = await Attendance.findOne({ class: data.class }).sort({
+    lesson: -1,
+  });
+  const nextLesson = lastAttendance ? lastAttendance.lesson + 1 : 1;
+
+  const docs = data.attendances.map((a) => ({
+    class: data.class,
+    student: a.student,
+    status: a.status || "present",
+    lesson: nextLesson,
+    attend_at: new Date(),
+  }));
+
+  const created = await Attendance.insertMany(docs);
+  return { lesson: nextLesson, count: created.length, data: created };
 };
+
 
 export const updateAttendance = async (id, data) => {
   const updates = { ...data };

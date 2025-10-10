@@ -6,11 +6,20 @@ export const classService = {
         return res.data;
     },
     getClassById: async (id) => {
-        // const res = await http.get(`/class/${id}`);
+        const res = await http.get(`/class/${id}`);
+        // const res = await http.get("/class");
+        // return res.data.find(item => item._id === id);
+        return res.data;
+    },
+    getClassesByTeacher: async (teacherId) => {
+        // const res = await http.get(`/classes/teacher/${teacherId}`);
+        // return res.data;
         const res = await http.get("/class");
-        return res.data.find(item => item._id === id);
-    }
-    ,
+        console.log("data", res.data);
+        console.log("teacher ", teacherId.split('"').join(''));
+        console.log("filter ", res.data.filter(item => item.teacher.toString() === teacherId.split('"').join('').toString()));
+        return res.data.filter(item => item.teacher.toString() === teacherId.split('"').join('').toString());
+    },
     createClass: async (data) => {
         const res = await http.post("/class", data);
         return res.data;

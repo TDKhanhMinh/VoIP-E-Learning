@@ -24,6 +24,9 @@ import TeacherClassDetails from "../pages/Teacher/TeacherClassDetails";
 import TeacherLayout from "../layout/TeacherLayout";
 import TeacherSchedule from "../pages/Teacher/TeacherSchedule";
 import ClassDetail from "../pages/Admin/ManageClassDetails";
+import ClassAssignment from "../pages/Teacher/ClassAssignment";
+import ClassAttendance from "../pages/Teacher/ClassAttendance";
+import ClassSubmission from "../pages/Teacher/ClassSubmission";
 
 const publicRoutes = createBrowserRouter([
   {
@@ -77,7 +80,7 @@ const publicRoutes = createBrowserRouter([
       },
     ],
   },
-  
+
   {
     element: <TeacherLayout />,
     path: "teacher",
@@ -102,6 +105,15 @@ const publicRoutes = createBrowserRouter([
       },
       {
         path: "class-details/:id", element: <TeacherClassDetails />
+      },
+      {
+        path: "class-details/:id/assignments", element: <ClassAssignment />
+      },
+      {
+        path: "class-details/:id/attendance", element: <ClassAttendance />
+      },
+      {
+        path: "class-details/:id/submissions", element: <ClassSubmission />
       },
     ],
   },
