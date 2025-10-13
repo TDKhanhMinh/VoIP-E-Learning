@@ -9,6 +9,7 @@ import { createClassStudentSchema } from "../validation/classStudent.validation.
 const router = express.Router();
 
 router.get("/class/:class_id", controller.getClassStudents);
+router.get("/student/:id", controller.findByStudentId);
 router.get("/:id", controller.findById);
 router.post(
   "/",

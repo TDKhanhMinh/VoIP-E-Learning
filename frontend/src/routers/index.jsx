@@ -4,7 +4,6 @@ import Attendance from "../pages/Student/Attendance";
 import Notification from "../pages/Student/Notification";
 import OnlineTest from "../pages/Student/OnlineTest";
 import HomeworkLayout from "../layout/HomeworkLayout";
-import CourseDetail from "../pages/Student/CourseDetails";
 import HomeCourse from "../pages/Student/HomeCourse";
 import Home from "../pages/Student/Home";
 import AuthLayout from "../layout/AuthLayout";
@@ -27,6 +26,7 @@ import ClassDetail from "../pages/Admin/ManageClassDetails";
 import ClassAssignment from "../pages/Teacher/ClassAssignment";
 import ClassAttendance from "../pages/Teacher/ClassAttendance";
 import ClassSubmission from "../pages/Teacher/ClassSubmission";
+import Assignment from "../pages/Student/Assignment";
 
 const publicRoutes = createBrowserRouter([
   {
@@ -125,7 +125,7 @@ const publicRoutes = createBrowserRouter([
         path: "home", element: <HomeCourse />
       },
       {
-        path: "course-details/:id", element: <CourseDetail />
+        path: "homework/:id", element: <Assignment />
       },
 
     ],

@@ -1,6 +1,5 @@
 import Attendance from "../model/attendance.js";
 import Class from "../model/class.js";
-import User from "../model/user.js";
 
 export const getAll = async () => {
   const attendances = await Attendance.find().sort({ createdAt: -1 });
@@ -31,7 +30,14 @@ export const findByClassId = async (classId) => {
 
   return attendances;
 };
+export const findByStudentId = async (studentId) => {
+  const attendances = await Attendance.find({ student: studentId })
+    .populate("class", "name")
+    .populate("student", "full_name email")
+    .sort({ lesson: -1, attend_at: -1 });
 
+  return attendances || [];
+};
 // export const createAttendance = async (data) => {
 //   const [attendingClass, student] = await Promise.all([
 //     Class.findById(data.class),

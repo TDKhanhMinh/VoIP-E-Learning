@@ -25,7 +25,7 @@ export const SIDEBAR_DATA = [
   {
     title: "Điểm danh",
     icon: <LuUserRoundCheck />,
-    to: "/user/change-password"
+    to: "/home/attendance"
   },
   {
     title: "Thông báo",

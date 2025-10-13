@@ -14,6 +14,7 @@ const router = express.Router();
 
 router.get("/", controller.getAll);
 router.get("/:id", controller.findById);
+router.get("/student/:id", controller.findByStudentId);
 router.post(
   "/",
   protect,

@@ -1,40 +1,74 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UploadModal from "./UploadModal";
 import Button from "./Button";
+import formatDateTime from './../utils/formatDateTime';
+import { submissionService } from "../services/submissionService";
+import { uploadService } from "../services/uploadService";
+import { toast } from "react-toastify";
 
 export default function AssignmentItem({
   title,
   description,
   dueDate,
+  assignmentId,
+  createDate,
   status,
-  submittedFile,
-  submittedUrl,
 }) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [submission, setSubmission] = useState();
   const [isSubmitted, setIsSubmitted] = useState(status === "Đã nộp");
-  const [fileName, setFileName] = useState(submittedFile || "");
-  const [fileUrl, setFileUrl] = useState(submittedUrl || "");
 
   const statusColor = isSubmitted ? "text-green-600" : "text-red-500";
+  const studentId = sessionStorage.getItem("userId").split('"').join('').toString();
 
-  const handleSubmit = (file) => {
-    // ví dụ: khi upload thành công sẽ có file.name và file.url trả về từ server
-    setFileName(file.name);
-    setFileUrl(file.url);
-    setIsSubmitted(true);
-    setOpen(false);
-  };
+  useEffect(() => {
+
+    fetchSubmission();
+  }, [])
 
   const handleCancel = () => {
-    setFileName("");
-    setFileUrl("");
     setIsSubmitted(false);
   };
+  const fetchSubmission = async () => {
+    const submissionData = await submissionService.getSubmissionByUserId(studentId)
+    console.log("Data", submissionData);
+    setSubmission(submissionData);
+    if (submissionData.find(s => s.assignment?._id === assignmentId)) setIsSubmitted(true)
+  };
+  const handleDownload = () => {
+    const url = submission.find(s => s.assignment?._id === assignmentId).file_url?.replace("/upload/", "/upload/fl_attachment/");
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = submission.file_name || "file.zip";
+    a.target = "_blank";
+    a.click();
+  };
+  const handlerSubmit = async (data, setProgress) => {
+    try {
+      setOpen(true)
+      const file = data.file[0];
+      const uploadResult = await uploadService.uploadFile(file, setProgress);
+      console.log("upload data", uploadResult);
+      const payload = {
+        assignment: assignmentId,
+        file_url: uploadResult.url,
+        file_name: uploadResult.file_name,
+        student: studentId,
+      }
+      const submitData = await submissionService.createSubmission(payload);
+      console.log(submitData);
+      fetchSubmission();
+      setOpen(false)
+      toast.success("Nộp bài thành công!");
+    } catch (error) {
+      console.log(error);
 
+    }
+  }
   return (
     <div className="border rounded-md shadow-lg mb-3 bg-white">
-      {/* Header */}
+
       <div
         className="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-50"
         onClick={() => setExpanded(!expanded)}
@@ -45,12 +79,13 @@ export default function AssignmentItem({
             {isSubmitted ? "Đã nộp" : "Chưa nộp"}
           </span>
         </div>
-        <div className="text-sm text-gray-500">Due {dueDate}</div>
+        <div className="text-sm text-gray-500">Due {formatDateTime(dueDate)}</div>
       </div>
 
-      {/* Body */}
+
       {expanded && (
         <div className="p-4 border-t">
+          <p className="mb-4 text-gray-700 text-xs">Assignment posted in {formatDateTime(createDate)}</p>
           <p className="mb-4 text-gray-700">{description}</p>
 
           <div className="flex justify-between items-center border-t pt-3">
@@ -58,19 +93,19 @@ export default function AssignmentItem({
               <p className="text-sm text-gray-500">
                 Bài nộp:{" "}
                 {isSubmitted ? (
-                  <a
-                    href={fileUrl}
-                    download
+                  <button onClick={handleDownload}
+                    // href={submission.find(s => s.assignment?._id === assignmentId).file_url?.replace("/upload/", "/upload/fl_attachment/")}
                     className="text-blue-600 underline hover:text-blue-800"
                   >
-                    {fileName}
-                  </a>
+                    {submission.find(s => s.assignment?._id === assignmentId).file_name?.split('.')[0]}
+                  </button>
                 ) : (
                   <span className="text-red-500">Chưa nộp</span>
                 )}
               </p>
               <p className="text-sm text-teal-600">HÌNH THỨC NỘP: NỘP FILE</p>
             </div>
+
 
             {!isSubmitted ? (
               <Button
@@ -95,7 +130,7 @@ export default function AssignmentItem({
         isOpen={open}
         onClose={() => setOpen(false)}
         title={title}
-        onSubmit={(file) => handleSubmit(file)}
+        onSubmitData={handlerSubmit}
       />
     </div>
   );

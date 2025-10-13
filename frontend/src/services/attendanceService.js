@@ -9,6 +9,10 @@ export const attendanceService = {
         const res = await http.get(`/attendance/${id}`);
         return res.data;
     },
+    getAttendanceByStudentId: async (id) => {
+        const res = await http.get(`/attendance/student/${id}`);
+        return res.data;
+    },
     updateAttendance: async (attendanceId, attendanceData) => {
         const res = await http.put(`/attendance/${attendanceId}`, attendanceData);
         return res.data;

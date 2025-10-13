@@ -9,21 +9,28 @@ import {
 } from "../validation/submission.validation.js";
 
 const router = express.Router();
+router.get("/", protect, controller.getAll);
 
-router.get("/", controller.getAll);
-router.get("/:id", controller.findById);
+router.get("/assignment/:assignmentId", protect, controller.getByAssignment);
+
+router.get("/student/:studentId", protect, controller.getByStudent);
+
+router.get("/:id", protect, controller.findById);
+
 router.post(
   "/",
   protect,
   validate(createSubmissionSchema),
   controller.createSubmission
 );
+
 router.put(
   "/:id",
   protect,
   validate(updateSubmissionSchema),
   controller.updateSubmission
 );
-router.delete("/:id", controller.deleteSubmission);
+
+router.delete("/:id", protect, controller.deleteSubmission);
 
 export default router;

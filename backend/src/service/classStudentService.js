@@ -28,7 +28,23 @@ export const getClassStudents = async (class_id) => {
   ]);
   return students;
 };
+export const findByStudentId = async (studentId) => {
+  const enrollments = await ClassStudent.find({ student: studentId })
+    .populate({
+      path: "class",
+      populate: { path: "course teacher semester" },
+    })
+    .populate("student")
+    .sort({ joined_at: -1 });
 
+  if (!enrollments || enrollments.length === 0) {
+    const error = new Error(`No enrollment found for student ${studentId}`);
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return enrollments;
+};
 export const findById = async (id) => {
   const classStudent = await ClassStudent.findById(id);
   if (!classStudent) {

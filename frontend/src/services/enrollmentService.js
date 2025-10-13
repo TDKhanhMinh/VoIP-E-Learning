@@ -5,6 +5,10 @@ export const enrollmentService = {
         const res = await http.get(`/enrollment/class/${class_id}`);
         return res.data;
     },
+    getAllEnrollmentsByStudentId: async (id) => {
+        const res = await http.get(`/enrollment/student/${id}`);
+        return res.data;
+    },
     createEnrollment: async (data) => {
         const res = await http.post("/enrollment", data);
         return res.data;

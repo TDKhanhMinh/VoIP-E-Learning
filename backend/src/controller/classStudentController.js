@@ -12,6 +12,11 @@ export const findById = asyncHandler(async (req, res) => {
   const announcement = await service.findById(id);
   res.status(200).json(announcement);
 });
+export const findByStudentId = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const announcement = await service.findByStudentId(id);
+  res.status(200).json(announcement);
+});
 
 export const createClassStudent = asyncHandler(async (req, res) => {
   const data = req.body;
