@@ -11,4 +11,7 @@ export const createSubmissionSchema = Joi.object({
 export const updateSubmissionSchema = Joi.object({
   score: Joi.number().min(0).max(10).required(),
   feedback: Joi.string().required(),
+  graded: Joi.boolean().optional(),
+
 });
+

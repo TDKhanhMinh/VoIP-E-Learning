@@ -20,9 +20,7 @@ export default function UploadModal({ isOpen, onClose, title, onSubmitData }) {
     try {
       setUploading(true);
       setProgress(10);
-
       await onSubmitData(data, setProgress);
-
       toast.success("Nộp bài thành công ");
       reset();
       onClose();

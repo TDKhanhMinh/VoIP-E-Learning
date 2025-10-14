@@ -11,10 +11,11 @@ import {
     FaCog,
     FaChevronLeft,
 } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoCalendarOutline } from "react-icons/io5";
 import { ToastContainer } from "react-toastify";
 import { authService } from "../services/authService";
+import { userService } from "../services/userService";
 
 export default function TeacherLayout() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -26,7 +27,8 @@ export default function TeacherLayout() {
         await authService.logout();
         navigate("/", { state: { isLogin: false } });
     };
-
+    const teacherId = sessionStorage.getItem("userId").split('"').join('').toString();
+    const [teacherInfo, setTeacherInfo] = useState(null);
     const menuItems = [
         { path: "/teacher", icon: FaTachometerAlt, label: "Dashboard", exact: true },
         { path: "/teacher/schedule", icon: IoCalendarOutline, label: "Lịch dạy" },
@@ -35,7 +37,12 @@ export default function TeacherLayout() {
         { path: "/teacher/attendances", icon: FaClipboardCheck, label: "Điểm danh" },
         { path: "/teacher/submissions", icon: FaFileAlt, label: "Bài nộp" },
     ];
-
+    useEffect(() => {
+        const fetchTeacherInfo = async () => {
+            setTeacherInfo(await userService.getUserById(teacherId));
+        };
+        fetchTeacherInfo();
+    }, []);
     const isActive = (path, exact = false) => {
         if (exact) {
             return location.pathname === path;
@@ -45,12 +52,12 @@ export default function TeacherLayout() {
 
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
-            
+
             <aside
                 className={`${isCollapsed ? "w-20" : "w-72"
                     } bg-white shadow-2xl flex flex-col transition-all duration-300 relative border-r border-gray-200`}
             >
-                
+
                 <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600">
                     <div className="flex items-center justify-between">
                         {!isCollapsed && (
@@ -74,7 +81,7 @@ export default function TeacherLayout() {
                     </div>
                 </div>
 
-                
+
                 <nav className="flex-1 p-4 overflow-y-auto">
                     <ul className="space-y-2">
                         {menuItems.map((item) => {
@@ -86,8 +93,8 @@ export default function TeacherLayout() {
                                     <Link
                                         to={item.path}
                                         className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group relative ${active
-                                                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
-                                                : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+                                            ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
+                                            : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
                                             }`}
                                     >
                                         <Icon className={`text-xl ${active ? "text-white" : "text-gray-500 group-hover:text-blue-600"}`} />
@@ -104,7 +111,7 @@ export default function TeacherLayout() {
                     </ul>
                 </nav>
 
-                
+
                 <div className="p-4 border-t border-gray-200">
                     <button
                         onClick={handlerLogout}
@@ -116,39 +123,39 @@ export default function TeacherLayout() {
                 </div>
             </aside>
 
-            
+
             <div className="flex-1 flex flex-col min-w-0">
-                
+
                 <header className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-40">
                     <div className="flex justify-between items-center px-6 py-4">
-                        
+
                         <div className="flex items-center gap-4 flex-1 max-w-xl">
                             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                                 Hệ thống E-learning
                             </h1>
                         </div>
 
-                        
+
                         <div className="flex items-center gap-4">
-                            
+
                             <button className="relative p-2.5 hover:bg-gray-100 rounded-xl transition-colors group">
                                 <FaBell className="text-gray-600 text-xl group-hover:text-blue-600 transition-colors" />
                                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
                             </button>
 
-                            
+
                             <button className="p-2.5 hover:bg-gray-100 rounded-xl transition-colors group">
                                 <FaCog className="text-gray-600 text-xl group-hover:text-blue-600 transition-colors" />
                             </button>
 
-                            
+
                             <div className="relative">
                                 <button
                                     onClick={() => setShowProfileMenu(!showProfileMenu)}
                                     className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-xl transition-colors"
                                 >
                                     <div className="text-right hidden md:block">
-                                        <p className="text-sm font-semibold text-gray-800">Nguyễn Văn A</p>
+                                        <p className="text-sm font-semibold text-gray-800">{teacherInfo?.full_name}</p>
                                         <p className="text-xs text-gray-500">Giảng viên</p>
                                     </div>
                                     <div className="relative">
@@ -161,17 +168,17 @@ export default function TeacherLayout() {
                                     </div>
                                 </button>
 
-                                
+
                                 {showProfileMenu && (
                                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50">
                                         <div className="px-4 py-3 border-b border-gray-100">
-                                            <p className="text-sm font-semibold text-gray-800">Nguyễn Văn A</p>
-                                            <p className="text-xs text-gray-500">nguyenvana@email.com</p>
+                                            <p className="text-sm font-semibold text-gray-800">{teacherInfo?.full_name}</p>
+                                            <p className="text-xs text-gray-500">{teacherInfo?.email}</p>
                                         </div>
                                         <button
                                             onClick={() => {
                                                 setShowProfileMenu(false);
-                                                
+
                                             }}
                                             className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors text-sm text-gray-700"
                                         >
@@ -180,7 +187,7 @@ export default function TeacherLayout() {
                                         <button
                                             onClick={() => {
                                                 setShowProfileMenu(false);
-                                                
+
                                             }}
                                             className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors text-sm text-gray-700"
                                         >
@@ -204,7 +211,7 @@ export default function TeacherLayout() {
                     </div>
                 </header>
 
-                
+
                 <main className="flex-1 overflow-y-auto">
                     <div className="">
                         <ToastContainer

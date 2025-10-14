@@ -4,7 +4,7 @@ import { semesterService } from "../../services/semesterService";
 import { FaCalendarAlt, FaUsers, FaClock, FaClipboardList } from "react-icons/fa";
 import Button from "../../components/Button";
 
-export default function ManageAttendance() {
+export default function TeacherManageSubmission() {
     const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");
     const [teacherClasses, setTeacherClasses] = useState([]);
     const [semesters, setSemesters] = useState([]);
@@ -34,20 +34,20 @@ export default function ManageAttendance() {
 
     return (
         <div className="p-8 min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
-            
-            
+
+
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
                 <div>
                     <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                        Quản lý điểm danh
+                        Quản lý bài nộp
                     </h2>
                     <p className="text-gray-500 text-sm mt-1">
-                        Danh sách các lớp bạn đang giảng dạy và quản lý điểm danh
+                        Danh sách các lớp bạn đang giảng dạy và quản lý bài nộp
                     </p>
                 </div>
 
-                
-                
+
+
                 <div className="flex items-center gap-3">
                     <FaCalendarAlt className="text-blue-600" />
                     <select
@@ -65,8 +65,8 @@ export default function ManageAttendance() {
                 </div>
             </div>
 
-            
-            
+
+
             {filteredClasses.length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {filteredClasses.map((cls, index) => {
@@ -78,8 +78,8 @@ export default function ManageAttendance() {
                                 key={cls._id || index}
                                 className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 flex flex-col justify-between group"
                             >
-                                
-                                
+
+
                                 <div>
                                     <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
                                         {cls.name}
@@ -104,8 +104,8 @@ export default function ManageAttendance() {
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <FaUsers className="text-green-500" />
-                                            {/* <span>
+                                            {/* <FaUsers className="text-green-500" />
+                                            <span>
                                                 Sĩ số:{" "}
                                                 <strong className="text-gray-800">
                                                     {cls.studentCount ?? 0}
@@ -116,13 +116,13 @@ export default function ManageAttendance() {
                                     </div>
                                 </div>
 
-                                
-                                
+
+
                                 <Button
-                                    to={`/teacher/class-details/${cls._id}/attendance`}
+                                    to={`/teacher/class-details/${cls._id}/submissions`}
                                     className="mt-6 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-2"
                                 >
-                                    Mở điểm danh
+                                    Mở bài nộp
                                 </Button>
                             </div>
                         );

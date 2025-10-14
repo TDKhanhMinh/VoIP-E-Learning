@@ -5,6 +5,7 @@ import formatDateTime from './../utils/formatDateTime';
 import { submissionService } from "../services/submissionService";
 import { uploadService } from "../services/uploadService";
 import { toast } from "react-toastify";
+import { driveUploadService } from "../services/driveUploadService";
 
 export default function AssignmentItem({
   title,
@@ -28,6 +29,9 @@ export default function AssignmentItem({
   }, [])
 
   const handleCancel = () => {
+    const data = submissionService.deleteSubmission(submission.find(s => s.assignment?._id === assignmentId)._id);
+    console.log("Delete", data);
+
     setIsSubmitted(false);
   };
   const fetchSubmission = async () => {
@@ -49,6 +53,20 @@ export default function AssignmentItem({
       setOpen(true)
       const file = data.file[0];
       const uploadResult = await uploadService.uploadFile(file, setProgress);
+      // const form = new FormData();
+      // form.append("file", file);
+      // console.log("upload file data", form);
+
+      // let uploadResult = null
+      // try {
+      //   uploadResult = await driveUploadService.uploadToDrive(form);
+      //   console.log("upload result ", uploadResult);
+      // } catch (error) {
+      //   toast.error("Lỗi khi upload file");
+      //   console.log(error);
+      // }
+      // if (uploadResult) return
+
       console.log("upload data", uploadResult);
       const payload = {
         assignment: assignmentId,
@@ -60,7 +78,6 @@ export default function AssignmentItem({
       console.log(submitData);
       fetchSubmission();
       setOpen(false)
-      toast.success("Nộp bài thành công!");
     } catch (error) {
       console.log(error);
 

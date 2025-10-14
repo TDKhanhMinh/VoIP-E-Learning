@@ -27,6 +27,7 @@ import ClassAssignment from "../pages/Teacher/ClassAssignment";
 import ClassAttendance from "../pages/Teacher/ClassAttendance";
 import ClassSubmission from "../pages/Teacher/ClassSubmission";
 import Assignment from "../pages/Student/Assignment";
+import TeacherManageSubmission from "../pages/Teacher/TeacherManagerSubmission";
 
 const publicRoutes = createBrowserRouter([
   {
@@ -95,7 +96,10 @@ const publicRoutes = createBrowserRouter([
         path: "attendances", element: <ManageAttendance />
       },
       {
-        path: "submissions", element: <ManageSubmissions />
+        path: "submissions/:id", element: <ManageSubmissions />
+      },
+      {
+        path: "submissions", element: <TeacherManageSubmission />
       },
       {
         path: "classes", element: <TeacherClasses />

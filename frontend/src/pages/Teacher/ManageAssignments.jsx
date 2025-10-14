@@ -1,63 +1,142 @@
-import { useState } from "react";
-import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
-import { useParams } from "react-router-dom";
-import AssignmentModal from "../../components/AssignmentModal";
+import { useEffect, useState } from "react";
+import { classService } from "../../services/classService";
+import { semesterService } from "../../services/semesterService";
+import { FaCalendarAlt, FaBookOpen, FaClock, FaTasks } from "react-icons/fa";
 import Button from "../../components/Button";
 
 export default function ManageAssignments() {
-    const { classId } = useParams();
-    const [open, setOpen] = useState(false);
-    const handleSave = (newAssignment) => {
-        setAssignments([...assignments, newAssignment]);
-    };
-    const [assignments, setAssignments] = useState([
-        { id: 1, title: "Lab 1", dueDate: "2025-09-30" },
-        { id: 2, title: "Lab 2", dueDate: "2025-10-15" },
-    ]);
+    const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");
+    const [teacherClasses, setTeacherClasses] = useState([]);
+    const [semesters, setSemesters] = useState([]);
+    const [selectedSemester, setSelectedSemester] = useState("all");
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [classes, sems] = await Promise.all([
+                    classService.getClassesByTeacher(teacherId),
+                    semesterService.getAllSemesters(),
+                ]);
+                setTeacherClasses(classes || []);
+                setSemesters(sems || []);
+            } catch (error) {
+                console.error("Lỗi khi tải dữ liệu:", error);
+            }
+        };
+        if (teacherId) fetchData();
+    }, [teacherId]);
+
+    const filteredClasses =
+        selectedSemester === "all"
+            ? teacherClasses
+            : teacherClasses.filter((cls) => cls.semester === selectedSemester);
 
     return (
-        <div className="p-6">
-            <h2 className="text-2xl font-bold mb-6">
-                Quản lý Bài tập - Lớp {classId}
-            </h2>
+        <div className="p-8 min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+            
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+                <div>
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                        Quản lý bài tập
+                    </h2>
+                    <p className="text-gray-500 text-sm mt-1">
+                        Danh sách các lớp bạn đang giảng dạy và bài tập được giao
+                    </p>
+                </div>
 
-            <Button
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 mb-4"
-                onClick={() => setOpen(true)}
-            >
-                + Giao bài
-            </Button>
+                
+                <div className="flex items-center gap-3">
+                    <FaCalendarAlt className="text-blue-600" />
+                    <select
+                        value={selectedSemester}
+                        onChange={(e) => setSelectedSemester(e.target.value)}
+                        className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all bg-white shadow-sm"
+                    >
+                        <option value="all">Tất cả học kỳ</option>
+                        {semesters.map((sem) => (
+                            <option key={sem._id} value={sem._id}>
+                                {sem.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
 
-            <table className="w-full border bg-white shadow-md rounded">
-                <thead className="bg-gray-100">
-                    <tr>
-                        <th className="border px-4 py-2">Tên bài tập</th>
-                        <th className="border px-4 py-2">Hạn nộp</th>
-                        <th className="border px-4 py-2">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {assignments.map((a) => (
-                        <tr key={a.id} className="text-center hover:bg-gray-50">
-                            <td className="border px-4 py-2">{a.title}</td>
-                            <td className="border px-4 py-2">{a.dueDate}</td>
-                            <td className="border px-4 py-2 space-x-2">
-                                <button className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
-                                    <FaEdit />
-                                </button>
-                                <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                                    <FaTrash />
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <AssignmentModal
-                isOpen={open}
-                onClose={() => setOpen(false)}
-                onSave={handleSave}
-            />
+            
+            {filteredClasses.length > 0 ? (
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {filteredClasses.map((cls, index) => {
+                        const semesterName =
+                            semesters.find((se) => se._id === cls?.semester)?.name ||
+                            "Không rõ";
+                        return (
+                            <div
+                                key={cls._id || index}
+                                className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 flex flex-col justify-between group"
+                            >
+                                
+                                <div>
+                                    <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
+                                        {cls.name}
+                                    </h3>
+                                    <div className="flex flex-col gap-2 text-sm text-gray-600">
+                                        <div className="flex items-center gap-2">
+                                            <FaCalendarAlt className="text-blue-500" />
+                                            <span>
+                                                Học kỳ:{" "}
+                                                <strong className="text-gray-800">
+                                                    {semesterName}
+                                                </strong>
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <FaClock className="text-indigo-500" />
+                                            <span>
+                                                Lịch học:{" "}
+                                                <strong className="text-gray-800">
+                                                    {cls.schedule || "Chưa cập nhật"}
+                                                </strong>
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <FaTasks className="text-green-500" />
+                                            <span>
+                                                Bài tập:{" "}
+                                                <strong className="text-gray-800">
+                                                    {cls.assignmentCount ?? 0}
+                                                </strong>{" "}
+                                                bài
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                                <Button
+                                    to={`/teacher/class-details/${cls._id}/assignments`}
+                                    className="mt-6 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-2"
+                                >
+                                    Mở bài tập
+                                </Button>
+                            </div>
+                        );
+                    })}
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center py-20">
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+                        alt="No classes"
+                        className="w-40 h-40 mb-6 opacity-70"
+                    />
+                    <p className="text-gray-600 text-lg font-medium">
+                        Không tìm thấy lớp phù hợp.
+                    </p>
+                    <p className="text-gray-400 text-sm mt-1">
+                        Hãy chọn học kỳ khác hoặc liên hệ quản trị viên.
+                    </p>
+                </div>
+            )}
         </div>
     );
 }

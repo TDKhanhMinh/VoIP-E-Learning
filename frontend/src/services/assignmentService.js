@@ -5,7 +5,7 @@ export const assignmentService = {
         const res = await http.get("/assignment");
         return res.data;
     },
-    getAllAssignmentsById: async (id) => {
+    getAssignmentsById: async (id) => {
         const res = await http.get(`/assignment/${id}`);
         return res.data;
     },

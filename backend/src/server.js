@@ -15,7 +15,7 @@ import assignmentRoutes from "./router/assignmentRouter.js";
 import submissionRoutes from "./router/submissionRouter.js";
 import attendanceRoutes from "./router/attendanceRouter.js";
 import announcementRoutes from "./router/announcementRouter.js";
-
+import driveRoutes from "./router/driveRouter.js";
 await connectDB();
 
 const app = express();
@@ -50,7 +50,7 @@ app.use("/api/assignment", assignmentRoutes);
 app.use("/api/submission", submissionRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/announcement", announcementRoutes);
-
+app.use("/api/drive", driveRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT;
