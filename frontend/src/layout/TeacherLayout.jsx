@@ -36,6 +36,8 @@ export default function TeacherLayout() {
         { path: "/teacher/assignments", icon: FaBookOpen, label: "Bài tập" },
         { path: "/teacher/attendances", icon: FaClipboardCheck, label: "Điểm danh" },
         { path: "/teacher/submissions", icon: FaFileAlt, label: "Bài nộp" },
+        { path: "/teacher/notifications", icon: FaBell, label: "Thông báo" },
+
     ];
     useEffect(() => {
         const fetchTeacherInfo = async () => {

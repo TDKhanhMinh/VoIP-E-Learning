@@ -18,5 +18,6 @@ const announcementSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const Annoucement = mongoose.model("Annoucement", announcementSchema);
-export default Annoucement;
+const Announcement = mongoose.model("Announcement", announcementSchema);
+export default Announcement;
+

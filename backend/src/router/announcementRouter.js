@@ -13,6 +13,9 @@ const router = express.Router();
 
 router.get("/", controller.getAll);
 router.get("/:id", controller.findById);
+router.get("/class/:id", controller.findByClassId);
+router.get("/creator/:id", controller.findByCreatorId);
+
 router.post(
   "/",
   protect,

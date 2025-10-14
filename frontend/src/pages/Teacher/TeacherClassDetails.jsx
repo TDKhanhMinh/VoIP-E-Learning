@@ -180,7 +180,7 @@ export default function TeacherClassDetails() {
         </div>
 
         <div className="p-4 pb-6">
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-4 gap-6">
             <Link
               to={`/teacher/class-details/${id}/assignments`}
               className="p-4 bg-white shadow rounded hover:bg-gray-100"
@@ -198,6 +198,12 @@ export default function TeacherClassDetails() {
               className="p-4 bg-white shadow rounded hover:bg-gray-100"
             >
               Quản lý Bài nộp
+            </Link>
+            <Link
+              to={`/teacher/class-details/${id}/notifications`}
+              className="p-4 bg-white shadow rounded hover:bg-gray-100"
+            >
+              Quản lý Thông báo
             </Link>
           </div>
         </div>

@@ -30,7 +30,7 @@ export const SIDEBAR_DATA = [
   {
     title: "Thông báo",
     icon: <IoMdNotificationsOutline /> ,
-    to: "/user/change-password"
+    to: "/home/notification"
   },
 
 ];
