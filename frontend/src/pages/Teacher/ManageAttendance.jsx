@@ -34,8 +34,8 @@ export default function ManageAttendance() {
 
     return (
         <div className="p-8 min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
-            
-            
+
+
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
                 <div>
                     <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
@@ -46,8 +46,8 @@ export default function ManageAttendance() {
                     </p>
                 </div>
 
-                
-                
+
+
                 <div className="flex items-center gap-3">
                     <FaCalendarAlt className="text-blue-600" />
                     <select
@@ -65,8 +65,8 @@ export default function ManageAttendance() {
                 </div>
             </div>
 
-            
-            
+
+
             {filteredClasses.length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {filteredClasses.map((cls, index) => {
@@ -78,8 +78,8 @@ export default function ManageAttendance() {
                                 key={cls._id || index}
                                 className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 flex flex-col justify-between group"
                             >
-                                
-                                
+
+
                                 <div>
                                     <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
                                         {cls.name}
@@ -99,7 +99,23 @@ export default function ManageAttendance() {
                                             <span>
                                                 Lịch học:{" "}
                                                 <strong className="text-gray-800">
-                                                    {cls.schedule || "Chưa cập nhật"}
+                                                    {Array.isArray(cls.schedule) && cls.schedule.length > 0 ? (
+                                                        cls.schedule
+                                                            .map((s) => {
+                                                                const days = {
+                                                                    2: "Thứ 2",
+                                                                    3: "Thứ 3",
+                                                                    4: "Thứ 4",
+                                                                    5: "Thứ 5",
+                                                                    6: "Thứ 6",
+                                                                    7: "Thứ 7",
+                                                                };
+                                                                return `${days[s.dayOfWeek] || "?"} - Ca ${s.shift}`;
+                                                            })
+                                                            .join("; ")
+                                                    ) : (
+                                                        "Chưa có lịch"
+                                                    )}
                                                 </strong>
                                             </span>
                                         </div>
@@ -116,8 +132,8 @@ export default function ManageAttendance() {
                                     </div>
                                 </div>
 
-                                
-                                
+
+
                                 <Button
                                     to={`/teacher/class-details/${cls._id}/attendance`}
                                     className="mt-6 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-2"

@@ -27,9 +27,12 @@ export default function ClassModal({
             course: "",
             teacher: "",
             semester: "",
-            schedule: "",
+            schedule: [
+                { dayOfWeek: "", shift: "" },
+            ],
         },
     });
+
 
     useEffect(() => {
         if (initialData) {
@@ -38,7 +41,12 @@ export default function ClassModal({
                 course: initialData.course || "",
                 teacher: initialData.teacher || "",
                 semester: initialData.semester || "",
-                schedule: initialData.schedule || "",
+                schedule:
+                    initialData.schedule && Array.isArray(initialData.schedule)
+                        ? initialData.schedule
+                        : [
+                            { dayOfWeek: "", shift: "" },
+                        ],
             });
         } else {
             reset({
@@ -46,20 +54,43 @@ export default function ClassModal({
                 course: "",
                 teacher: "",
                 semester: "",
-                schedule: "",
+                schedule: [
+                    { dayOfWeek: "", shift: "" },
+                ],
             });
         }
     }, [initialData, reset, isOpen]);
 
+
     const onSubmit = (data) => {
+
+
         const payload = { ...data };
         if (initialData?._id) payload._id = initialData._id;
+
         onSave(payload);
         onClose();
         reset();
     };
 
+
     const isEditing = Boolean(initialData);
+
+    const daysOfWeek = [
+        { value: 2, label: "Thứ 2" },
+        { value: 3, label: "Thứ 3" },
+        { value: 4, label: "Thứ 4" },
+        { value: 5, label: "Thứ 5" },
+        { value: 6, label: "Thứ 6" },
+        { value: 7, label: "Thứ 7" },
+    ];
+
+    const shifts = [
+        { value: 1, label: "Ca 1 (06:50 - 09:20)" },
+        { value: 2, label: "Ca 2 (09:30 - 12:00)" },
+        { value: 3, label: "Ca 3 (12:45 - 15:15)" },
+        { value: 4, label: "Ca 4 (15:25 - 17:55)" },
+    ];
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -96,11 +127,15 @@ export default function ClassModal({
                         <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-gray-200 transition-all">
                             {/* Header */}
                             <div
-                                className={`flex items-center gap-3 px-6 py-4 border-b ${isEditing ? "bg-gradient-to-r from-amber-100 to-yellow-50" : "bg-gradient-to-r from-blue-100 to-indigo-50"
+                                className={`flex items-center gap-3 px-6 py-4 border-b ${isEditing
+                                    ? "bg-gradient-to-r from-amber-100 to-yellow-50"
+                                    : "bg-gradient-to-r from-blue-100 to-indigo-50"
                                     }`}
                             >
                                 <div
-                                    className={`p-2 rounded-full ${isEditing ? "bg-yellow-500 text-white" : "bg-blue-600 text-white"
+                                    className={`p-2 rounded-full ${isEditing
+                                        ? "bg-yellow-500 text-white"
+                                        : "bg-blue-600 text-white"
                                         }`}
                                 >
                                     <FaChalkboardTeacher size={20} />
@@ -196,24 +231,46 @@ export default function ClassModal({
                                         />
                                     </div>
 
-                                    {/* --- Lịch học --- */}
+                                    {/* --- Lịch học (2 buổi/tuần) --- */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Lịch học <span className="text-red-500">*</span>
                                         </label>
-                                        <input
-                                            type="text"
-                                            className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                                            placeholder="VD: Thứ 2 - Ca 1; Thứ 4 - Ca 3"
-                                            {...register("schedule", {
-                                                required: "Vui lòng nhập lịch học",
-                                            })}
-                                        />
+
+                                        <div className="flex items-center gap-3 border p-3 rounded-lg bg-gray-50">
+                                            <SelectField
+                                                label="Thứ"
+                                                name={`schedule[0].dayOfWeek`}
+                                                options={daysOfWeek}
+                                                value={watch("schedule.0.dayOfWeek") || ""}
+                                                onChange={(v) =>
+                                                    setValue("schedule.0.dayOfWeek", Number(v), { shouldValidate: true })
+                                                }
+                                                required
+                                            />
+
+                                            <SelectField
+                                                label="Ca"
+                                                name={`schedule[0].shift`}
+                                                options={shifts}
+                                                value={watch("schedule.0.shift") || ""}
+                                                onChange={(v) =>
+                                                    setValue("schedule.0.shift", Number(v), { shouldValidate: true })
+                                                }
+                                                required
+                                            />
+                                        </div>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Mỗi lớp chỉ có 1 buổi/tuần. Ví dụ: Thứ 4 - Ca 2.
+                                        </p>
+
+
                                         {errors.schedule && (
                                             <p className="text-red-500 text-sm mt-1">
                                                 {errors.schedule.message}
                                             </p>
                                         )}
+
                                     </div>
                                 </div>
 
@@ -232,8 +289,8 @@ export default function ClassModal({
                                     <Button
                                         type="submit"
                                         className={`px-5 py-2 text-white rounded-lg shadow ${isEditing
-                                                ? "bg-yellow-500 hover:bg-yellow-600"
-                                                : "bg-blue-600 hover:bg-blue-700"
+                                            ? "bg-yellow-500 hover:bg-yellow-600"
+                                            : "bg-blue-600 hover:bg-blue-700"
                                             }`}
                                     >
                                         {isEditing ? "Cập nhật" : "Lưu lớp học"}

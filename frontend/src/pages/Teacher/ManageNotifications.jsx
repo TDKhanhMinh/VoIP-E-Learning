@@ -98,7 +98,23 @@ export default function ManageNotifications() {
                                             <span>
                                                 Lịch học:{" "}
                                                 <strong className="text-gray-800">
-                                                    {cls.schedule || "Chưa cập nhật"}
+                                                    {Array.isArray(cls.schedule) && cls.schedule.length > 0 ? (
+                                                        cls.schedule
+                                                            .map((s) => {
+                                                                const days = {
+                                                                    2: "Thứ 2",
+                                                                    3: "Thứ 3",
+                                                                    4: "Thứ 4",
+                                                                    5: "Thứ 5",
+                                                                    6: "Thứ 6",
+                                                                    7: "Thứ 7",
+                                                                };
+                                                                return `${days[s.dayOfWeek] || "?"} - Ca ${s.shift}`;
+                                                            })
+                                                            .join("; ")
+                                                    ) : (
+                                                        "Chưa có lịch"
+                                                    )}
                                                 </strong>
                                             </span>
                                         </div>

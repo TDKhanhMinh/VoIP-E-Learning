@@ -55,10 +55,10 @@ export default function TeacherClasses() {
 
     // Filter classes based on search and semester
     const filteredClasses = classes.filter(cls => {
-        const matchesSearch = cls.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            cls.schedule?.toLowerCase().includes(searchTerm.toLowerCase());
+        // const matchesSearch = cls.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        //     cls.schedule?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesSemester = selectedSemester === "all" || cls.semester === selectedSemester;
-        return matchesSearch && matchesSemester;
+        return matchesSemester;
     });
 
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -246,7 +246,23 @@ export default function TeacherClasses() {
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-2 text-gray-600">
                                                         <FaClock className="text-gray-400" />
-                                                        {cls.schedule}
+                                                        {Array.isArray(cls.schedule) && cls.schedule.length > 0 ? (
+                                                            cls.schedule
+                                                                .map((s) => {
+                                                                    const days = {
+                                                                        2: "Thứ 2",
+                                                                        3: "Thứ 3",
+                                                                        4: "Thứ 4",
+                                                                        5: "Thứ 5",
+                                                                        6: "Thứ 6",
+                                                                        7: "Thứ 7",
+                                                                    };
+                                                                    return `${days[s.dayOfWeek] || "?"} - Ca ${s.shift}`;
+                                                                })
+                                                                .join("; ")
+                                                        ) : (
+                                                            "Chưa có lịch"
+                                                        )}
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
@@ -293,7 +309,25 @@ export default function TeacherClasses() {
                                         <div className="space-y-2 mb-4">
                                             <div className="flex items-center gap-2 text-sm text-gray-600">
                                                 <FaClock className="text-gray-400" />
-                                                <span>{cls.schedule}</span>
+                                                <span>
+                                                    {Array.isArray(cls.schedule) && cls.schedule.length > 0 ? (
+                                                        cls.schedule
+                                                            .map((s) => {
+                                                                const days = {
+                                                                    2: "Thứ 2",
+                                                                    3: "Thứ 3",
+                                                                    4: "Thứ 4",
+                                                                    5: "Thứ 5",
+                                                                    6: "Thứ 6",
+                                                                    7: "Thứ 7",
+                                                                };
+                                                                return `${days[s.dayOfWeek] || "?"} - Ca ${s.shift}`;
+                                                            })
+                                                            .join("; ")
+                                                    ) : (
+                                                        "Chưa có lịch"
+                                                    )}
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-2 text-sm">
                                                 <FaCalendarAlt className="text-purple-600" />

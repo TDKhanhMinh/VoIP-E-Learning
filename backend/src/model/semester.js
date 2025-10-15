@@ -8,3 +8,4 @@ const semesterSchema = mongoose.Schema({
 
 const Semester = mongoose.model("Semester", semesterSchema);
 export default Semester;
+

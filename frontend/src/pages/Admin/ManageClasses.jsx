@@ -81,15 +81,15 @@ export default function ManageClasses() {
       <div className="max-w-7xl mx-auto">
 
         <div className="flex items-center gap-4 mb-3">
-            <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <FaLayerGroup className="text-white text-2xl" />
-            </div>
-            <div>
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent pb-4">
-                Quản lý lớp học
-              </h2>
-            </div>
+          <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <FaLayerGroup className="text-white text-2xl" />
           </div>
+          <div>
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent pb-4">
+              Quản lý lớp học
+            </h2>
+          </div>
+        </div>
 
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -180,12 +180,12 @@ export default function ManageClasses() {
                             <FaBook className="text-blue-600" />
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{c.name}</div>
+                            <div className="text-sm font-medium text-gray-900 truncate">{c.name}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                        <span className="truncate inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                           {courses.find(co => co._id == c.course)?.title}
                         </span>
                       </td>
@@ -195,12 +195,12 @@ export default function ManageClasses() {
                             <FaChalkboardTeacher className="text-purple-600 text-sm" />
                           </div>
                           <div className="ml-3">
-                            <div className="text-sm text-gray-900">{teachers.find(t => t._id == c.teacher)?.full_name}</div>
+                            <div className="text-sm text-gray-900 truncate">{teachers.find(t => t._id == c.teacher)?.full_name}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        <span className="inline-flex truncate items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                           <FaCalendarAlt className="mr-2 text-xs" />
                           {semesters.find(se => se._id == c.semester)?.name}
                         </span>
@@ -208,7 +208,23 @@ export default function ManageClasses() {
                       <td className="px-6 py-4">
                         <span className="inline-flex items-center text-sm text-gray-700">
                           <FaClock className="mr-2 text-gray-400" />
-                          {c.schedule}
+                          {Array.isArray(c.schedule) && c.schedule.length > 0 ? (
+                            c.schedule
+                              .map((s) => {
+                                const days = {
+                                  2: "Thứ 2",
+                                  3: "Thứ 3",
+                                  4: "Thứ 4",
+                                  5: "Thứ 5",
+                                  6: "Thứ 6",
+                                  7: "Thứ 7",
+                                };
+                                return `${days[s.dayOfWeek] || "?"} - Ca ${s.shift}`;
+                              })
+                              .join("; ")
+                          ) : (
+                            "Chưa có lịch"
+                          )}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">

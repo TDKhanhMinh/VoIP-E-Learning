@@ -152,7 +152,23 @@ export default function TeacherClassDetails() {
                   <div className="flex-1">
                     <p className="text-sm text-gray-500 font-medium">Lịch học</p>
                     <p className="text-base font-semibold text-gray-800 mt-1">
-                      {classData?.schedule || "—"}
+                      {Array.isArray(classData.schedule) && classData.schedule.length > 0 ? (
+                        classData.schedule
+                          .map((s) => {
+                            const days = {
+                              2: "Thứ 2",
+                              3: "Thứ 3",
+                              4: "Thứ 4",
+                              5: "Thứ 5",
+                              6: "Thứ 6",
+                              7: "Thứ 7",
+                            };
+                            return `${days[s.dayOfWeek] || "?"} - Ca ${s.shift}`;
+                          })
+                          .join("; ")
+                      ) : (
+                        "Chưa có lịch"
+                      )}
                     </p>
                   </div>
                 </div>

@@ -101,7 +101,7 @@ export default function ClassDetail() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 md:p-8">
             <div className="max-w-7xl mx-auto">
-                
+
                 <div className="mb-6">
                     <button
                         onClick={() => navigate(-1)}
@@ -117,9 +117,9 @@ export default function ClassDetail() {
                     </h1>
                 </div>
 
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    
+
                     <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
                         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
                             <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -177,7 +177,23 @@ export default function ClassDetail() {
                                     <div className="flex-1">
                                         <p className="text-sm text-gray-500 font-medium">Lịch học</p>
                                         <p className="text-base font-semibold text-gray-800 mt-1">
-                                            {classData?.schedule || "—"}
+                                            {Array.isArray(classData.schedule) && classData.schedule.length > 0 ? (
+                                                classData.schedule
+                                                    .map((s) => {
+                                                        const days = {
+                                                            2: "Thứ 2",
+                                                            3: "Thứ 3",
+                                                            4: "Thứ 4",
+                                                            5: "Thứ 5",
+                                                            6: "Thứ 6",
+                                                            7: "Thứ 7",
+                                                        };
+                                                        return `${days[s.dayOfWeek] || "?"} - Ca ${s.shift}`;
+                                                    })
+                                                    .join("; ")
+                                            ) : (
+                                                "Chưa có lịch"
+                                            )}
                                         </p>
                                     </div>
                                 </div>
@@ -185,7 +201,7 @@ export default function ClassDetail() {
                         </div>
                     </div>
 
-                    
+
                     <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-lg p-6 text-white">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-lg font-semibold">Thống kê lớp học</h3>
@@ -204,9 +220,9 @@ export default function ClassDetail() {
                     </div>
                 </div>
 
-                
+
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    
+
                     <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
@@ -227,7 +243,7 @@ export default function ClassDetail() {
                         </div>
                     </div>
 
-                    
+
                     <div className="px-6 py-4 bg-gray-50 border-b">
                         <div className="relative max-w-md">
                             <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -244,7 +260,7 @@ export default function ClassDetail() {
                         </div>
                     </div>
 
-                    
+
                     <div className="overflow-x-auto">
                         {filteredStudents.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-16 px-4">
@@ -324,7 +340,7 @@ export default function ClassDetail() {
                                     </tbody>
                                 </table>
 
-                                
+
                                 {totalPages > 1 && (
                                     <div className="px-6 py-4 bg-gray-50 border-t">
                                         <Pagination
