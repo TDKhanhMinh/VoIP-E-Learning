@@ -22,7 +22,7 @@ import fileRoutes from "./router/fileRouter.js";
 await connectDB();
 
 const app = express();
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["http://localhost:5173", "https://voip-e-learning-1.onrender.com"];
 
 app.use(
   cors({
