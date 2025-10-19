@@ -1,6 +1,10 @@
 import http from "./http";
 
 export const enrollmentService = {
+    getAll: async () => {
+        const res = await http.get(`/enrollment/`);
+        return res.data;
+    },
     getAllEnrollments: async (class_id) => {
         const res = await http.get(`/enrollment/class/${class_id}`);
         return res.data;

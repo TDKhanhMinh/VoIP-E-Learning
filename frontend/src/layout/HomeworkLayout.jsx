@@ -1,8 +1,7 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Button from "../components/Button";
 import { ToastContainer } from "react-toastify";
-import Navbar from "../components/NavBar";
-import Tippy from "@tippyjs/react";
+import Tippy from "@tippyjs/react/headless";
 import "tippy.js/dist/tippy.css";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdLogout } from "react-icons/md";
@@ -56,7 +55,7 @@ function HomeworkLayout() {
         return location.pathname === path || location.pathname.startsWith(path + '/');
     };
 
-   
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
             <div className="flex h-screen overflow-hidden">
@@ -132,7 +131,7 @@ function HomeworkLayout() {
                                                 <Tippy
                                                     content={
                                                         <div className="text-sm">
-                                                            <div className="font-bold text-white">{item.class.name}</div>
+                                                            <div className="font-bold text-white max-w-2 truncate">{item.class.name}</div>
                                                             <div className="flex items-center gap-2 text-blue-200 mb-1">
                                                                 <FaBook className="text-xs" />
                                                                 <span>{item.class.course?.code || "N/A"}</span>

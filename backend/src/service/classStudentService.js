@@ -28,6 +28,10 @@ export const getClassStudents = async (class_id) => {
   ]);
   return students;
 };
+export const getAllEnrollments = async () => {
+  const enrollments = await ClassStudent.find().sort({ createdAt: -1 });
+  return enrollments;
+};
 export const findByStudentId = async (studentId) => {
   const enrollments = await ClassStudent.find({ student: studentId })
     .populate({
@@ -43,7 +47,7 @@ export const findByStudentId = async (studentId) => {
     throw error;
   }
 
-  return enrollments;
+  return enrollments || [];
 };
 export const findById = async (id) => {
   const classStudent = await ClassStudent.findById(id);

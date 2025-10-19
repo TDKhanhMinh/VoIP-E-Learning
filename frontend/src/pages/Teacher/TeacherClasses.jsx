@@ -15,6 +15,7 @@ import {
     FaBook
 } from "react-icons/fa";
 
+
 export default function TeacherClasses() {
     const [classes, setClasses] = useState([]);
     const [semesters, setSemesters] = useState([]);
@@ -39,7 +40,7 @@ export default function TeacherClasses() {
             const [classesData, semestersData, enrollmentsData] = await Promise.all([
                 classService.getClassesByTeacher(userId),
                 semesterService.getAllSemesters(),
-                // enrollmentService.getAllEnrollments()
+                enrollmentService.getAll()
             ]);
 
             console.log("Classes", classesData);
@@ -66,9 +67,9 @@ export default function TeacherClasses() {
     const currentClasses = filteredClasses.slice(startIndex, endIndex);
     const totalPages = Math.ceil(filteredClasses.length / itemsPerPage);
 
-    // const getStudentCount = (classId) => {
-    //     return allEnrollments.filter(e => e.class === classId)?.length || 0;
-    // };
+    const getStudentCount = (classId) => {
+        return allEnrollments.filter(e => e.class === classId)?.length || 0;
+    };
 
     const getSemesterName = (semesterId) => {
         return semesters.find(se => se._id === semesterId)?.name || "—";
@@ -277,7 +278,7 @@ export default function TeacherClasses() {
                                                             <FaUsers className="text-green-600" />
                                                         </div>
                                                         <span className="font-semibold text-gray-800">
-                                                            {/* {getStudentCount(cls._id)} */}
+                                                            {getStudentCount(cls._id)}
                                                         </span>
                                                     </div>
                                                 </td>
@@ -338,7 +339,7 @@ export default function TeacherClasses() {
                                             <div className="flex items-center gap-2 text-sm">
                                                 <FaUsers className="text-green-600" />
                                                 <span className="font-semibold text-gray-800">
-                                                    {/* {getStudentCount(cls._id)} sinh viên */}
+                                                    {getStudentCount(cls._id)} sinh viên
                                                 </span>
                                             </div>
                                         </div>

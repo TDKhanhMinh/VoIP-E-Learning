@@ -6,8 +6,6 @@ export const semesterService = {
         return res.data;
     },
     getSemesterById: async (id) => {
-        // const res = await http.get("semester");
-        // return res.data.find(item => item._id === id);
         const res = await http.get(`semester/${id}`);
         return res.data;
     },

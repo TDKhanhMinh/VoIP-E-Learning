@@ -11,6 +11,7 @@ const router = express.Router();
 router.get("/class/:class_id", controller.getClassStudents);
 router.get("/student/:id", controller.findByStudentId);
 router.get("/:id", controller.findById);
+router.get("/", controller.getClassStudents);
 router.post(
   "/",
   protect,
