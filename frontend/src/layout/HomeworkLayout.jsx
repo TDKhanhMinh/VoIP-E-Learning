@@ -11,6 +11,8 @@ import { enrollmentService } from "../services/enrollmentService";
 import { FaChevronLeft, FaBars, FaBook, FaChalkboardTeacher, FaCalendarAlt, FaBell, FaCog, FaUserGraduate } from "react-icons/fa";
 import { authService } from "../services/authService";
 import { userService } from "../services/userService";
+import LoaderOverlay from "../components/LoaderOverlay";
+import { LoadingProvider } from "../context/LoadingContext";
 
 function HomeworkLayout() {
     const [userClass, setUserClass] = useState([]);
@@ -57,7 +59,8 @@ function HomeworkLayout() {
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+        <LoadingProvider>
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
             <div className="flex h-screen overflow-hidden">
 
                 <aside
@@ -301,6 +304,7 @@ function HomeworkLayout() {
 
 
                     <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+                        <LoaderOverlay/>
                         <Outlet />
                     </main>
 
@@ -326,6 +330,7 @@ function HomeworkLayout() {
                 ></div>
             )}
         </div>
+        </LoadingProvider>
     );
 }
 
