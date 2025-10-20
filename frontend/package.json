@@ -24,6 +24,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tippyjs/react": "^4.2.6",
     "axios": "^1.11.0",
+    "axios-retry": "^4.5.0",
     "chart.js": "^4.5.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "motion": "^12.23.22",
