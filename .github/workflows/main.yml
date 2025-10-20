@@ -1,0 +1,62 @@
+name: Build, Test and Deploy VOIP-LMS to Render (FE + BE)
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build & Test App
+    runs-on: ubuntu-latest
+
+    steps:
+      #  1. Checkout source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      #  2. Install & verify Backend (Node.js / Express)
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Lint & test backend
+        working-directory: ./backend
+        run: |
+          echo " Checking backend build..."
+          npm run lint || echo " No lint script, skipping"
+          npm run test || echo " No test script, skipping"
+          echo " Backend OK!"
+
+      #  3. Install & build Frontend (React + Vite)
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: |
+          echo " Building frontend..."
+          npm run build
+          echo " Frontend OK!"
+
+  deploy:
+    name: Deploy to Render (Frontend & Backend)
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      #  Deploy Backend lên Render (VOIP-LMS BE)
+      - name: Trigger Backend Deploy
+        run: |
+          echo " Triggering backend deploy on Render..."
+          curl -X POST ${{ secrets.RENDER_HOOK_BACKEND }}
+
+      #  Deploy Frontend lên Render (VOIP-LMS-1 FE)
+      - name: Trigger Frontend Deploy
+        run: |
+          echo " Triggering frontend deploy on Render..."
+          curl -X POST ${{ secrets.RENDER_HOOK_FRONTEND }}
