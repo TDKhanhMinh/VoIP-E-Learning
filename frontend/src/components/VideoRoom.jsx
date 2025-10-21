@@ -1,138 +1,89 @@
 import React, { useRef, useState, useEffect } from "react";
+import { initSip, startCall, hangUp } from "../services/sipService";
+import { initSocket } from "../services/socketService";
+import http from "../services/http";
 
-const VideoPlayer = ({ stream }) => {
-    const ref = useRef();
-    useEffect(() => {
-        if (ref.current) {
-            ref.current.srcObject = stream;
-        }
-    }, [stream]);
-    return <video ref={ref} autoPlay playsInline width="300" />;
-};
-
-const VideoRoom = () => {
-    const [roomId, setRoomId] = useState("");
-    const [user, setUser] = useState("");
+export default function VideoRoom() {
+    const [roomId, setRoomId] = useState("classA");
+    const [user, setUser] = useState("teacher");
     const [joined, setJoined] = useState(false);
 
-    const localVideoRef = useRef(null);
-    const [remoteStreams, setRemoteStreams] = useState([]);
+    const localRef = useRef(null);
+    const remoteRef = useRef(null);
+    const [sipConfig, setSipConfig] = useState(null);
 
-    const wsRef = useRef(null);
-    const pcRef = useRef(null);
+    useEffect(() => {
+        if (!joined) return;
 
-    const startCall = async () => {
-        // 1. Lấy stream local
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        if (localVideoRef.current) {
-            localVideoRef.current.srcObject = stream;
+        async function setup() {
+            try {
+                const { data } = await http.get("voip/getCredentials");
+                setSipConfig(data);
+                console.log("SOP data", data);
+
+                await initSip(data, localRef, remoteRef);
+
+                initSocket(import.meta.env.VITE_API_URL, roomId, user, {
+                    onUserJoined: (d) => console.log("👋 User joined:", d),
+                });
+            } catch (err) {
+                console.error("🚨 Lỗi khởi tạo VoIP:", err);
+            }
         }
 
-        // 2. Kết nối signaling
-        wsRef.current = new WebSocket("ws://localhost:3001");
-
-        wsRef.current.onopen = () => {
-            console.log("✅ Connected to signaling server");
-
-            // 3. Tạo RTCPeerConnection
-            pcRef.current = new RTCPeerConnection();
-
-            // Add track local vào peer connection
-            stream.getTracks().forEach(track => pcRef.current.addTrack(track, stream));
-
-            // Khi nhận remote stream
-            pcRef.current.ontrack = (event) => {
-                const remoteStream = event.streams[0];
-                setRemoteStreams(prev => {
-                    // tránh thêm trùng stream
-                    if (prev.find(s => s.id === remoteStream.id)) return prev;
-                    return [...prev, remoteStream];
-                });
-            };
-
-            // Gửi ICE candidate lên server
-            pcRef.current.onicecandidate = (event) => {
-                if (event.candidate) {
-                    wsRef.current.send(JSON.stringify({
-                        type: "candidate",
-                        candidate: event.candidate,
-                        roomId
-                    }));
-                }
-            };
-
-            // Join room
-            wsRef.current.send(JSON.stringify({ type: "joinRoom", roomId, user }));
-            setJoined(true);
-        };
-
-        // 4. Xử lý message từ signaling server
-        wsRef.current.onmessage = async (message) => {
-            const data = JSON.parse(message.data);
-            console.log("📩 Signal:", data);
-
-            if (data.type === "offer" && pcRef.current) {
-                await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.offer));
-                const answer = await pcRef.current.createAnswer();
-                await pcRef.current.setLocalDescription(answer);
-                wsRef.current.send(JSON.stringify({ type: "answer", answer, roomId }));
-            }
-
-            if (data.type === "answer" && pcRef.current) {
-                await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.answer));
-            }
-
-            if (data.type === "candidate" && pcRef.current) {
-                try {
-                    await pcRef.current.addIceCandidate(new RTCIceCandidate(data.candidate));
-                    console.error("User login", data.user);
-                } catch (err) {
-                    console.error("🚨 Error adding ICE candidate", err);
-                }
-            }
-        };
-    };
-
-    const createOffer = async () => {
-        const offer = await pcRef.current.createOffer();
-        await pcRef.current.setLocalDescription(offer);
-        wsRef.current.send(JSON.stringify({ type: "offer", offer, roomId }));
-    };
+        setup();
+    }, [joined]);
 
     return (
-        <div>
+        <div className="p-4 text-center">
             {!joined ? (
-                <div>
-                    <h2>Tham gia phòng học</h2>
+                <div className="flex flex-col items-center space-y-3">
                     <input
+                        className="border p-2 rounded"
                         placeholder="Room ID"
                         value={roomId}
-                        onChange={e => setRoomId(e.target.value)}
+                        onChange={(e) => setRoomId(e.target.value)}
                     />
                     <input
+                        className="border p-2 rounded"
                         placeholder="Tên người dùng"
                         value={user}
-                        onChange={e => setUser(e.target.value)}
+                        onChange={(e) => setUser(e.target.value)}
                     />
-                    <button onClick={startCall}>Tham gia</button>
+                    <button
+                        className="bg-blue-600 text-white px-4 py-2 rounded"
+                        onClick={() => setJoined(true)}
+                    >
+                        Join Room
+                    </button>
                 </div>
             ) : (
                 <div>
-                    <h2>Phòng: {roomId}</h2>
-                    <button onClick={createOffer}>Bắt đầu gọi</button>
-                    <div style={{ display: "flex", gap: "10px", marginTop: "10px", flexWrap: "wrap" }}>
-                        {/* Local video */}
-                        <video ref={localVideoRef} autoPlay playsInline muted width="300" />
+                    <h2 className="text-xl font-semibold mb-3">Phòng: {roomId}</h2>
 
-                        {/* Remote videos */}
-                        {remoteStreams.map((stream, idx) => (
-                            <VideoPlayer key={idx} stream={stream} />
-                        ))}
+                    <div className="flex justify-center gap-4 mb-4">
+                        <video ref={localRef} autoPlay muted playsInline width="320" />
+                        <video ref={remoteRef} autoPlay playsInline width="320" />
+                    </div>
+
+                    <div className="flex justify-center gap-2">
+                        <button
+                            className="bg-green-600 text-white px-4 py-2 rounded"
+                            onClick={() =>
+                                startCall("student@13.215.254.255", localRef, remoteRef)
+                            }
+                        >
+                            Gọi
+                        </button>
+                        <button
+                            className="bg-red-600 text-white px-4 py-2 rounded"
+                            onClick={hangUp}
+                        >
+                            Kết thúc
+                        </button>
                     </div>
                 </div>
             )}
         </div>
     );
-};
-
-export default VideoRoom;
+}

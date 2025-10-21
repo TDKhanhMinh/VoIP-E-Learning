@@ -30,6 +30,7 @@ import Assignment from "../pages/Student/Assignment";
 import TeacherManageSubmission from "../pages/Teacher/TeacherManagerSubmission";
 import ManageNotifications from "../pages/Teacher/ManageNotifications";
 import ClassNotification from "../pages/Teacher/ClassNotification";
+import VideoRoom from "../components/VideoRoom";
 
 const publicRoutes = createBrowserRouter([
   {
@@ -56,6 +57,9 @@ const publicRoutes = createBrowserRouter([
       },
       {
         path: "online-test", element: <OnlineTest />
+      },
+      {
+        path: "video-conference", element: <VideoRoom />
       },
     ],
   },

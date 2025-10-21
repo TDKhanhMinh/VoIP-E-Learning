@@ -16,9 +16,12 @@ import submissionRoutes from "./router/submissionRouter.js";
 import attendanceRoutes from "./router/attendanceRouter.js";
 import announcementRoutes from "./router/announcementRouter.js";
 import teachingScheduleRoutes from "./router/teachingScheduleRouter.js";
+import voipRouters from "./router/voipRouter.js";
 
 import driveRoutes from "./router/driveRouter.js";
 import fileRoutes from "./router/fileRouter.js";
+import { initSocket } from "./router/socketRouter.js";
+import http from "http";
 await connectDB();
 
 const app = express();
@@ -56,8 +59,10 @@ app.use("/api/announcement", announcementRoutes);
 app.use("/api/drive", driveRoutes);
 app.use("/api/file", fileRoutes);
 app.use("/api/schedule", teachingScheduleRoutes);
+app.use("/api/voip", voipRouters);
 app.use(errorHandler);
-
+const server = http.createServer(app);
+initSocket(server, allowedOrigins);
 const PORT = process.env.PORT;
 app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
