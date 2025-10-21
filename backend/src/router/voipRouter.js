@@ -9,7 +9,7 @@ router.get("/getCredentials", (req, res) => {
         wsServer: "wss://47.128.237.59:8089/ws",
         domain: "47.128.237.59",
         username: "werrtc-user",
-        password: "Strongpass123",
+        password: "StrongPass123",
     };
     res.json(sipConfig);
 });
