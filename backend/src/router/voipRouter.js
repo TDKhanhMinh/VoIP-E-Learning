@@ -6,7 +6,7 @@ const router = express.Router();
  */
 router.get("/getCredentials", (req, res) => {
     const sipConfig = {
-        wsServer: "ws://47.128.237.59:8089/ws",
+        wsServer: "wss://47.128.237.59:8089/ws",
         domain: "47.128.237.59",
         username: "werrtc-user",
         password: "Strongpass123",
