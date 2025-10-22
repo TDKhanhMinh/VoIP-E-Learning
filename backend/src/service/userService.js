@@ -1,4 +1,5 @@
 import User from "../model/user.js";
+import { syncUserToAsterisk } from './asteriskSyncService';
 
 export const getAllUser = async (role = "") => {
   const query = role ? { role } : {};
@@ -9,6 +10,11 @@ export const getAllUser = async (role = "") => {
 export const createUser = async (data) => {
   await checkUsedEmail(data.email);
   let user = await User.create({ ...data });
+  await syncUserToAsterisk({
+    _id: user._id,
+    email: user.email,
+    passwordPlain: data.password,
+  })
   user = user.toObject();
   delete user.password;
   return user;
