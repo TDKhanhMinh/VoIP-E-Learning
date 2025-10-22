@@ -1,5 +1,5 @@
 import User from "../model/user.js";
-import { syncUserToAsterisk } from './asteriskSyncService';
+import { syncUserToAsterisk } from './asteriskSyncService.js';
 
 export const getAllUser = async (role = "") => {
   const query = role ? { role } : {};
