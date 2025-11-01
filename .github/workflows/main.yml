@@ -1,3 +1,20 @@
+name: Keep Render Awake
+
+on:
+  schedule:
+    - cron: "*/5 * * * *" # Mỗi 10 phút
+  workflow_dispatch: # Cho phép chạy thủ công nếu cần
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render service
+        run: |
+          curl -s https://voip-e-learning.onrender.com/ping > /dev/null
+          echo "Ping sent at $(date)"
+
+---
 name: Build, Test and Deploy VOIP-LMS to Render (FE + BE)
 
 on:
