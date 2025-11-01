@@ -6,6 +6,9 @@ export const authService = {
     localStorage.setItem("token", res.data.token);
     sessionStorage.setItem("userId", JSON.stringify(res.data._id));
     sessionStorage.setItem("name", res.data.full_name);
+    sessionStorage.setItem("role", res.data.role);
+    sessionStorage.setItem("email", email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "_"));
+    sessionStorage.setItem("password", password);
     return res.data;
   },
   logout: () => {

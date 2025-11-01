@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import VideoRoom from "../../components/VideoRoom";
 
 export default function TeacherDashboard() {
   const adminName = sessionStorage.getItem("name") || "Giáo viên";
@@ -25,7 +26,7 @@ export default function TeacherDashboard() {
         </motion.div>
 
 
-
+        <VideoRoom />
       </div>
     </div>
   );

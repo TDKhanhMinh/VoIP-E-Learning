@@ -9,12 +9,19 @@ export const getAllUser = async (role = "") => {
 
 export const createUser = async (data) => {
   await checkUsedEmail(data.email);
+
   let user = await User.create({ ...data });
-  await syncUserToAsterisk({
-    _id: user._id,
-    email: user.email,
-    passwordPlain: data.password,
-  })
+
+  try {
+    await syncUserToAsterisk({
+      _id: user._id,
+      email: user.email,
+      passwordPlain: data.password,
+    });
+  } catch (err) {
+    console.error("Lỗi đồng bộ Asterisk:", err.message);
+  }
+
   user = user.toObject();
   delete user.password;
   return user;
