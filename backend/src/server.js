@@ -1,3 +1,7 @@
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('LỖI UNHANDLED REJECTION:', reason);
+});
+
 import express from "express";
 import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler.js";
