@@ -1,3 +1,6 @@
+process.on('uncaughtException', (err, origin) => {
+  console.error(`LỖI UNCAUGHT EXCEPTION: ${err.message}`, `Origin: ${origin}`);
+});
 process.on('unhandledRejection', (reason, promise) => {
   console.error('LỖI UNHANDLED REJECTION:', reason);
 });
