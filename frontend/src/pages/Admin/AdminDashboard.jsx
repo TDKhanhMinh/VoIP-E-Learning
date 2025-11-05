@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
+import PopupCallReceive from "../../components/PopupCallReceive";
+import MessengerCall from "../../components/MessageCall";
 
 function AdminDashboard() {
     const adminName = "Quản trị viên";
-
+    
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
             <div className="max-w-6xl mx-auto">
@@ -23,9 +25,8 @@ function AdminDashboard() {
                         Hôm nay là {new Date().toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" })}
                     </p>
                 </motion.div>
-
-
-                
+             
+                <PopupCallReceive />
             </div>
         </div>
     );

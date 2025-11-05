@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { enrollmentService } from "../../services/enrollmentService";
 import { useNavigate } from "react-router-dom";
+import MessengerCall from "../../components/MessageCall";
 
 function Home() {
     const [userClass, setUserClass] = useState([]);
     const navigate = useNavigate();
+
     useEffect(() => {
         fetchCourses();
     }, []);
@@ -21,8 +23,9 @@ function Home() {
     };
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+
             {userClass.map((item, index) => (
-                <div onClick={() =>navigate(`/home/class-details/${item?.class?._id.split('"').join('').toString()}`)}
+                <div onClick={() => navigate(`/home/class-details/${item?.class?._id.split('"').join('').toString()}`)}
                     key={index}
                     className="w-full cursor-pointer bg-black rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border hover:border-gray-800 duration-300"
                 >

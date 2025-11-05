@@ -18,13 +18,18 @@ import { authService } from "../services/authService";
 import { userService } from "../services/userService";
 import { LoadingProvider } from "../context/LoadingContext";
 import LoaderOverlay from "../components/LoaderOverlay";
+import MessageCall from "../components/MessageCall";
+
 
 export default function TeacherLayout() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-
+    const targetUser = {
+        email: "trandokhanhminh00@tdtu.edu.vn",
+        name: "Quản trị viên",
+    }
     const handlerLogout = async () => {
         await authService.logout();
         navigate("/", { state: { isLogin: false } });
@@ -231,6 +236,7 @@ export default function TeacherLayout() {
                                 theme="colored"
                             />
                             <LoaderOverlay />
+                            <MessageCall target={targetUser} />
                             <Outlet />
                         </div>
                     </main>

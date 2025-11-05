@@ -12,6 +12,7 @@ import logger from "./middlewares/logger.js";
 import connectDB from "./config/db.js";
 
 import authRoutes from "./router/authRouter.js";
+import voipRoutes from "./router/voipRouter.js";
 import userRoutes from "./router/userRouter.js";
 import semesterRoutes from "./router/semesterRouter.js";
 import courseRoutes from "./router/courseRouter.js";
@@ -23,15 +24,12 @@ import submissionRoutes from "./router/submissionRouter.js";
 import attendanceRoutes from "./router/attendanceRouter.js";
 import announcementRoutes from "./router/announcementRouter.js";
 import teachingScheduleRoutes from "./router/teachingScheduleRouter.js";
-import voipRouters from "./router/voipRouter.js";
 import roomRouters from "./router/roomRouter.js";
 import driveRoutes from "./router/driveRouter.js";
 import fileRoutes from "./router/fileRouter.js";
-import { initSocket } from "./router/socketRouter.js";
 import http from "http";
-import { connectARI } from "./service/ariService.js";
-await connectDB();
 import livekitRouter from "./router/livekitRouter.js";
+await connectDB();
 const app = express();
 const allowedOrigins = ["http://localhost:5173", "https://voip-e-learning-1.onrender.com", "https://meet.livekit.io"];
 
@@ -68,26 +66,17 @@ app.use("/api/announcement", announcementRoutes);
 app.use("/api/drive", driveRoutes);
 app.use("/api/file", fileRoutes);
 app.use("/api/schedule", teachingScheduleRoutes);
-app.use("/api/voip", voipRouters);
 app.use("/api/room", roomRouters);
+app.use("/api/voip", voipRoutes);
 app.use("/api/livekit", livekitRouter);
 
 app.use(errorHandler);
 
 
 const server = http.createServer(app);
-initSocket(server, allowedOrigins);
 const PORT = process.env.PORT;
 server.listen(PORT, async () => {
   console.log(`🚀 Server running on port ${PORT}`);
-
-  // Sau khi server đã chạy, hãy kết nối với Asterisk.
-  try {
-    //await connectARI();
-  } catch (err) {
-    console.error("Không thể khởi động dịch vụ ARI. Server đang tắt.", err.message);
-    process.exit(1); // Tắt server nếu không kết nối được ARI
-  }
 });
 // connectARI();
 // app.listen(PORT, async () => {

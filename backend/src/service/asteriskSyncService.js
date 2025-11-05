@@ -89,5 +89,5 @@ export const syncUserToAsterisk = async (user) => {
 
 
   await connection.end();
-  console.log(`✅ Đồng bộ user ${username} (${userId}) sang Asterisk thành công`);
+  console.log(`Đồng bộ user ${username} (${userId}) sang Asterisk thành công`);
 };

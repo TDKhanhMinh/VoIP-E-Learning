@@ -7,13 +7,9 @@ export const classService = {
     },
     getClassById: async (id) => {
         const res = await http.get(`/class/${id}`);
-        // const res = await http.get("/class");
-        // return res.data.find(item => item._id === id);
         return res.data;
     },
     getClassesByTeacher: async (teacherId) => {
-        // const res = await http.get(`/classes/teacher/${teacherId}`);
-        // return res.data;
         const res = await http.get("/class");
         console.log("data", res.data);
         console.log("teacher ", teacherId.split('"').join(''));

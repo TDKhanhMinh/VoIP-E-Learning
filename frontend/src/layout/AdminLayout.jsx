@@ -17,6 +17,7 @@ import { SiGoogleclassroom } from "react-icons/si";
 import { authService } from "../services/authService";
 import { LoadingProvider } from "../context/LoadingContext";
 import LoaderOverlay from "../components/LoaderOverlay";
+import PopupCallReceive from "../components/PopupCallReceive";
 
 function AdminLayout() {
     const [open, setOpen] = useState(true);
@@ -149,6 +150,7 @@ function AdminLayout() {
                                 theme="colored"
                             />
                             <LoaderOverlay />
+                            <PopupCallReceive />
                             <Outlet />
                         </div>
                     </main>

@@ -1,9 +1,6 @@
 import { generateLivekitToken } from "../service/livekitService.js";
 
-/**
- * Controller: cấp token LiveKit
- * Body: { roomId, identity, name, role }
- */
+
 export const getLivekitToken = async (req, res) => {
     try {
         const { roomId, identity, name, role } = req.body;

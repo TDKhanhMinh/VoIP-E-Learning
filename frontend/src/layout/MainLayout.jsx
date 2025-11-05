@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import { userService } from "../services/userService";
 import { LoadingProvider } from "../context/LoadingContext";
 import LoaderOverlay from "../components/LoaderOverlay";
+import MessageCall from "../components/MessageCall";
 
 
 function MainLayout() {
@@ -17,7 +18,10 @@ function MainLayout() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [userInfo, setUserInfo] = useState();
-
+    const targetUser = {
+        email: "trandokhanhminh00@tdtu.edu.vn",
+        name: "Quản trị viên ",
+    }
     useEffect(() => {
         const fetchUserDetails = async () => {
             setUserInfo(await userService.getUserById(sessionStorage.getItem("userId").split('"').join('').toString()));
@@ -243,23 +247,18 @@ function MainLayout() {
                         <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
                             <LoaderOverlay />
                             <Outlet />
+                            <MessageCall target={targetUser} />
                         </main>
 
 
                         <footer className="bg-white border-t border-gray-200 px-6 py-3">
                             <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-gray-500">
-                                <p>© 2025 E-Learning System TDKMINH. All rights reserved.</p>
-                                <div className="flex gap-4">
-                                    <a href="#" className="hover:text-blue-600 transition-colors">Trợ giúp</a>
-                                    <a href="#" className="hover:text-blue-600 transition-colors">Hướng dẫn</a>
-                                    <a href="#" className="hover:text-blue-600 transition-colors">Liên hệ</a>
-                                </div>
+                                <p>© 2025 E-Learning System. All rights reserved.</p>
+                                
                             </div>
                         </footer>
                     </section>
                 </div>
-
-
                 {showProfileMenu && (
                     <div
                         className="fixed inset-0 z-30"
