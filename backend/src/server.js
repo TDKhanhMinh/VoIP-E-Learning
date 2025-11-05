@@ -31,9 +31,10 @@ import { initSocket } from "./router/socketRouter.js";
 import http from "http";
 import { connectARI } from "./service/ariService.js";
 await connectDB();
-
+import livekitRouter from "./router/livekitRouter.js";
 const app = express();
-const allowedOrigins = ["http://localhost:5173", "https://voip-e-learning-1.onrender.com"];
+const allowedOrigins = ["http://localhost:5173", "https://voip-e-learning-1.onrender.com", "https://meet.livekit.io"];
+
 
 app.use(
   cors({
@@ -69,7 +70,11 @@ app.use("/api/file", fileRoutes);
 app.use("/api/schedule", teachingScheduleRoutes);
 app.use("/api/voip", voipRouters);
 app.use("/api/room", roomRouters);
+app.use("/api/livekit", livekitRouter);
+
 app.use(errorHandler);
+
+
 const server = http.createServer(app);
 initSocket(server, allowedOrigins);
 const PORT = process.env.PORT;
@@ -78,7 +83,7 @@ server.listen(PORT, async () => {
 
   // Sau khi server đã chạy, hãy kết nối với Asterisk.
   try {
-    await connectARI();
+    //await connectARI();
   } catch (err) {
     console.error("Không thể khởi động dịch vụ ARI. Server đang tắt.", err.message);
     process.exit(1); // Tắt server nếu không kết nối được ARI

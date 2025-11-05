@@ -3,6 +3,7 @@ import Course from "../model/course.js";
 import Semester from "../model/semester.js";
 import TeachingSchedule from "../model/teachingSchedule.js";
 import User from "../model/user.js";
+import { createRoom } from "./roomService.js";
 
 export const getAll = async () => {
   const classes = await Class.find().sort({ createdAt: -1 });
@@ -84,6 +85,12 @@ export const createClass = async (data) => {
     schedule: data.schedule,
   });
 
+   await createRoom({
+    classId: newClass._id,
+    teacherId: teacher._id,
+    teacherEmail: teacher.email,
+    teacherName: teacher.name,
+   })
   console.log(`Class created: ${newClass.name}`);
   const shiftTimes = {
     1: { startTime: "06:50", endTime: "09:20" },

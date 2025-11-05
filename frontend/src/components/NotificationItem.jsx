@@ -16,7 +16,7 @@ export default function NotificationItem({ data }) {
     }, [data])
     return (
         <div
-            className={`w-full bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden ${isOpen ? "ring-1 ring-blue-200" : ""
+            className={`w-full bg-white my-2 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden ${isOpen ? "ring-1 ring-blue-200" : ""
                 }`}
         >
 
@@ -42,7 +42,7 @@ export default function NotificationItem({ data }) {
             </div>
 
 
-            <div onClick={() => navigate(`/course/homework/${data.class._id}`)}
+            <div onClick={() => navigate(`/home/class-details/${data.class._id}`)}
                 className={`px-5 pb-4 text-gray-700 text-sm transition-all duration-300 cursor-pointer ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
                     } overflow-hidden`}
             >

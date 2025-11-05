@@ -41,12 +41,7 @@ export const findByStudentId = async (studentId) => {
     .populate("student")
     .sort({ joined_at: -1 });
 
-  if (!enrollments || enrollments.length === 0) {
-    const error = new Error(`No enrollment found for student ${studentId}`);
-    error.statusCode = 404;
-    throw error;
-  }
-
+  
   return enrollments || [];
 };
 export const findById = async (id) => {

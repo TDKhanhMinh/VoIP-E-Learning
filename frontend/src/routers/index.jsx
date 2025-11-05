@@ -31,6 +31,8 @@ import TeacherManageSubmission from "../pages/Teacher/TeacherManagerSubmission";
 import ManageNotifications from "../pages/Teacher/ManageNotifications";
 import ClassNotification from "../pages/Teacher/ClassNotification";
 import VideoRoom from "../components/VideoRoom";
+import OnlineClassroom from "../pages/VoIP/OnlineClassroom";
+import ClassDetails from "../pages/Student/ClassDetails";
 
 const publicRoutes = createBrowserRouter([
   {
@@ -38,6 +40,9 @@ const publicRoutes = createBrowserRouter([
     children: [
       {
         index: true, element: <Login />
+      },
+      {
+        path: "meet-room/:id", element: <OnlineClassroom />
       },
 
     ],
@@ -60,6 +65,9 @@ const publicRoutes = createBrowserRouter([
       },
       {
         path: "video-conference", element: <VideoRoom />
+      },
+      {
+        path: "class-details/:id", element: <ClassDetails />
       },
     ],
   },

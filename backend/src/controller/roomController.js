@@ -1,61 +1,139 @@
-import * as roomService from "../service/roomService.js";
+import {
+    createRoom,
+    getRoomById,
+    findRoomByJoinCode,
+    startRoom,
+    endRoom,
+    addParticipant,
+    removeParticipant,
+    getParticipants,
+} from "../service/roomService.js";
 
-/**
- * 👩‍🏫 Giáo viên tạo buổi học mới
- */
-export const startSession = async (req, res) => {
+
+export const createRoomController = async (req, res) => {
     try {
-        const courseId = req.params.id || "68f4f28d73661f3c8b3c359e";
-        const data = req.body;
-        const teacher = {
-            email: data.email,
-            name: data.username
-        };
+        const { classId, teacherId, teacherEmail, teacherName, roomName } = req.body;
 
-        const room = await roomService.createRoom(courseId, teacher);
+        if (!classId || !teacherId || !roomName) {
+            return res.status(400).json({ error: "Thiếu classId, teacherId hoặc roomName" });
+        }
+
+        const room = await createRoom({ classId, teacherId, teacherEmail, teacherName, roomName });
+
         res.status(201).json({
-            message: "Phòng học đã được tạo thành công!",
+            message: "Phòng học đã được tạo thành công",
             roomId: room._id,
-            bridgeId: room.bridgeId,
             room,
         });
     } catch (err) {
-        console.error("❌ startSession:", err);
+        console.error(" Lỗi tạo phòng:", err.message);
         res.status(500).json({ error: err.message });
     }
 };
 
-/**
- * 👨‍🎓 Học viên tham gia phòng học
- */
-export const joinRoom = async (req, res) => {
+export const getRoomByIdController = async (req, res) => {
     try {
-        console.log(req.data);
-
-        const { id } = req.params;
-        const data = req.body;
-        const user =
-        {
-            email: data.email,
-            name: data.username,
-        };
-
-        const room = await roomService.joinRoom(id, user);
-        res.json({ message: "Đã tham gia phòng học", room });
+        const { roomId } = req.params;
+        const room = await getRoomById(roomId);
+        res.json(room);
     } catch (err) {
-        console.error("joinRoom:", err);
+        res.status(404).json({ error: err.message });
+    }
+};
+
+
+export const joinRoomByCodeController = async (req, res) => {
+    try {
+        const { joinCode } = req.body;
+        if (!joinCode) return res.status(400).json({ error: "Thiếu joinCode" });
+
+        const room = await findRoomByJoinCode(joinCode);
+        res.json(room);
+    } catch (err) {
+        res.status(404).json({ error: err.message });
+    }
+};
+
+
+export const startRoomController = async (req, res) => {
+    try {
+        const { roomId } = req.params;
+        const room = await startRoom(roomId);
+        res.json({
+            message: "Buổi học đã bắt đầu",
+            room,
+        });
+    } catch (err) {
+        console.error("startRoom:", err.message);
         res.status(500).json({ error: err.message });
     }
 };
 
 
-export const endRoom = async (req, res) => {
+export const endRoomController = async (req, res) => {
     try {
-        const { id } = req.params;
-        const room = await roomService.endRoom(id);
-        res.json({ message: "Buổi học đã kết thúc", room });
+        const { roomId } = req.params;
+        const room = await endRoom(roomId);
+        res.json({
+            message: "Buổi học đã kết thúc",
+            room,
+        });
     } catch (err) {
-        console.error("endRoom:", err);
+        console.error("endRoom:", err.message);
         res.status(500).json({ error: err.message });
+    }
+};
+
+
+export const addParticipantController = async (req, res) => {
+    try {
+        const { roomId } = req.params;
+        const { userId, name, email, role } = req.body;
+
+        if (!userId && !email) {
+            return res.status(400).json({ error: "Thiếu thông tin người tham gia" });
+        }
+
+        const participantData = { userId, name, email, role };
+        const room = await addParticipant(roomId, participantData);
+
+        res.json({
+            message: `${name || email} đã tham gia phòng học`,
+            room,
+        });
+    } catch (err) {
+        console.error("Lỗi thêm participant:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+};
+
+export const removeParticipantController = async (req, res) => {
+    try {
+        const { roomId } = req.params;
+        const { userIdOrEmail } = req.body;
+
+        if (!userIdOrEmail) {
+            return res.status(400).json({ error: "Thiếu userId/email" });
+        }
+
+        const room = await removeParticipant(roomId, userIdOrEmail);
+        res.json({
+            message: "Đã cập nhật trạng thái rời phòng",
+            room,
+        });
+    } catch (err) {
+        console.error("removeParticipant:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
+export const getParticipantsController = async (req, res) => {
+    try {
+        const { roomId } = req.params;
+        const participants = await getParticipants(roomId);
+        res.json(participants);
+    } catch (err) {
+        res.status(404).json({ error: err.message });
     }
 };

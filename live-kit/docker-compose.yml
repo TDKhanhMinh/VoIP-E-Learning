@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: livekit-server
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "7880:7880"      # HTTP / WebSocket
+      - "7881:7881"      # API port
+      - "7882:7882/udp"  # Media (WebRTC)
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml
+    command: >
+      --dev
+      --bind 0.0.0.0
+      --config /etc/livekit.yaml

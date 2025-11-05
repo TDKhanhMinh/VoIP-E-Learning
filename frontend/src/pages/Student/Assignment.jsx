@@ -10,7 +10,6 @@ import NotificationItem from "../../components/NotificationItem";
 export default function Assignment() {
     const { id } = useParams();
     const [assignments, setAssignments] = useState([]);
-    const [notifications, setNotifications] = useState([]);
     const [userClass, setUserClass] = useState();
 
 
@@ -18,7 +17,6 @@ export default function Assignment() {
         const fetchAssignment = async () => {
             console.log(await classService.getClassById(id));
             setAssignments(await assignmentService.getAllAssignmentsByClass(id) ?? 0);
-            setNotifications(await announcementService.getAnnouncementByClassId(id));
             setUserClass(await classService.getClassById(id));
             console.log("assignment", await assignmentService.getAllAssignmentsByClass(id));
             console.log("Notification", await announcementService.getAnnouncementByClassId(id));
@@ -32,13 +30,6 @@ export default function Assignment() {
             <div className="h-20 rounded flex items-center ">
                 <h2 className="text-3xl font-semibold">{userClass?.name}</h2>
             </div>
-            {notifications &&
-                <div className="mb-3">
-                    {notifications.map((a) => (
-                        <NotificationItem data={a} />
-                    ))}
-                </div>
-            }
 
             {assignments.length === 0 ? (
                 <div className="text-gray-500 italic border border-red-500 h-10 rounded flex items-center "><span className="mx-2 font-semibold">Chưa có bài tập nào.</span></div>

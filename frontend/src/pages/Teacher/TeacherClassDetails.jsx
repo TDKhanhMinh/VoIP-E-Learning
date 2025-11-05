@@ -7,9 +7,7 @@ import { courseService } from "../../services/courseService";
 import { semesterService } from "../../services/semesterService";
 import { toast } from "react-toastify";
 import { enrollmentService } from "../../services/enrollmentService";
-import AddStudentsModal from "../../components/AddStudentModal";
 import { useNavigate } from "react-router-dom";
-import ConfirmDialog from "../../components/ConfirmDialog";
 import Pagination from "../../components/Pagination";
 export default function TeacherClassDetails() {
   const { id } = useParams();
@@ -196,7 +194,13 @@ export default function TeacherClassDetails() {
         </div>
 
         <div className="p-4 pb-6">
-          <div className="grid grid-cols-4 gap-6">
+          <div className="grid grid-cols-5 gap-6">
+            <Link
+              to={`/meet-room/${id}`}
+              className="p-4 bg-white shadow rounded hover:bg-gray-100"
+            >
+              Phòng học Online
+            </Link>
             <Link
               to={`/teacher/class-details/${id}/assignments`}
               className="p-4 bg-white shadow rounded hover:bg-gray-100"
@@ -339,8 +343,6 @@ export default function TeacherClassDetails() {
           </div>
         </div>
       </div>
-
-
     </div>
   );
 

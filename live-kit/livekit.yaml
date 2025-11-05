@@ -1,0 +1,11 @@
+keys:
+  devkey: secret123
+
+rtc:
+  udp_port: 7882
+  use_external_ip: false
+
+port: 7880
+
+logging:
+  level: debug
