@@ -18,9 +18,10 @@ export function useWebCall({ sipId, sipPassword, displayName }) {
         },
         onStateChange: ({ registered: r, sessionState }) => {
             if (typeof r === "boolean") setRegistered(r);
-            if (sessionState === 1) setMode("calling");     // Establishing
-            if (sessionState === 2) setMode("in-call");     // Established
-            if (sessionState === 3) setMode("idle");        // Terminated
+            if (sessionState === "calling") setMode("calling");
+            if (sessionState === "in-call") setMode("in-call");
+            if (sessionState === "idle") setMode("idle");
+
         },
     }), [sipId, sipPassword, displayName]);
 

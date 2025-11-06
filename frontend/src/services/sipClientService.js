@@ -16,9 +16,10 @@ const iceServers = [
             "turns:webrtc.voipelearning.shop:5349"
         ],
         username: "any",
-        credential: "d7e119f6ac4b5b2f4637abafb563a3c13c5e3c42e987133ec75c2a8f7d85d49f"
+        credential: "31a2313d897a7ca91b21486dac0c3184f7e3a673cacbe465b57687668fd8af43"
     }
 ];
+
 
 export class SipClient {
     constructor({ sipId, sipPassword, displayName, onIncoming, onStateChange }) {
@@ -125,31 +126,35 @@ export class SipClient {
         this.currentSession = session;
 
         session.stateChange.addListener((state) => {
-            this.onStateChange?.({ sessionState: state });
+            switch (state) {
+                case SessionState.Establishing:
+                    this.onStateChange?.({ sessionState: "calling" });
+                    break;
 
-            if (state === SessionState.Establishing) {
-                // đang đổ chuông / thiết lập
-            }
-            if (state === SessionState.Established) {
-                const sdh = session.sessionDescriptionHandler;
-                const pc = sdh?.peerConnection;
-                if (pc) {
-                    const remoteStream = new MediaStream();
-                    pc.getReceivers().forEach((r) => {
-                        if (r.track && r.track.kind === "audio") remoteStream.addTrack(r.track);
-                    });
-                    if (this._audioEl) {
-                        this._audioEl.srcObject = remoteStream;
-                        this._audioEl.play().catch(() => { });
+                case SessionState.Established: {
+                    this.onStateChange?.({ sessionState: "in-call" });
+                    const sdh = session.sessionDescriptionHandler;
+                    const pc = sdh?.peerConnection;
+                    if (pc) {
+                        const remoteStream = new MediaStream();
+                        pc.getReceivers().forEach((r) => {
+                            if (r.track?.kind === "audio") remoteStream.addTrack(r.track);
+                        });
+                        if (this._audioEl) {
+                            this._audioEl.srcObject = remoteStream;
+                            this._audioEl.play().catch(() => { });
+                        }
                     }
+                    break;
                 }
-            }
-            if (state === SessionState.Terminated) {
-                if (this._audioEl) {
-                    this._audioEl.srcObject = null;
-                }
-                this.currentSession = null;
+
+                case SessionState.Terminated:
+                    this.onStateChange?.({ sessionState: "idle" });
+                    if (this._audioEl) this._audioEl.srcObject = null;
+                    this.currentSession = null;
+                    break;
             }
         });
     }
+
 }
