@@ -154,7 +154,6 @@ export class SipClient {
                     this.currentSession = null;
                     break;
             }
-        });
+        });      
     }
-
 }

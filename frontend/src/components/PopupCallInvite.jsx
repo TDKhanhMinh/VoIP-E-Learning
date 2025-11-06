@@ -69,15 +69,15 @@ export default function PopupCallInvite({
             <div className="px-5 py-4 bg-gray-50 border-t border-gray-100 flex items-center gap-3 justify-end">
                 {mode === "incoming" && (
                     <>
-                        <button 
-                            onClick={onReject} 
+                        <button
+                            onClick={onReject}
                             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium text-gray-700 shadow-sm"
                         >
                             <PhoneOff className="w-4 h-4" />
                             Từ chối
                         </button>
-                        <button 
-                            onClick={onAccept} 
+                        <button
+                            onClick={onAccept}
                             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 transition-all duration-200 text-white font-medium shadow-lg shadow-green-600/30"
                         >
                             <Phone className="w-4 h-4" />
@@ -86,8 +86,8 @@ export default function PopupCallInvite({
                     </>
                 )}
                 {mode === "calling" && (
-                    <button 
-                        onClick={onHangup} 
+                    <button
+                        onClick={onHangup}
                         className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 transition-all duration-200 text-white font-medium shadow-lg shadow-red-600/30"
                     >
                         <PhoneOff className="w-4 h-4" />
@@ -95,17 +95,19 @@ export default function PopupCallInvite({
                     </button>
                 )}
                 {mode === "in-call" && (
-                    <button 
-                        onClick={onHangup} 
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 transition-all duration-200 text-white font-medium shadow-lg shadow-red-600/30"
-                    >
-                        <PhoneOff className="w-4 h-4" />
-                        Kết thúc
-                    </button>
+                    <>
+                        <button button
+                            onClick={onHangup}
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 transition-all duration-200 text-white font-medium shadow-lg shadow-red-600/30"
+                        >
+                            <PhoneOff className="w-4 h-4" />
+                            Kết thúc
+                        </button>
+                    </>
                 )}
                 {mode === "idle" && (
-                    <button 
-                        onClick={onClose} 
+                    <button
+                        onClick={onClose}
                         className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium text-gray-700 shadow-sm"
                     >
                         <X className="w-4 h-4" />
@@ -113,6 +115,6 @@ export default function PopupCallInvite({
                     </button>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

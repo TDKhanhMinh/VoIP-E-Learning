@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import PopupCallReceive from "../../components/PopupCallReceive";
 
 
 function AdminDashboard() {
@@ -26,7 +25,6 @@ function AdminDashboard() {
                     </p>
                 </motion.div>
              
-                <PopupCallReceive />
             </div>
         </div>
     );
