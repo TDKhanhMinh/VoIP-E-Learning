@@ -8,7 +8,7 @@ export const getSipCredentials = async (userId) => {
     }
 
     const sipId = user.email.split("@")[0];
-    const sipPassword = user.password;
+    const sipPassword = user.sipPassword;
 
     if (!sipPassword) {
         throw new Error("User chưa được đồng bộ sang Asterisk (thiếu sipPassword)");

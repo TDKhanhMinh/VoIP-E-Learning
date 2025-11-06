@@ -67,9 +67,9 @@ export default function ClassDetail() {
     const handlerAddStudents = async (enrollmentData) => {
         try {
             const data = await enrollmentService.createEnrollment(enrollmentData);
+            fetchClassDetails();
             toast.success("Thêm sinh viên vào lớp thành công");
             console.log("Student added", data);
-            fetchClassDetails();
         } catch (error) {
             toast.error(error?.response?.data?.message || "Lỗi khi thêm sinh viên vào lớp");
             console.error("Error adding students to class:", error);
@@ -317,7 +317,7 @@ export default function ClassDetail() {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <span className="font-mono text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded-lg">
-                                                        {s.student_id || "—"}
+                                                        {s.student?.email.split("@")[0] || "—"}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-sm text-gray-600">

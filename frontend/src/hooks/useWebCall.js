@@ -1,10 +1,9 @@
-// src/voip/useWebCall.js
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SipClient } from "../services/sipClientService";
 
 export function useWebCall({ sipId, sipPassword, displayName }) {
     const [registered, setRegistered] = useState(false);
-    const [mode, setMode] = useState("idle"); // idle | calling | incoming | in-call
+    const [mode, setMode] = useState("idle");
     const [callee, setCallee] = useState(null);
     const [caller, setCaller] = useState(null);
     const audioRef = useRef();
@@ -29,7 +28,6 @@ export function useWebCall({ sipId, sipPassword, displayName }) {
         client.setAudioElement(audioRef.current);
         client.start();
         return () => client.stop();
-        // eslint-disable-next-line
     }, [client]);
 
     const startCall = async (targetSipId, label) => {

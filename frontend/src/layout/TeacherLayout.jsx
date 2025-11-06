@@ -27,7 +27,7 @@ export default function TeacherLayout() {
     const navigate = useNavigate();
     const location = useLocation();
     const targetUser = {
-        email: "trandokhanhminh00@tdtu.edu.vn",
+        email: "50000000@tdtu.edu.vn",
         name: "Quản trị viên",
     }
     const handlerLogout = async () => {

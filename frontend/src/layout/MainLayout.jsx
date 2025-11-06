@@ -19,7 +19,7 @@ function MainLayout() {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [userInfo, setUserInfo] = useState();
     const targetUser = {
-        email: "trandokhanhminh00@tdtu.edu.vn",
+        email: "50000000@tdtu.edu.vn",
         name: "Quản trị viên ",
     }
     useEffect(() => {

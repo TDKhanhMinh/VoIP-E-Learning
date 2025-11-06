@@ -18,13 +18,17 @@ import { authService } from "../services/authService";
 import { LoadingProvider } from "../context/LoadingContext";
 import LoaderOverlay from "../components/LoaderOverlay";
 import PopupCallReceive from "../components/PopupCallReceive";
+import MessageCall from "../components/MessageCall";
 
 function AdminLayout() {
     const [open, setOpen] = useState(true);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-
+    const targetUser = {
+        email: "50000000@tdtu.edu.vn",
+        name: "Quản trị viên ",
+    }
     const handlerLogout = async () => {
         await authService.logout();
         navigate("/", { state: { isLogin: false } });
@@ -150,6 +154,7 @@ function AdminLayout() {
                                 theme="colored"
                             />
                             <LoaderOverlay />
+                            <MessageCall target={targetUser} />
                             <PopupCallReceive />
                             <Outlet />
                         </div>

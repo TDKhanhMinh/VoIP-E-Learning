@@ -33,6 +33,7 @@ export const generateAppToken = async (data) => {
     _id: user._id,
     full_name: user.full_name,
     email: user.email,
+
     token: generateToken(user._id, user.email, user.role),
   };
 };
@@ -45,6 +46,7 @@ export const login = async (email, password) => {
       full_name: user.full_name,
       email: user.email,
       role: user.role,
+      sipPassword: user.sipPassword,
       token: generateToken(user._id),
     };
   } else {

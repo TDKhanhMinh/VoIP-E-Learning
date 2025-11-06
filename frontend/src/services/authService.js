@@ -8,7 +8,6 @@ export const authService = {
     sessionStorage.setItem("name", res.data.full_name);
     sessionStorage.setItem("role", res.data.role);
     sessionStorage.setItem("email", email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "_"));
-    sessionStorage.setItem("password", password);
     return res.data;
   },
   logout: () => {
