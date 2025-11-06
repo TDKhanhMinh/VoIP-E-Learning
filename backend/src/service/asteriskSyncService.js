@@ -13,7 +13,7 @@ export const syncUserToAsterisk = async (user) => {
   const username = userId;
   const plainPassword = user.passwordPlain; 
 
-  console.log(`🔄 Syncing user ${username} to Asterisk...`);
+  console.log(`Syncing user ${username} to Asterisk...`);
 
   await connection.query(
     `
@@ -71,7 +71,7 @@ export const syncUserToAsterisk = async (user) => {
   )
   VALUES (
     ?, 'transport-wss', ?, ?, 'from-internal',
-    'all', 'ulaw,alaw,opus',
+    'all', 'opus',
     'no', 'yes', 'yes', 'rfc4733',
     'yes', 'yes', 'dtls',
     'yes', 'yes', 'yes', 'no', 'yes', 'no', ?

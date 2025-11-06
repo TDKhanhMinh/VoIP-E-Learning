@@ -7,6 +7,18 @@ let incomingCallHandler = null;
 export const setIncomingCallHandler = (handler) => {
     incomingCallHandler = handler;
 };
+const iceServers = [
+    { urls: "stun:stun.l.google.com:19302" },
+    {
+        urls: [
+            "turn:webrtc.voipelearning.shop:3478?transport=udp",
+            "turn:webrtc.voipelearning.shop:3478?transport=tcp",
+            "turns:webrtc.voipelearning.shop:5349"
+        ],
+        username: "any",
+        credential: "d7e119f6ac4b5b2f4637abafb563a3c13c5e3c42e987133ec75c2a8f7d85d49f"
+    }
+];
 
 export class SipClient {
     constructor({ sipId, sipPassword, displayName, onIncoming, onStateChange }) {
@@ -37,9 +49,7 @@ export class SipClient {
             },
             sessionDescriptionHandlerFactoryOptions: {
                 peerConnectionConfiguration: {
-                    iceServers: [
-                        { urls: "stun:stun.l.google.com:19302" },
-                    ],
+                    iceServers: iceServers,
                 },
             },
         };
