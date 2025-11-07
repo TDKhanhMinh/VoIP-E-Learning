@@ -296,6 +296,7 @@ export default function ManageSubmissions() {
                           <a
                             href={s.file_url}
                             download
+                            
                             className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium group"
                           >
                             <FaDownload className="group-hover:animate-bounce" />
