@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { teachingScheduleService } from "../../services/teachingScheduleService";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { toLocalTime } from "../../utils/localTime";
+import { toast } from 'react-toastify';
+import formatDate from './../../utils/formatDate';
+import ConfirmDialog from "../../components/ConfirmDialog";
 
 const periods = {
   1: { start: "06:50:00", end: "09:20:00", label: "Ca 1", color: "#3b82f6" },
@@ -18,6 +21,9 @@ export default function TeacherSchedule() {
   const navigate = useNavigate();
   const teacherID = sessionStorage.getItem("userId")?.replace(/"/g, "");
   const [events, setEvents] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEventInfo, setSelectedEventInfo] = useState(null);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   useEffect(() => {
     if (teacherID) fetchTeacherSchedule();
@@ -35,24 +41,41 @@ export default function TeacherSchedule() {
             p.end === s.endTime ||
             s.startTime.includes(p.start.slice(0, 5))
         );
-        const color = shift?.color || "#64748b";
-        const localDate = toLocalTime(s.date);
-        console.log(
-          "UTC:", s.date,
-          "Local converted:", localDate,
-        );
+        let shiftNumber = null;
 
+        const foundEntry = Object.entries(periods).find(([key, period]) => {
+          return (
+            period.start === s.startTime ||
+            s.startTime.includes(period.start.slice(0, 5))
+          );
+        });
+
+        if (foundEntry) {
+          shiftNumber = foundEntry[0];
+        }
+        const localDate = toLocalTime(s.date);
+        let eventColor = shift?.color || "#64748b";
+        let eventTitle = `${s.class?.name || "Lớp học"} (${shift?.label || "Ca ?"
+          })`;
+
+        if (s.status === "ABSENT") {
+          eventColor = "#9ca3af";
+          eventTitle = `[GV BÁO VẮNG] ${eventTitle}`;
+        }
         return {
           id: s._id || `schedule-${index}`,
-          title: `${s.class?.name || "Lớp học"} (${shift?.label || "Ca ?"})`,
+          title: eventTitle,
           start: `${localDate}T${s.startTime}`,
           end: `${localDate}T${s.endTime}`,
           extendedProps: {
             classId: s.class?._id,
             courseName: s.class?.course?.title,
             period: shift?.label,
+            rawDate: s.date,
+            status: s.status,
+            shift: shiftNumber,
           },
-          color,
+          color: eventColor,
         };
       });
       setEvents(mapped);
@@ -62,10 +85,37 @@ export default function TeacherSchedule() {
   };
 
   const handleEventClick = (info) => {
-    const { classId } = info.event.extendedProps;
-    navigate(`/teacher/class-details/${classId}`);
+    info.jsEvent.preventDefault();
+    setSelectedEventInfo({
+      ...info.event.extendedProps,
+      startStr: info.event.startStr,
+      endStr: info.event.endStr,
+    });
+    setIsModalOpen(true);
+  };
+  const handleDelete = async () => {
+    if (!selectedEventInfo) return;
+    try {
+      const { shift, rawDate } = selectedEventInfo;
+      await teachingScheduleService.makeAbsentByTeacherId(teacherID, shift, rawDate);
+      toast.success("Báo vắng thành công!");
+      setIsModalOpen(false);
+      fetchTeacherSchedule();
+    } catch (error) {
+      console.error("Lỗi khi báo vắng:", error);
+      toast.error(error.response?.data?.message || "Đã có lỗi xảy ra.");
+    }
+  };
+  const handleConfirmAbsence = async () => {
+    if (!selectedEventInfo) return;
+    setOpenConfirmModal(true);
+    setIsModalOpen(false);
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEventInfo(null);
+  };
   return (
     <div className="p-6 min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="flex items-center gap-3 mb-6">
@@ -115,6 +165,74 @@ export default function TeacherSchedule() {
           }}
         />
       </div>
+      {isModalOpen && selectedEventInfo && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={handleCloseModal}
+        >
+          <div
+            className="relative z-[51] w-11/12 max-w-lg rounded-xl bg-white p-6 shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="mb-4 text-2xl font-bold text-gray-800">
+              Chi tiết Buổi học
+            </h3>
+            <div className="modal-body">
+              <p className="mb-2 text-base text-gray-600">
+                <strong>Lớp:</strong> {selectedEventInfo.courseName}
+              </p>
+              <p className="mb-2 text-base text-gray-600">
+                <strong>Ca học: </strong>Ca {selectedEventInfo.shift}
+              </p>
+              <p className="mb-2 text-base text-gray-600">
+                <strong>Ngày:</strong>{" "}
+                {formatDate(selectedEventInfo.rawDate)}
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-end space-x-3">
+              <button
+                type="button"
+                className="cursor-pointer rounded-lg px-4 py-2 font-semibold text-gray-700 transition hover:bg-gray-200"
+                onClick={handleCloseModal}
+              >
+                Đóng
+              </button>
+              <button
+                type="button"
+                className="cursor-pointer rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white transition hover:bg-blue-600"
+                onClick={() => navigate(`/teacher/class-details/${selectedEventInfo.classId}`)}
+              >
+                Xem chi tiết lớp
+              </button>
+              {
+                selectedEventInfo.status !== "ABSENT" && <button
+                  type="button"
+                  className="cursor-pointer rounded-lg bg-red-500 px-4 py-2 font-semibold text-white transition hover:bg-red-600"
+                  onClick={handleConfirmAbsence}
+                >
+                  Báo vắng buổi học này
+                </button>
+              }
+            </div>
+
+          </div>
+        </div>
+      )}
+      <ConfirmDialog
+        isOpen={openConfirmModal}
+        title="Xác nhận xóa thông báo"
+        message={`Bạn có chắc chắn muốn báo vắng buổi học này không? Hành động này không thể hoàn tác.Lớp: ${selectedEventInfo?.courseName}\n
+          Ca: ${selectedEventInfo?.shift}\n 
+          Ngày: ${new Date(selectedEventInfo?.rawDate).toLocaleDateString("vi-VN")}`}
+        onCancel={() => setOpenConfirmModal(false)}
+        onConfirm={() => {
+          handleDelete();
+          setOpenConfirmModal(false);
+        }}
+        btnDelete="Xác nhận"
+        btnCancel="Hủy"
+      />
     </div>
   );
 }

@@ -14,6 +14,10 @@ export const teachingScheduleService = {
     getScheduleByClassId: async (id) => {
         const res = await http.get(`/schedule/class/${id}`);
         return res.data;
-    }
+    },
+    makeAbsentByTeacherId: async (id, shift, rawDate) => {
+        const res = await http.post(`/schedule/teacher/${id}/report-absence`, { shift, rawDate });
+        return res.data;
+    },
 
 }

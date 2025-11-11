@@ -85,12 +85,12 @@ export const createClass = async (data) => {
     schedule: data.schedule,
   });
 
-   await createRoom({
+  await createRoom({
     classId: newClass._id,
     teacherId: teacher._id,
     teacherEmail: teacher.email,
     teacherName: teacher.name,
-   })
+  })
   console.log(`Class created: ${newClass.name}`);
   const shiftTimes = {
     1: { startTime: "06:50", endTime: "09:20" },
@@ -113,6 +113,7 @@ export const createClass = async (data) => {
         date: new Date(current),
         startTime,
         endTime,
+        status: "SCHEDULED",
       });
     }
     current.setDate(current.getDate() + 1);
