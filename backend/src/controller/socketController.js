@@ -1,4 +1,3 @@
-// /socket/socketController.js
 import { socketService } from "../service/socketService.js";
 
 export const socketController = (io, socket) => {
@@ -12,6 +11,5 @@ export const socketController = (io, socket) => {
     socket.on("offer", (data) => socketService.sendOffer(io, data));
     socket.on("answer", (data) => socketService.sendAnswer(io, data));
     socket.on("candidate", (data) => socketService.sendCandidate(io, data));
-
     socket.on("disconnect", () => socketService.removeUser(io, socket.id));
 };

@@ -8,7 +8,6 @@ export const commentService = {
     getComments: async (class_id, { page, limit }) => {
         const res = await http.get(`comment/${class_id}`, { params: { page, limit } });
         console.log(res.data);
-
         return res.data;
     },
 };

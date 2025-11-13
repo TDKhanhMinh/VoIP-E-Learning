@@ -32,6 +32,7 @@ import ManageNotifications from "../pages/Teacher/ManageNotifications";
 import ClassNotification from "../pages/Teacher/ClassNotification";
 import OnlineClassroom from "../pages/VoIP/OnlineClassroom";
 import ClassDetails from "../pages/Student/ClassDetails";
+import ManageChats from "../pages/Admin/ManageChats";
 
 const publicRoutes = createBrowserRouter([
   {
@@ -85,6 +86,9 @@ const publicRoutes = createBrowserRouter([
       },
       {
         path: "users", element: <ManageUsers />
+      },
+      {
+        path: "chats", element: <ManageChats />
       },
       {
         path: "classes/class-details/:id", element: <ClassDetail />

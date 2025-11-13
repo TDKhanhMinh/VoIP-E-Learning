@@ -9,6 +9,7 @@ import {
     FaChevronLeft,
     FaSearch,
 } from "react-icons/fa";
+import { MdOutlineChatBubbleOutline } from "react-icons/md";
 import { MdOutlineLibraryBooks } from "react-icons/md";
 import { FaRegClock } from "react-icons/fa6";
 import { CiLogout } from "react-icons/ci";
@@ -39,6 +40,7 @@ function AdminLayout() {
         { path: "/admin/courses", icon: MdOutlineLibraryBooks, label: "Môn học" },
         { path: "/admin/classes", icon: SiGoogleclassroom, label: "Lớp học" },
         { path: "/admin/users", icon: FaUsers, label: "Người dùng" },
+        { path: "/admin/chats", icon: MdOutlineChatBubbleOutline, label: "Hỗ trợ" },
     ];
 
     const isActive = (path, exact = false) => {

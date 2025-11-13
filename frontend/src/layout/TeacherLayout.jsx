@@ -19,6 +19,7 @@ import { userService } from "../services/userService";
 import { LoadingProvider } from "../context/LoadingContext";
 import LoaderOverlay from "../components/LoaderOverlay";
 import MessageCall from "../components/MessageCall";
+import ChatWithAdmin from './../components/ChatWithAdmin';
 
 
 export default function TeacherLayout() {
@@ -237,6 +238,7 @@ export default function TeacherLayout() {
                             />
                             <LoaderOverlay />
                             <MessageCall target={targetUser} />
+                            <ChatWithAdmin />
                             <Outlet />
                         </div>
                     </main>

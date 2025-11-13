@@ -1,16 +1,4 @@
-// import jwt from "jsonwebtoken";
 
-// export default function discussionSocket(io) {
-//     io.on("connection", (socket) => {
-//         const { token, room } = socket.handshake.query;
-//         try {
-//             jwt.verify(token, process.env.JWT_SECRET);
-//             socket.join(room);
-//         } catch (err) {
-//             socket.disconnect();
-//         }
-//     });
-// }
 import jwt from "jsonwebtoken";
 
 export default function discussionSocket(io) {

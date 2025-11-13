@@ -38,16 +38,16 @@ export default function AssignmentItem({
     setSubmission(submissionData);
     if (submissionData.find(s => s.assignment?._id === assignmentId)) setIsSubmitted(true)
   };
-  const handleDownload = async () => {
-    const url = submission.find(s => s.assignment?._id === assignmentId).file_url;
-    // const a = document.createElement("a");
-    // a.href = url;
-    // a.download = submission.file_name || "file.zip";
-    // a.target = "_blank";
-    // a.click();
-    const downloadLink = await uploadService.downloadUrl(url);
-    window.open(downloadLink, "_blank");
-  };
+  // const handleDownload = async () => {
+  //   const url = submission.find(s => s.assignment?._id === assignmentId).file_url;
+  //   // const a = document.createElement("a");
+  //   // a.href = url;
+  //   // a.download = submission.file_name || "file.zip";
+  //   // a.target = "_blank";
+  //   // a.click();
+  //   const downloadLink = await uploadService.downloadUrl(url);
+  //   window.open(downloadLink, "_blank");
+  // };
   const handlerSubmit = async (data, setProgress) => {
     try {
       setOpen(true)
