@@ -1,4 +1,10 @@
 import TeachingSchedule from "../model/teachingSchedule.js";
+import User from "../model/user.js";
+import * as enrolledService from "../service/classStudentService.js"
+import * as emailService from "../service/emailService.js"
+import * as classService from "../service/classService.js"
+import { createClassCancellationHtml } from "../utils/emailTemplete.js";
+import { formatVietnameseDate } from "../utils/formatVietnameseDate.js";
 
 export const getSchedulesByTeacher = async (teacherId) => {
     if (!teacherId) {
@@ -64,7 +70,7 @@ const shiftTimes = {
     4: { startTime: "15:25", endTime: "17:55" },
 };
 
-export const markAbsence = async (teacherId, targetDate, shift) => {
+export const markAbsence = async (teacherId, targetDate, shift, classId) => {
     if (!shiftTimes[shift]) {
         const error = new Error("Ca học không hợp lệ.");
         error.statusCode = 400;
@@ -78,7 +84,6 @@ export const markAbsence = async (teacherId, targetDate, shift) => {
 
     const endOfDay = new Date(targetDate);
     endOfDay.setHours(23, 59, 59, 999);
-    
 
 
     const updatedSchedule = await TeachingSchedule.findOneAndUpdate(
@@ -93,13 +98,64 @@ export const markAbsence = async (teacherId, targetDate, shift) => {
         },
         {
             $set: {
-                status: "ABSENT", 
+                status: "ABSENT",
             },
         },
         {
-            new: true, 
+            new: true,
         }
     );
+    const [teacher, classDetails, studentEnrolled] = await Promise.all([
+        User.findById(teacherId),
+        classService.findById(classId),
+        enrolledService.getClassStudents(classId)
+    ]);
+    if (!teacher) {
+        throw new Error("Không tìm thấy giáo viên.");
+    }
+    if (!classDetails) {
+        throw new Error("Không tìm thấy lớp học.");
+    }
+    if (!studentEnrolled || studentEnrolled.length === 0) {
+        throw new Error("Không tìm thấy giáo viên.");
+    }
+    if (!classDetails) {
+        throw new Error("Không tìm thấy lớp học.");
+    }
+    if (!studentEnrolled || studentEnrolled.length === 0) {
+        console.log("Lớp không có sinh viên nào.");
+        return;
+    }
+    const validStudents = studentEnrolled.filter(doc => doc && doc.student && doc.student.email);
+
+    if (validStudents.length === 0) {
+        console.log("Không tìm thấy sinh viên nào có email hợp lệ.");
+        return;
+    }
+
+
+    const htmlData = {
+        className: classDetails.name,
+        absenceDate: targetDate,
+        classTime: `Ca ${shift}`,
+        lecturerName: teacher.full_name,
+    };
+    const htmlContent = createClassCancellationHtml(htmlData);
+    const subject = `[THÔNG BÁO] Nghỉ học môn ${classDetails.name} - Ngày ${formatVietnameseDate(targetDate)}`;
+    const content = ``;
+
+    const emailPromises = validStudents.map(doc => {
+        return emailService.sendEmail(
+            doc.student.email,
+            subject,
+            htmlContent,
+            teacher.full_name,
+            content
+        );
+    });
+
+    await Promise.all(emailPromises);
+
 
     if (!updatedSchedule) {
         const error = new Error(
@@ -108,6 +164,7 @@ export const markAbsence = async (teacherId, targetDate, shift) => {
         error.statusCode = 404;
         throw error;
     }
+
 
     console.log(`Đã báo vắng cho buổi học: ${updatedSchedule._id}`);
     return updatedSchedule;

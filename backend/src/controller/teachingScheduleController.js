@@ -21,12 +21,12 @@ export const findByClassId = asyncHandler(async (req, res) => {
 export const handleReportAbsence = async (req, res, next) => {
     try {
         const teacherId = req.params.id;
-        const { shift, rawDate } = req.body;
+        const { shift, rawDate, classId } = req.body;
         if (!shift) {
             return res.status(400).json({ message: "Vui lòng cung cấp ca học." });
         }
         const targetDate = new Date(rawDate);
-        const updatedSchedule = await service.markAbsence(teacherId, targetDate, Number(shift));
+        const updatedSchedule = await service.markAbsence(teacherId, targetDate, Number(shift), classId);
         res.status(200).json({
             message: "Báo vắng thành công!",
             schedule: updatedSchedule,

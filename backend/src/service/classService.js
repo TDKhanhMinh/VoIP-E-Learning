@@ -214,7 +214,7 @@ export const updateClass = async (id, data) => {
     updates.schedule || updates.semester || updates.teacher;
 
   if (needToRegenerate) {
-    console.log("🔁 Regenerating teaching schedule...");
+    console.log("Regenerating teaching schedule...");
 
     const targetSemester =
       semester || (await Semester.findById(updatedClass.semester));

@@ -96,8 +96,8 @@ export default function TeacherSchedule() {
   const handleDelete = async () => {
     if (!selectedEventInfo) return;
     try {
-      const { shift, rawDate } = selectedEventInfo;
-      await teachingScheduleService.makeAbsentByTeacherId(teacherID, shift, rawDate);
+      const { shift, rawDate, classId } = selectedEventInfo;
+      await teachingScheduleService.makeAbsentByTeacherId(teacherID, shift, rawDate, classId);
       toast.success("Báo vắng thành công!");
       setIsModalOpen(false);
       fetchTeacherSchedule();
