@@ -1,10 +1,3 @@
-process.on("uncaughtException", (err, origin) => {
-  console.error(`LỖI UNCAUGHT EXCEPTION: ${err.message}`, `Origin: ${origin}`);
-});
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("LỖI UNHANDLED REJECTION:", reason);
-});
-
 import express from "express";
 import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler.js";
@@ -34,15 +27,18 @@ import teachingScheduleRoutes from "./router/teachingScheduleRouter.js";
 import roomRouters from "./router/roomRouter.js";
 import driveRoutes from "./router/driveRouter.js";
 import fileRoutes from "./router/fileRouter.js";
+import postRoutes from "./router/postRouter.js";
+import commentRoutes from "./router/commentRouter.js";
+import chatRoutes from "./router/chatRouter.js";
 import http from "http";
 import livekitRouter from "./router/livekitRouter.js";
+import { Server } from "socket.io";
+import discussionSocket from "./sockets/discussionSocket.js";
+import chatSocket from "./sockets/chatSocket.js";
 await connectDB();
 const app = express();
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://voip-e-learning-1.onrender.com",
-  "https://meet.livekit.io",
-];
+const allowedOrigins = ["http://localhost:5173", "https://voip-e-learning-1.onrender.com", "https://meet.livekit.io", "http://localhost:5000"];
+
 
 app.use(
   cors({
@@ -84,6 +80,9 @@ app.use("/api/schedule", teachingScheduleRoutes);
 app.use("/api/room", roomRouters);
 app.use("/api/voip", voipRoutes);
 app.use("/api/livekit", livekitRouter);
+app.use("/api/post", postRoutes);
+app.use("/api/comment", commentRoutes);
+app.use("/api/chat", chatRoutes);
 
 initOnlineTestCron();
 submitTestSession();
@@ -91,10 +90,19 @@ app.use(errorHandler);
 
 const server = http.createServer(app);
 const PORT = process.env.PORT;
+export const io = new Server(server, {
+  allowEIO4: true,
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+const chatNsp = io.of("/chat");
+chatSocket(chatNsp);
+discussionSocket(io);
 server.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
 });
-// connectARI();
-// app.listen(PORT, async () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
+

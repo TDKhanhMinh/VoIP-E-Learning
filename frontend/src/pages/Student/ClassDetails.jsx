@@ -4,28 +4,47 @@ import { classService } from "../../services/classService";
 import { BsCameraVideo } from "react-icons/bs";
 import { announcementService } from "../../services/announcementService";
 import NotificationItem from "../../components/NotificationItem";
+import CreatePostModal from "../../components/PostModal";
+import { postService } from "../../services/postService";
+import { io } from "socket.io-client";
+import PostItem from "../../components/PostItems";
 export default function ClassDetails() {
     const { id } = useParams();
     const [classInfo, setClassInfo] = useState(null);
     const [notifications, setNotifications] = useState([]);
-
+    const [openModal, setOpenModal] = useState(false);
+    const [posts, setPosts] = useState([]);
+    const user = {
+        author_id: sessionStorage.getItem("userId").split('"').join('').toString(),
+        author_name: sessionStorage.getItem("name"),
+        token: localStorage.getItem("token"),
+    }
+    const socket = io(import.meta.env.VITE_API_URL, {
+        query: { token: user.token, room: id }
+    });
     const navigate = useNavigate();
     useEffect(() => {
         loadClassDetail();
-    }, []);
+        const fetchPosts = async () => {
+            setPosts(await postService.getPosts(id));
+        };
+        socket.on("new_post", (post) => {
+            setPosts(prev => [post, ...prev]);
+        });
+        fetchPosts();
+    }, [id, socket]);
 
     const loadClassDetail = async () => {
         try {
             setNotifications(await announcementService.getAnnouncementByClassId(id));
             console.log("Notifications ", await announcementService.getAnnouncementByClassId(id));
-
             setClassInfo(await classService.getClassById(id));
         } catch (err) {
             console.log(err);
         }
     };
 
-    if (!classInfo) return <div className="p-6">Loading...</div>;
+    if (!classInfo || !user) return <div className="p-6">Loading...</div>;
 
     return (
         <div className="p-6 max-w-6xl mx-auto">
@@ -50,16 +69,25 @@ export default function ClassDetails() {
                 </div>
 
                 <div className="mt-6">
-                    <button className="bg-blue-600 hover:bg-blue-900 px-4 py-2 rounded-full text-white transition">
+                    <button onClick={() => setOpenModal(true)}
+                        className="bg-blue-600 hover:bg-blue-900 px-4 py-2 rounded-full text-white transition">
                         Tạo thảo luận
                     </button>
-                    {notifications.length > 0 ?
+                    {notifications.length > 0 || posts.length > 0 ?
                         (
-                            <div className="mb-3">
-                                {notifications.map((a) => (
-                                    <NotificationItem data={a} />
-                                ))}
-                            </div>
+                            <>
+                                <div className="mb-3">
+                                    {notifications.map((a) => (
+                                        <NotificationItem data={a} />
+                                    ))}
+                                </div>
+
+                                <div className="mt-6">
+                                    {posts.map(post => (
+                                        <PostItem key={post._id} post={post} user={user} />
+                                    ))}
+                                </div>
+                            </>
                         ) : (
                             <div className="mt-6 border rounded-xl p-6 shadow-sm bg-white">
                                 <p className="text-xl font-semibold">Bạn có thể trao đổi thông tin với mọi người tại đây.</p>
@@ -67,16 +95,15 @@ export default function ClassDetails() {
                                     Hiện tại chưa có thông báo nào
                                 </p>
                             </div>
-
                         )
-
                     }
-
-
                 </div>
             </div>
-
-
+            <CreatePostModal
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                classId={id}
+                user={user} />
         </div>
     );
 }

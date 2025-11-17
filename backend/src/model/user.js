@@ -6,6 +6,7 @@ const userSchema = mongoose.Schema(
     full_name: { type: String, required: true },
     email: { type: String, required: true, index: true, unique: true },
     password: { type: String, required: true },
+    sipPassword: { type: String, required: true },
     available: { type: Boolean, default: true },
     role: {
       type: String,

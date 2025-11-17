@@ -1,25 +1,20 @@
 import mysql from "mysql2/promise";
 
-/**
- * Đồng bộ user MongoDB sang Asterisk MySQL Realtime
- * (dùng email làm SIP ID, hỗ trợ WebRTC + WSS)
- */
+
 export const syncUserToAsterisk = async (user) => {
   const connection = await mysql.createConnection({
-    host: "13.212.12.146",        // EC2 IP MySQL
+    host: "52.77.226.38", 
     user: "asteriskuser",
     password: "strongpassword",
     database: "asterisk",
   });
 
-  // ✅ Lấy SIP ID từ email (trước dấu @)
   const userId = user.email.split("@")[0].replace(/[^a-zA-Z0-9]/g, "_");
   const username = userId;
-  const plainPassword = user.passwordPlain || "1234"; // Tạm default nếu chưa có
+  const plainPassword = user.passwordPlain; 
 
-  console.log(`🔄 Syncing user ${username} to Asterisk...`);
+  console.log(`Syncing user ${username} to Asterisk...`);
 
-  // 1️⃣ ps_aors — giữ kết nối WebSocket ổn định
   await connection.query(
     `
     REPLACE INTO ps_aors (
@@ -36,7 +31,6 @@ export const syncUserToAsterisk = async (user) => {
     [userId]
   );
 
-  // 2️⃣ ps_auths — xác thực user/pass SIP
   await connection.query(
     `
     REPLACE INTO ps_auths (
@@ -50,7 +44,6 @@ export const syncUserToAsterisk = async (user) => {
     [userId, username, plainPassword]
   );
 
-  // 3️⃣ ps_endpoints — ánh xạ endpoint → auth + aor (WebRTC Ready)
   await connection.query(
     `
   REPLACE INTO ps_endpoints (
@@ -78,7 +71,7 @@ export const syncUserToAsterisk = async (user) => {
   )
   VALUES (
     ?, 'transport-wss', ?, ?, 'from-internal',
-    'all', 'ulaw,alaw,opus',
+    'all', 'opus',
     'no', 'yes', 'yes', 'rfc4733',
     'yes', 'yes', 'dtls',
     'yes', 'yes', 'yes', 'no', 'yes', 'no', ?

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useWebCall } from "../hooks/useWebCall";
 import { voipService } from "../services/voipService";
-import PopupCallInvite from "./PopupCallInvite";
 import { FaPhone } from "react-icons/fa";
+import PopupCallInvite from './PopupCallInvite';
 export default function MessageCall({ target }) {
     const targetSip = target.email.split("@")[0];
     const userId = sessionStorage.getItem("userId")?.replace(/"/g, "");
-    const userPassword = sessionStorage.getItem("password")?.replace(/"/g, "");
     const [sipUser, setSipUser] = useState(null);
 
     useEffect(() => {
@@ -24,16 +23,13 @@ export default function MessageCall({ target }) {
 
     const { registered, mode, callee, caller, audioRef, actions } = useWebCall({
         sipId: sipUser?.sipId,
-        sipPassword: userPassword,
-        displayName: sipUser?.full_name,
+        sipPassword: sipUser?.sipPassword,
+        displayName: sipUser?.displayName,
     });
 
     return (
         <>
-            {/* Âm thanh cuộc gọi */}
             <audio ref={audioRef} autoPlay hidden />
-
-            {/* ✅ Nút nổi góc phải */}
             <button
                 disabled={!registered}
                 onClick={() => actions.startCall(targetSip, target?.name || targetSip)}
@@ -45,7 +41,6 @@ export default function MessageCall({ target }) {
                 <FaPhone size={24} />
             </button>
 
-            {/* ✅ Popup nhận/gọi cuộc gọi */}
             <PopupCallInvite
                 visible={mode !== "idle"}
                 mode={mode}

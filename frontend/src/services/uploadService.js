@@ -13,14 +13,13 @@ export const uploadService = {
         formData.append("file", file);
         formData.append("upload_preset", UPLOAD_PRESET);
         formData.append("folder", FOLDER);
-        formData.append("resource_type", "raw");
 
         console.log("file info ", file.name, file.type, file.size);
 
 
         try {
             const res = await axios.post(
-                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`,
+                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
                 formData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },

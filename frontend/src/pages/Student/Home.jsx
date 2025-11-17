@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { enrollmentService } from "../../services/enrollmentService";
 import { useNavigate } from "react-router-dom";
-import MessengerCall from "../../components/MessageCall";
 
 function Home() {
     const [userClass, setUserClass] = useState([]);

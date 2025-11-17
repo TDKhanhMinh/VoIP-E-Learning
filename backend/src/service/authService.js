@@ -45,7 +45,8 @@ export const login = async (email, password) => {
       full_name: user.full_name,
       email: user.email,
       role: user.role,
-      token: generateToken(user._id),
+      sipPassword: user.sipPassword,
+      token: generateToken(user._id, user.email, user.role),
     };
   } else {
     const error = new Error("Invalid email or password");

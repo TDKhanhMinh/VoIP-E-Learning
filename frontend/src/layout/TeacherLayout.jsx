@@ -19,6 +19,7 @@ import { userService } from "../services/userService";
 import { LoadingProvider } from "../context/LoadingContext";
 import LoaderOverlay from "../components/LoaderOverlay";
 import MessageCall from "../components/MessageCall";
+import ChatWithAdmin from "./../components/ChatWithAdmin";
 
 export default function TeacherLayout() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -26,7 +27,7 @@ export default function TeacherLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const targetUser = {
-    email: "trandokhanhminh00@tdtu.edu.vn",
+    email: "50000000@tdtu.edu.vn",
     name: "Quản trị viên",
   };
   const handlerLogout = async () => {
@@ -247,6 +248,7 @@ export default function TeacherLayout() {
               />
               <LoaderOverlay />
               <MessageCall target={targetUser} />
+              <ChatWithAdmin />
               <Outlet />
             </div>
           </main>

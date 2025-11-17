@@ -4,7 +4,6 @@ import Button from "./Button";
 import formatDateTime from './../utils/formatDateTime';
 import { submissionService } from "../services/submissionService";
 import { uploadService } from "../services/uploadService";
-import { driveUploadService } from "../services/driveUploadService";
 
 export default function AssignmentItem({
   title,
@@ -39,16 +38,16 @@ export default function AssignmentItem({
     setSubmission(submissionData);
     if (submissionData.find(s => s.assignment?._id === assignmentId)) setIsSubmitted(true)
   };
-  const handleDownload = async () => {
-    const url = submission.find(s => s.assignment?._id === assignmentId).file_url;
-    // const a = document.createElement("a");
-    // a.href = url;
-    // a.download = submission.file_name || "file.zip";
-    // a.target = "_blank";
-    // a.click();
-    const downloadLink = await uploadService.downloadUrl(url);
-    window.open(downloadLink, "_blank");
-  };
+  // const handleDownload = async () => {
+  //   const url = submission.find(s => s.assignment?._id === assignmentId).file_url;
+  //   // const a = document.createElement("a");
+  //   // a.href = url;
+  //   // a.download = submission.file_name || "file.zip";
+  //   // a.target = "_blank";
+  //   // a.click();
+  //   const downloadLink = await uploadService.downloadUrl(url);
+  //   window.open(downloadLink, "_blank");
+  // };
   const handlerSubmit = async (data, setProgress) => {
     try {
       setOpen(true)
@@ -111,12 +110,21 @@ export default function AssignmentItem({
               <p className="text-sm text-gray-500">
                 Bài nộp:{" "}
                 {isSubmitted ? (
-                  <button onClick={handleDownload}
-                    // href={submission.find(s => s.assignment?._id === assignmentId).file_url?.replace("/upload/", "/upload/fl_attachment/")}
-                    className="text-blue-600 underline hover:text-blue-800"
+                  <a
+                    href={submission.find(s => s.assignment?._id === assignmentId).file_url}
+                    download
+                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium group"
                   >
-                    {submission.find(s => s.assignment?._id === assignmentId).file_name?.split('.')[0]}
-                  </button>
+                    <span className="underline">
+                      {submission.find(s => s.assignment?._id === assignmentId).file_name?.split('.')[0] || "Tải xuống"}
+                    </span>
+                  </a>
+                  // <button onClick={handleDownload}
+                  //   // href={submission.find(s => s.assignment?._id === assignmentId).file_url?.replace("/upload/", "/upload/fl_attachment/")}
+                  //   className="text-blue-600 underline hover:text-blue-800"
+                  // >
+                  //   {submission.find(s => s.assignment?._id === assignmentId).file_name?.split('.')[0]}
+                  // </button>
                 ) : (
                   <span className="text-red-500">Chưa nộp</span>
                 )}

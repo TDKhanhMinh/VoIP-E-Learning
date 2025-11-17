@@ -9,6 +9,7 @@ import {
     FaChevronLeft,
     FaSearch,
 } from "react-icons/fa";
+import { MdOutlineChatBubbleOutline } from "react-icons/md";
 import { MdOutlineLibraryBooks } from "react-icons/md";
 import { FaRegClock } from "react-icons/fa6";
 import { CiLogout } from "react-icons/ci";
@@ -17,14 +18,17 @@ import { SiGoogleclassroom } from "react-icons/si";
 import { authService } from "../services/authService";
 import { LoadingProvider } from "../context/LoadingContext";
 import LoaderOverlay from "../components/LoaderOverlay";
-import PopupCallReceive from "../components/PopupCallReceive";
+import MessageCall from "../components/MessageCall";
 
 function AdminLayout() {
     const [open, setOpen] = useState(true);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-
+    const targetUser = {
+        email: "50000000@tdtu.edu.vn",
+        name: "Quản trị viên ",
+    }
     const handlerLogout = async () => {
         await authService.logout();
         navigate("/", { state: { isLogin: false } });
@@ -36,6 +40,7 @@ function AdminLayout() {
         { path: "/admin/courses", icon: MdOutlineLibraryBooks, label: "Môn học" },
         { path: "/admin/classes", icon: SiGoogleclassroom, label: "Lớp học" },
         { path: "/admin/users", icon: FaUsers, label: "Người dùng" },
+        { path: "/admin/chats", icon: MdOutlineChatBubbleOutline, label: "Hỗ trợ" },
     ];
 
     const isActive = (path, exact = false) => {
@@ -150,7 +155,7 @@ function AdminLayout() {
                                 theme="colored"
                             />
                             <LoaderOverlay />
-                            <PopupCallReceive />
+                            <MessageCall target={targetUser} />
                             <Outlet />
                         </div>
                     </main>

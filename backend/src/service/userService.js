@@ -10,13 +10,13 @@ export const getAllUser = async (role = "") => {
 export const createUser = async (data) => {
   await checkUsedEmail(data.email);
 
-  let user = await User.create({ ...data });
+  let user = await User.create({ ...data , sipPassword: data.password});
 
   try {
     await syncUserToAsterisk({
       _id: user._id,
       email: user.email,
-      passwordPlain: data.password,
+      passwordPlain: user.sipPassword,
     });
   } catch (err) {
     console.error("Lỗi đồng bộ Asterisk:", err.message);

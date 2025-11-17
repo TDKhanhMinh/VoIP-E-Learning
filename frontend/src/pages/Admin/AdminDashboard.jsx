@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import PopupCallReceive from "../../components/PopupCallReceive";
-import MessengerCall from "../../components/MessageCall";
+
 
 function AdminDashboard() {
     const adminName = "Quản trị viên";
@@ -26,7 +25,6 @@ function AdminDashboard() {
                     </p>
                 </motion.div>
              
-                <PopupCallReceive />
             </div>
         </div>
     );
