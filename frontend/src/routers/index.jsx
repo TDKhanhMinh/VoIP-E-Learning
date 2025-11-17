@@ -10,12 +10,13 @@ import AuthLayout from "../layout/AuthLayout";
 import Login from "../pages/Login";
 import AdminLayout from "../layout/AdminLayout";
 import AdminDashboard from "../pages/Admin/AdminDashboard";
-import ManageClasses from './../pages/Admin/ManageClasses';
-import ManageCourses from './../pages/Admin/ManageCourses';
-import ManageSemester from './../pages/Admin/ManageSemesters';
-import ManageUsers from './../pages/Admin/ManageUsers';
+import ManageClasses from "./../pages/Admin/ManageClasses";
+import ManageCourses from "./../pages/Admin/ManageCourses";
+import ManageSemester from "./../pages/Admin/ManageSemesters";
+import ManageUsers from "./../pages/Admin/ManageUsers";
 import TeacherDashboard from "../pages/Teacher/TeacherDashboard";
 import ManageAssignments from "../pages/Teacher/ManageAssignments";
+import ManageTest from "../pages/Teacher/ManageTest";
 import ManageAttendance from "../pages/Teacher/ManageAttendance";
 import ManageSubmissions from "../pages/Teacher/ManageSubmissions";
 import TeacherClasses from "../pages/Teacher/TeacherClasses";
@@ -32,18 +33,22 @@ import ManageNotifications from "../pages/Teacher/ManageNotifications";
 import ClassNotification from "../pages/Teacher/ClassNotification";
 import OnlineClassroom from "../pages/VoIP/OnlineClassroom";
 import ClassDetails from "../pages/Student/ClassDetails";
+import ClassTest from "../pages/Teacher/ClassTest";
+import ExamScreen from "../pages/Student/ExamScreen";
+import TestQuestion from "../pages/Teacher/TestQuestion";
 
 const publicRoutes = createBrowserRouter([
   {
     element: <AuthLayout />,
     children: [
       {
-        index: true, element: <Login />
+        index: true,
+        element: <Login />,
       },
       {
-        path: "meet-room/:id", element: <OnlineClassroom />
+        path: "meet-room/:id",
+        element: <OnlineClassroom />,
       },
-
     ],
   },
   {
@@ -51,19 +56,28 @@ const publicRoutes = createBrowserRouter([
     path: "home",
     children: [
       {
-        index: true, element: <Home />
+        index: true,
+        element: <Home />,
       },
       {
-        path: "attendance", element: <Attendance />
+        path: "attendance",
+        element: <Attendance />,
       },
       {
-        path: "notification", element: <Notification />
+        path: "notification",
+        element: <Notification />,
       },
       {
-        path: "online-test", element: <OnlineTest />
-      },      
+        path: "online-test",
+        element: <OnlineTest />,
+      },
       {
-        path: "class-details/:id", element: <ClassDetails />
+        path: "class-details/:id",
+        element: <ClassDetails />,
+      },
+      {
+        path: "exam/:test_id",
+        element: <ExamScreen />,
       },
     ],
   },
@@ -72,22 +86,28 @@ const publicRoutes = createBrowserRouter([
     path: "admin",
     children: [
       {
-        index: true, element: <AdminDashboard />
+        index: true,
+        element: <AdminDashboard />,
       },
       {
-        path: "classes", element: <ManageClasses />
+        path: "classes",
+        element: <ManageClasses />,
       },
       {
-        path: "courses", element: <ManageCourses />
+        path: "courses",
+        element: <ManageCourses />,
       },
       {
-        path: "semesters", element: <ManageSemester />
+        path: "semesters",
+        element: <ManageSemester />,
       },
       {
-        path: "users", element: <ManageUsers />
+        path: "users",
+        element: <ManageUsers />,
       },
       {
-        path: "classes/class-details/:id", element: <ClassDetail />
+        path: "classes/class-details/:id",
+        element: <ClassDetail />,
       },
     ],
   },
@@ -97,43 +117,68 @@ const publicRoutes = createBrowserRouter([
     path: "teacher",
     children: [
       {
-        index: true, element: <TeacherDashboard />
+        index: true,
+        element: <TeacherDashboard />,
       },
       {
-        path: "assignments", element: <ManageAssignments />
+        path: "assignments",
+        element: <ManageAssignments />,
       },
       {
-        path: "attendances", element: <ManageAttendance />
+        path: "attendances",
+        element: <ManageAttendance />,
       },
       {
-        path: "submissions/:id", element: <ManageSubmissions />
+        path: "tests",
+        element: <ManageTest />,
       },
       {
-        path: "submissions", element: <TeacherManageSubmission />
+        path: "submissions/:id",
+        element: <ManageSubmissions />,
       },
       {
-        path: "notifications", element: <ManageNotifications />
+        path: "submissions",
+        element: <TeacherManageSubmission />,
       },
       {
-        path: "classes", element: <TeacherClasses />
+        path: "notifications",
+        element: <ManageNotifications />,
       },
       {
-        path: "schedule", element: <TeacherSchedule />
+        path: "classes",
+        element: <TeacherClasses />,
       },
       {
-        path: "class-details/:id", element: <TeacherClassDetails />
+        path: "schedule",
+        element: <TeacherSchedule />,
       },
       {
-        path: "class-details/:id/assignments", element: <ClassAssignment />
+        path: "class-details/:id",
+        element: <TeacherClassDetails />,
       },
       {
-        path: "class-details/:id/notifications", element: <ClassNotification />
+        path: "class-details/:id/assignments",
+        element: <ClassAssignment />,
       },
       {
-        path: "class-details/:id/attendance", element: <ClassAttendance />
+        path: "class-details/:id/notifications",
+        element: <ClassNotification />,
       },
       {
-        path: "class-details/:id/submissions", element: <ClassSubmission />
+        path: "class-details/:id/attendance",
+        element: <ClassAttendance />,
+      },
+      {
+        path: "class-details/:id/submissions",
+        element: <ClassSubmission />,
+      },
+      {
+        path: "class-details/:id/tests",
+        element: <ClassTest />,
+      },
+      {
+        path: "class-details/:id/tests/:testId",
+        element: <TestQuestion />,
       },
     ],
   },
@@ -142,15 +187,16 @@ const publicRoutes = createBrowserRouter([
     path: "course",
     children: [
       {
-        path: "home", element: <HomeCourse />
+        path: "home",
+        element: <HomeCourse />,
       },
       {
-        path: "homework/:id", element: <Assignment />
+        path: "homework/:id",
+        element: <Assignment />,
       },
-
     ],
   },
-])
-const privateRoutes = []
+]);
+const privateRoutes = [];
 
-export { publicRoutes, privateRoutes }
+export { publicRoutes, privateRoutes };

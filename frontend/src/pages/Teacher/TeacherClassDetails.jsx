@@ -1,6 +1,17 @@
 import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FaUserGraduate, FaTrash, FaPlus, FaChalkboardTeacher, FaBook, FaCalendarAlt, FaClock, FaUsers, FaArrowLeft, FaSearch } from "react-icons/fa";
+import {
+  FaUserGraduate,
+  FaTrash,
+  FaPlus,
+  FaChalkboardTeacher,
+  FaBook,
+  FaCalendarAlt,
+  FaClock,
+  FaUsers,
+  FaArrowLeft,
+  FaSearch,
+} from "react-icons/fa";
 import { classService } from "../../services/classService";
 import { userService } from "../../services/userService";
 import { courseService } from "../../services/courseService";
@@ -23,10 +34,11 @@ export default function TeacherClassDetails() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const filteredStudents = students.filter(s =>
-    s.student?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.student?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.student_id?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredStudents = students.filter(
+    (s) =>
+      s.student?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.student?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.student_id?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -46,7 +58,10 @@ export default function TeacherClassDetails() {
       setTeacher(await userService.getUserById(classInfo.teacher));
       setCourse(await courseService.getCourseById(classInfo.course));
       setSemester(await semesterService.getSemesterById(classInfo.semester));
-      console.log("Student of class:", await enrollmentService.getAllEnrollments(id));
+      console.log(
+        "Student of class:",
+        await enrollmentService.getAllEnrollments(id)
+      );
       setStudents(await enrollmentService.getAllEnrollments(id));
       setClassData(classInfo);
     } catch (error) {
@@ -56,8 +71,6 @@ export default function TeacherClassDetails() {
       setIsLoading(false);
     }
   };
-
-
 
   if (isLoading) {
     return (
@@ -70,11 +83,9 @@ export default function TeacherClassDetails() {
     );
   }
 
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-
         <div className="mb-6">
           <button
             onClick={() => navigate(-1)}
@@ -90,9 +101,7 @@ export default function TeacherClassDetails() {
           </h1>
         </div>
 
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-
           <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -110,7 +119,9 @@ export default function TeacherClassDetails() {
                     {course.title || "—"}
                   </p>
                   {course.code && (
-                    <p className="text-sm text-gray-600 mt-1">Mã: {course.code}</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Mã: {course.code}
+                    </p>
                   )}
                 </div>
               </div>
@@ -120,12 +131,16 @@ export default function TeacherClassDetails() {
                   <FaChalkboardTeacher className="text-green-600 text-xl" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-500 font-medium">Giảng viên</p>
+                  <p className="text-sm text-gray-500 font-medium">
+                    Giảng viên
+                  </p>
                   <p className="text-lg font-semibold text-gray-800 mt-1">
                     {teacher?.full_name || "—"}
                   </p>
                   {teacher?.email && (
-                    <p className="text-sm text-gray-600 mt-1">{teacher.email}</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {teacher.email}
+                    </p>
                   )}
                 </div>
               </div>
@@ -148,32 +163,34 @@ export default function TeacherClassDetails() {
                     <FaClock className="text-orange-600 text-xl" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-gray-500 font-medium">Lịch học</p>
+                    <p className="text-sm text-gray-500 font-medium">
+                      Lịch học
+                    </p>
                     <p className="text-base font-semibold text-gray-800 mt-1">
-                      {Array.isArray(classData.schedule) && classData.schedule.length > 0 ? (
-                        classData.schedule
-                          .map((s) => {
-                            const days = {
-                              2: "Thứ 2",
-                              3: "Thứ 3",
-                              4: "Thứ 4",
-                              5: "Thứ 5",
-                              6: "Thứ 6",
-                              7: "Thứ 7",
-                            };
-                            return `${days[s.dayOfWeek] || "?"} - Ca ${s.shift}`;
-                          })
-                          .join("; ")
-                      ) : (
-                        "Chưa có lịch"
-                      )}
+                      {Array.isArray(classData.schedule) &&
+                      classData.schedule.length > 0
+                        ? classData.schedule
+                            .map((s) => {
+                              const days = {
+                                2: "Thứ 2",
+                                3: "Thứ 3",
+                                4: "Thứ 4",
+                                5: "Thứ 5",
+                                6: "Thứ 6",
+                                7: "Thứ 7",
+                              };
+                              return `${days[s.dayOfWeek] || "?"} - Ca ${
+                                s.shift
+                              }`;
+                            })
+                            .join("; ")
+                        : "Chưa có lịch"}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
 
           <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-lg p-6 text-white">
             <div className="flex items-center justify-between mb-4">
@@ -187,14 +204,16 @@ export default function TeacherClassDetails() {
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
                 <p className="text-sm opacity-90">Tín chỉ</p>
-                <p className="text-3xl font-bold mt-2">{course.credits || "—"}</p>
+                <p className="text-3xl font-bold mt-2">
+                  {course.credits || "—"}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="p-4 pb-6">
-          <div className="grid grid-cols-5 gap-6">
+          <div className="grid grid-cols-6 gap-6">
             <Link
               to={`/meet-room/${id}`}
               className="p-4 bg-white shadow rounded hover:bg-gray-100"
@@ -214,6 +233,12 @@ export default function TeacherClassDetails() {
               Quản lý Điểm danh
             </Link>
             <Link
+              to={`/teacher/class-details/${id}/tests`}
+              className="p-4 bg-white shadow rounded hover:bg-gray-100"
+            >
+              Quản lý Bài thi
+            </Link>
+            <Link
               to={`/teacher/class-details/${id}/submissions`}
               className="p-4 bg-white shadow rounded hover:bg-gray-100"
             >
@@ -228,7 +253,6 @@ export default function TeacherClassDetails() {
           </div>
         </div>
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-
           <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -237,13 +261,12 @@ export default function TeacherClassDetails() {
                   Danh sách sinh viên
                 </h3>
                 <p className="text-sm text-gray-600 mt-1">
-                  Có {filteredStudents.length} sinh viên{searchTerm && " phù hợp"}
+                  Có {filteredStudents.length} sinh viên
+                  {searchTerm && " phù hợp"}
                 </p>
               </div>
-
             </div>
           </div>
-
 
           <div className="px-6 py-4 bg-gray-50 border-b">
             <div className="relative max-w-md">
@@ -261,7 +284,6 @@ export default function TeacherClassDetails() {
             </div>
           </div>
 
-
           <div className="overflow-x-auto">
             {filteredStudents.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 px-4">
@@ -269,10 +291,14 @@ export default function TeacherClassDetails() {
                   <FaUserGraduate className="text-gray-400 text-4xl" />
                 </div>
                 <p className="text-gray-600 font-medium text-lg">
-                  {searchTerm ? "Không tìm thấy sinh viên" : "Chưa có sinh viên nào trong lớp"}
+                  {searchTerm
+                    ? "Không tìm thấy sinh viên"
+                    : "Chưa có sinh viên nào trong lớp"}
                 </p>
                 <p className="text-gray-400 text-sm mt-2">
-                  {searchTerm ? "Thử tìm kiếm với từ khóa khác" : "Nhấn nút 'Thêm sinh viên' để bắt đầu"}
+                  {searchTerm
+                    ? "Thử tìm kiếm với từ khóa khác"
+                    : "Nhấn nút 'Thêm sinh viên' để bắt đầu"}
                 </p>
               </div>
             ) : (
@@ -292,7 +318,6 @@ export default function TeacherClassDetails() {
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Email
                       </th>
-
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -307,7 +332,8 @@ export default function TeacherClassDetails() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">
-                              {s.student?.full_name?.charAt(0)?.toUpperCase() || "?"}
+                              {s.student?.full_name?.charAt(0)?.toUpperCase() ||
+                                "?"}
                             </div>
                             <span className="font-semibold text-gray-800">
                               {s.student?.full_name || "—"}
@@ -322,12 +348,10 @@ export default function TeacherClassDetails() {
                         <td className="px-6 py-4 text-sm text-gray-600">
                           {s.student?.email || "—"}
                         </td>
-
                       </tr>
                     ))}
                   </tbody>
                 </table>
-
 
                 {totalPages > 1 && (
                   <div className="px-6 py-4 bg-gray-50 border-t">
@@ -345,6 +369,4 @@ export default function TeacherClassDetails() {
       </div>
     </div>
   );
-
-
 }

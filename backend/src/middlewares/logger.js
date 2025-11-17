@@ -5,6 +5,7 @@ const logger = (req, res, next) => {
     GET: "green",
     POST: "blue",
     PUT: "yellow",
+    PATCH: "magenta",
     DELETE: "red",
   };
 

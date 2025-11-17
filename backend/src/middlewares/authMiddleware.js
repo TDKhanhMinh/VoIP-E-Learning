@@ -28,6 +28,7 @@ export const protect = async (req, res, next) => {
     return res.status(401).json("Not authorized, no token");
   }
 };
+
 export const optionalProtect = async (req, res, next) => {
   let token;
 

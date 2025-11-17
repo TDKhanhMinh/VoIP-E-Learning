@@ -1,8 +1,8 @@
-process.on('uncaughtException', (err, origin) => {
+process.on("uncaughtException", (err, origin) => {
   console.error(`LỖI UNCAUGHT EXCEPTION: ${err.message}`, `Origin: ${origin}`);
 });
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('LỖI UNHANDLED REJECTION:', reason);
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("LỖI UNHANDLED REJECTION:", reason);
 });
 
 import express from "express";
@@ -10,6 +10,8 @@ import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import logger from "./middlewares/logger.js";
 import connectDB from "./config/db.js";
+import { initOnlineTestCron } from "./cron/updateOnlineTest.js";
+import { submitTestSession } from "./cron/submitTestSession.js";
 
 import authRoutes from "./router/authRouter.js";
 import voipRoutes from "./router/voipRouter.js";
@@ -20,6 +22,11 @@ import classRoutes from "./router/classRouter.js";
 import classStudentRoutes from "./router/classStudentRouter.js";
 import materialRoutes from "./router/materialRouter.js";
 import assignmentRoutes from "./router/assignmentRouter.js";
+import onlineTestRoutes from "./router/testOnlineRouter.js";
+import testQuestionRoutes from "./router/testQuestionRouter.js";
+import testSessionRoutes from "./router/testSessionRouter.js";
+import testAttemptRoutes from "./router/testAttemptRouter.js";
+import uploadQuesionsRouter from "./router/uploadQuestionRouter.js";
 import submissionRoutes from "./router/submissionRouter.js";
 import attendanceRoutes from "./router/attendanceRouter.js";
 import announcementRoutes from "./router/announcementRouter.js";
@@ -31,8 +38,11 @@ import http from "http";
 import livekitRouter from "./router/livekitRouter.js";
 await connectDB();
 const app = express();
-const allowedOrigins = ["http://localhost:5173", "https://voip-e-learning-1.onrender.com", "https://meet.livekit.io"];
-
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://voip-e-learning-1.onrender.com",
+  "https://meet.livekit.io",
+];
 
 app.use(
   cors({
@@ -60,6 +70,11 @@ app.use("/api/class", classRoutes);
 app.use("/api/enrollment", classStudentRoutes);
 app.use("/api/material", materialRoutes);
 app.use("/api/assignment", assignmentRoutes);
+app.use("/api/online-test", onlineTestRoutes);
+app.use("/api/test-question", testQuestionRoutes);
+app.use("/api/attempt", testAttemptRoutes);
+app.use("/api/test-session", testSessionRoutes);
+app.use("/api/upload-question", uploadQuesionsRouter);
 app.use("/api/submission", submissionRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/announcement", announcementRoutes);
@@ -70,13 +85,14 @@ app.use("/api/room", roomRouters);
 app.use("/api/voip", voipRoutes);
 app.use("/api/livekit", livekitRouter);
 
+initOnlineTestCron();
+submitTestSession();
 app.use(errorHandler);
-
 
 const server = http.createServer(app);
 const PORT = process.env.PORT;
 server.listen(PORT, async () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 // connectARI();
 // app.listen(PORT, async () => {
