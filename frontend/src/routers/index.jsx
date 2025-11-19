@@ -4,6 +4,7 @@ import Attendance from "../pages/Student/Attendance";
 import Notification from "../pages/Student/Notification";
 import OnlineTest from "../pages/Student/OnlineTest";
 import HomeworkLayout from "../layout/HomeworkLayout";
+import ForumLayout from "../layout/ForumLayout";
 import HomeCourse from "../pages/Student/HomeCourse";
 import Home from "../pages/Student/Home";
 import AuthLayout from "../layout/AuthLayout";
@@ -37,6 +38,9 @@ import ManageChats from "../pages/Admin/ManageChats";
 import ClassTest from "../pages/Teacher/ClassTest";
 import ExamScreen from "../pages/Student/ExamScreen";
 import TestQuestion from "../pages/Teacher/TestQuestion";
+import TestResult from "../pages/Teacher/TestResult";
+import Forum from "../components/Forum";
+import { MdOutlineForum } from "react-icons/md";
 
 const publicRoutes = createBrowserRouter([
   {
@@ -53,34 +57,8 @@ const publicRoutes = createBrowserRouter([
     ],
   },
   {
-    element: <MainLayout />,
-    path: "home",
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: "attendance",
-        element: <Attendance />,
-      },
-      {
-        path: "notification",
-        element: <Notification />,
-      },
-      {
-        path: "online-test",
-        element: <OnlineTest />,
-      },
-      {
-        path: "class-details/:id",
-        element: <ClassDetails />,
-      },
-      {
-        path: "exam/:test_id",
-        element: <ExamScreen />,
-      },
-    ],
+    element: <ForumLayout />,
+    path: "forum",
   },
   {
     element: <AdminLayout />,
@@ -114,6 +92,10 @@ const publicRoutes = createBrowserRouter([
         path: "classes/class-details/:id",
         element: <ClassDetail />,
       },
+      {
+        path: "forum",
+        element: <Forum />,
+      },
     ],
   },
 
@@ -132,6 +114,17 @@ const publicRoutes = createBrowserRouter([
       {
         path: "attendances",
         element: <ManageAttendance />,
+      },
+
+      {
+        path: "forum",
+        element: <Forum />,
+        icon: MdOutlineForum,
+      },
+
+      {
+        path: "test-results/:testId",
+        element: <TestResult />,
       },
       {
         path: "tests",

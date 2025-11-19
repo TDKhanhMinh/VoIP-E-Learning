@@ -13,7 +13,7 @@ export const getAll = async () => {
 export const findById = async (id) => {
   const findingClass = await Class.findById(id);
   if (!findingClass) {
-    const error = new Error("Announcement with id ${id} not found");
+    const error = new Error("Class with id ${id} not found");
     error.statusCode = 404;
     throw error;
   }
@@ -31,7 +31,6 @@ const dayLabel = (day) => {
   };
   return days[day] || "Không rõ";
 };
-
 
 export const createClass = async (data) => {
   console.log("Received class data:", data);
@@ -66,9 +65,11 @@ export const createClass = async (data) => {
           existing.shift === incoming.shift
         ) {
           const error = new Error(
-            `Giảng viên đã có lớp "${existingClass.name}" trong cùng thời gian (${dayLabel(
-              incoming.dayOfWeek
-            )} - Ca ${incoming.shift}).`
+            `Giảng viên đã có lớp "${
+              existingClass.name
+            }" trong cùng thời gian (${dayLabel(incoming.dayOfWeek)} - Ca ${
+              incoming.shift
+            }).`
           );
           error.statusCode = 400;
           throw error;
@@ -90,7 +91,7 @@ export const createClass = async (data) => {
     teacherId: teacher._id,
     teacherEmail: teacher.email,
     teacherName: teacher.name,
-  })
+  });
   console.log(`Class created: ${newClass.name}`);
   const shiftTimes = {
     1: { startTime: "06:50", endTime: "09:20" },
@@ -126,7 +127,6 @@ export const createClass = async (data) => {
 
   return newClass;
 };
-
 
 export const updateClass = async (id, data) => {
   const updates = { ...data };
@@ -227,7 +227,9 @@ export const updateClass = async (id, data) => {
       4: { startTime: "15:25", endTime: "17:55" },
     };
     const schedules = [];
-    const current = new Date(targetSemester.startDate || targetSemester.start_date);
+    const current = new Date(
+      targetSemester.startDate || targetSemester.start_date
+    );
     const end = new Date(targetSemester.endDate || targetSemester.end_date);
 
     while (current <= end) {

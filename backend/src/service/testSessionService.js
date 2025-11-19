@@ -1,4 +1,4 @@
-import TestSession from "../model/TestSession.js";
+import TestSession from "../model/testSession.js";
 import OnlineTest from "../model/online_test.js";
 import mongoose from "mongoose";
 import { createTestAttempt } from "./testAttemptService.js";

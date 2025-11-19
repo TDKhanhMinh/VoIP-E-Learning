@@ -29,6 +29,7 @@ import driveRoutes from "./router/driveRouter.js";
 import fileRoutes from "./router/fileRouter.js";
 import postRoutes from "./router/postRouter.js";
 import commentRoutes from "./router/commentRouter.js";
+import topicRoutes from "./router/topicRouter.js";
 import chatRoutes from "./router/chatRouter.js";
 import http from "http";
 import livekitRouter from "./router/livekitRouter.js";
@@ -37,8 +38,12 @@ import discussionSocket from "./sockets/discussionSocket.js";
 import chatSocket from "./sockets/chatSocket.js";
 await connectDB();
 const app = express();
-const allowedOrigins = ["http://localhost:5173", "https://voip-e-learning-1.onrender.com", "https://meet.livekit.io", "http://localhost:5000"];
-
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://voip-e-learning-1.onrender.com",
+  "https://meet.livekit.io",
+  "http://localhost:5000",
+];
 
 app.use(
   cors({
@@ -63,6 +68,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/semester", semesterRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/class", classRoutes);
+app.use("/api/class-student", classStudentRoutes);
 app.use("/api/enrollment", classStudentRoutes);
 app.use("/api/material", materialRoutes);
 app.use("/api/assignment", assignmentRoutes);
@@ -82,6 +88,7 @@ app.use("/api/voip", voipRoutes);
 app.use("/api/livekit", livekitRouter);
 app.use("/api/post", postRoutes);
 app.use("/api/comment", commentRoutes);
+app.use("/api/topic", topicRoutes);
 app.use("/api/chat", chatRoutes);
 
 initOnlineTestCron();
@@ -105,4 +112,3 @@ discussionSocket(io);
 server.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
 });
-

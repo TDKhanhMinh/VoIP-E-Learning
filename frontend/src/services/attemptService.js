@@ -7,4 +7,10 @@ export const attemptService = {
     });
     return res.data;
   },
+  getAttemptsByTest: async (onlineTestId) => {
+    const res = await http.get(`/attempt/test/${onlineTestId}`, {
+      cache: false,
+    });
+    return res.data;
+  },
 };

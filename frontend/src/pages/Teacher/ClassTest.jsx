@@ -364,6 +364,9 @@ export default function ClassTest() {
                               </div>
                             </div>
                             <StatusIcon
+                              onClick={() =>
+                                navigate(`/teacher/test-results/${a._id}`)
+                              }
                               className={`text-${status.color}-600 text-lg`}
                             />
                           </div>
@@ -375,7 +378,7 @@ export default function ClassTest() {
                             </span>
                           ) : (
                             <span className="inline-block px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-medium">
-                              Đang đóng
+                              Đã đóng
                             </span>
                           )}
                         </td>
