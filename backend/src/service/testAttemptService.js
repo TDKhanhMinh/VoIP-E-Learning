@@ -1,7 +1,9 @@
+import ClassStudent from "../model/class_student.js";
 import OnlineTest from "../model/online_test.js";
 import TestAttempt from "../model/testAttempt.js";
 import TestQuestion from "../model/testQuestion.js";
-import TestSession from "../model/TestSession.js";
+import TestSession from "../model/testSession.js";
+import mongoose from "mongoose";
 
 export const getAttemptsByStudentAndTest = async (studentId, onlineTestId) => {
   const attempts = await TestAttempt.find({
@@ -59,10 +61,21 @@ export const getAttemptById = async (id) => {
 };
 
 export const getAttemptsByTest = async (onlineTestId) => {
+  const test = await OnlineTest.findById(onlineTestId);
+  if (!test) throw new Error("Test not found");
+
+  const classStudent = await ClassStudent.find({ class: test.class })
+    .populate("student", "full_name email")
+    .populate("class", "name");
+
   const attempts = await TestAttempt.find({ onlineTest: onlineTestId })
     .populate("student", "full_name email")
     .sort({ createdAt: -1 });
-  return attempts;
+
+  return {
+    classStudent,
+    attempts,
+  };
 };
 
 export const getAttemptsByStudent = async (studentId) => {

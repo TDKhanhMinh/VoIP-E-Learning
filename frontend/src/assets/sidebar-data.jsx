@@ -1,8 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLaptop, faListCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLaptop,
+  faListCheck,
+  faCommentDots,
+} from "@fortawesome/free-solid-svg-icons";
 import { LuUserRoundCheck } from "react-icons/lu";
 import { IoHomeOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { FaForumbee } from "react-icons/fa";
 export const SIDEBAR_DATA = [
   {
     title: "Trang chủ",
@@ -19,6 +24,7 @@ export const SIDEBAR_DATA = [
     icon: <FontAwesomeIcon icon={faLaptop} />,
     to: "/home/online-test",
   },
+
   {
     title: "Điểm danh",
     icon: <LuUserRoundCheck />,
@@ -28,5 +34,10 @@ export const SIDEBAR_DATA = [
     title: "Thông báo",
     icon: <IoMdNotificationsOutline />,
     to: "/home/notification",
+  },
+  {
+    title: "Diễn đàn",
+    icon: <FontAwesomeIcon icon={faCommentDots} />,
+    to: "/home/forum",
   },
 ];
