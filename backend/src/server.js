@@ -37,7 +37,7 @@ import discussionSocket from "./sockets/discussionSocket.js";
 import chatSocket from "./sockets/chatSocket.js";
 await connectDB();
 const app = express();
-const allowedOrigins = ["http://localhost:5173", "https://voip-e-learning-1.onrender.com", "https://meet.livekit.io", "http://localhost:5000"];
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "https://voip-e-learning-1.onrender.com", "https://meet.livekit.io", "http://localhost:5000"];
 
 
 app.use(

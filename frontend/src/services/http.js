@@ -29,6 +29,10 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use(
   (response) => {
     loadingController.stop();
+    const method = response.config.method.toLowerCase();
+    if (['post', 'put', 'delete', 'patch'].includes(method)) {
+      cache.clear();
+    }
     if (response.config.method === "get" && response.config.cache !== false) {
       const key = response.config.url + JSON.stringify(response.config.params || {});
       cache.set(key, { data: response, time: Date.now() });

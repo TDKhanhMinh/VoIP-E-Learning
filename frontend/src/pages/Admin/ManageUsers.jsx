@@ -25,7 +25,7 @@ export default function ManageUsers() {
         fetchUsers();
     }, []);
 
-    
+
     useEffect(() => {
         filterUsers();
     }, [roleFilter, searchQuery, users]);
@@ -58,8 +58,11 @@ export default function ManageUsers() {
         console.log("User to create:", userData);
         try {
             const res = await userService.createUser(userData);
-            console.log("🎉 User created:", res);
-            fetchUsers();
+            console.log("User created:", res);
+            setOpenModal(false)
+            setRoleFilter("all");
+            setSearchQuery("");
+            await fetchUsers();
             toast.success("User added successfully");
         } catch (error) {
             toast.error(error?.response?.data?.message || "Error adding user");
@@ -72,7 +75,8 @@ export default function ManageUsers() {
         try {
             const res = await userService.updateUser(selectedUser._id, payload);
             console.log("🎉 User update:", res);
-            fetchUsers();
+            await fetchUsers();
+            setOpenModal(false);
             toast.success("User updated successfully");
             setSelectedUser(null);
         } catch (error) {
@@ -322,7 +326,7 @@ export default function ManageUsers() {
                     />
                 )}
             </div>
-            
+
             <ConfirmDialog
                 isOpen={openConfirmModal}
                 title={selectedUser?.available ? "Khóa người dùng" : "Mở khóa người dùng"}
