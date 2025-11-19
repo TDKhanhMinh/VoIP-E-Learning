@@ -10,6 +10,8 @@ import { userService } from "../services/userService";
 import { LoadingProvider } from "../context/LoadingContext";
 import LoaderOverlay from "../components/LoaderOverlay";
 import MessageCall from "../components/MessageCall";
+import ChatWithAdmin from "../components/ChatWithAdmin";
+import SupportWidget from "../components/SupportedWidget";
 
 
 function MainLayout() {
@@ -93,9 +95,6 @@ function MainLayout() {
 
                                                 {!isCollapsed && (
                                                     <span className="flex-1 text-left">{item.title}</span>
-                                                )}
-                                                {active && !isCollapsed && (
-                                                    <div className="w-2 h-2 bg-white rounded-full"></div>
                                                 )}
                                             </Button>
                                         </li>
@@ -230,8 +229,6 @@ function MainLayout() {
                             </div>
 
                         </div>
-
-
                         <ToastContainer
                             position="top-right"
                             autoClose={3000}
@@ -242,19 +239,15 @@ function MainLayout() {
                             draggable
                             theme="colored"
                         />
-
-
                         <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
                             <LoaderOverlay />
                             <Outlet />
-                            <MessageCall target={targetUser} />
+                            <SupportWidget targetUser={targetUser} />
                         </main>
-
-
                         <footer className="bg-white border-t border-gray-200 px-6 py-3">
                             <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-gray-500">
                                 <p>© 2025 E-Learning System. All rights reserved.</p>
-                                
+
                             </div>
                         </footer>
                     </section>

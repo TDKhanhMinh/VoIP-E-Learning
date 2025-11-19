@@ -19,6 +19,7 @@ import { authService } from "../services/authService";
 import { LoadingProvider } from "../context/LoadingContext";
 import LoaderOverlay from "../components/LoaderOverlay";
 import MessageCall from "../components/MessageCall";
+import SupportWidget from "../components/SupportedWidget";
 
 function AdminLayout() {
   const [open, setOpen] = useState(true);
@@ -59,9 +60,8 @@ function AdminLayout() {
     <LoadingProvider>
       <div className="flex h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-indigo-50">
         <div
-          className={`bg-white shadow-2xl text-gray-800 transition-all duration-300 flex flex-col border-r border-gray-200 ${
-            open ? "w-72" : "w-20"
-          }`}
+          className={`bg-white shadow-2xl text-gray-800 transition-all duration-300 flex flex-col border-r border-gray-200 ${open ? "w-72" : "w-20"
+            }`}
         >
           <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 py-5 border-b border-white/20">
             <div className="flex items-center justify-between">
@@ -96,18 +96,16 @@ function AdminLayout() {
                   <li key={item.path}>
                     <Link
                       to={item.path}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${
-                        active
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${active
                           ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-200"
                           : "text-gray-600 hover:bg-indigo-50 hover:text-indigo-600"
-                      }`}
+                        }`}
                     >
                       <Icon
-                        className={`text-xl ${
-                          active
+                        className={`text-xl ${active
                             ? "text-white"
                             : "text-gray-500 group-hover:text-indigo-600"
-                        }`}
+                          }`}
                       />
                       {open && (
                         <span className="font-medium">{item.label}</span>
@@ -157,7 +155,7 @@ function AdminLayout() {
                 theme="colored"
               />
               <LoaderOverlay />
-              <MessageCall target={targetUser} />
+              <SupportWidget targetUser={targetUser} />
               <Outlet />
             </div>
           </main>

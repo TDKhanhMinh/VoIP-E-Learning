@@ -289,11 +289,10 @@ export default function Forum() {
               <div className="space-y-2">
                 <button
                   onClick={() => setSelectedTopic(null)}
-                  className={`w-full text-left px-3 py-2 rounded transition ${
-                    !selectedTopic
+                  className={`w-full text-left px-3 py-2 rounded transition ${!selectedTopic
                       ? "bg-blue-100 text-blue-700 font-medium"
                       : "hover:bg-gray-100"
-                  }`}
+                    }`}
                 >
                   Tất cả
                 </button>
@@ -301,11 +300,10 @@ export default function Forum() {
                   <div key={topic._id} className="flex items-center gap-2">
                     <button
                       onClick={() => setSelectedTopic(topic._id)}
-                      className={`flex-1 text-left px-3 py-2 rounded transition ${
-                        selectedTopic === topic._id
+                      className={`flex-1 text-left px-3 py-2 rounded transition ${selectedTopic === topic._id
                           ? "bg-blue-100 text-blue-700 font-medium"
                           : "hover:bg-gray-100"
-                      }`}
+                        }`}
                     >
                       {topic.title}
                     </button>
@@ -446,7 +444,7 @@ export default function Forum() {
                     </div>
                     <p className="text-gray-700 line-clamp-2">{post.content}</p>
                     <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
-                      <span>💬 {post.comments?.length || 0} bình luận</span>
+                      <span> {post.comments?.length || 0} bình luận</span>
                       {canApprove && post.status === "pending" && (
                         <div className="flex gap-2 ml-auto">
                           <button

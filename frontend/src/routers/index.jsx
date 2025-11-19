@@ -41,6 +41,8 @@ import TestQuestion from "../pages/Teacher/TestQuestion";
 import TestResult from "../pages/Teacher/TestResult";
 import Forum from "../components/Forum";
 import { MdOutlineForum } from "react-icons/md";
+import ManageStudentsChats from "../pages/Teacher/ManageStudentsChats";
+import ManageTeacherChats from "../pages/Student/ManageTeacherChats";
 
 const publicRoutes = createBrowserRouter([
   {
@@ -53,6 +55,40 @@ const publicRoutes = createBrowserRouter([
       {
         path: "meet-room/:id",
         element: <OnlineClassroom />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout />,
+    path: "home",
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "attendance",
+        element: <Attendance />,
+      },
+      {
+        path: "chat",
+        element: <ManageTeacherChats />,
+      },
+      {
+        path: "notification",
+        element: <Notification />,
+      },
+      {
+        path: "online-test",
+        element: <OnlineTest />,
+      },
+      {
+        path: "class-details/:id",
+        element: <ClassDetails />,
+      },
+      {
+        path: "exam/:test_id",
+        element: <ExamScreen />,
       },
     ],
   },
@@ -115,13 +151,11 @@ const publicRoutes = createBrowserRouter([
         path: "attendances",
         element: <ManageAttendance />,
       },
-
       {
         path: "forum",
         element: <Forum />,
         icon: MdOutlineForum,
       },
-
       {
         path: "test-results/:testId",
         element: <TestResult />,
@@ -133,6 +167,10 @@ const publicRoutes = createBrowserRouter([
       {
         path: "submissions/:id",
         element: <ManageSubmissions />,
+      },
+      {
+        path: "chat",
+        element: <ManageStudentsChats />,
       },
       {
         path: "submissions",

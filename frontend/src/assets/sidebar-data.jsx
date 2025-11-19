@@ -2,12 +2,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLaptop,
   faListCheck,
-  faCommentDots,
 } from "@fortawesome/free-solid-svg-icons";
 import { LuUserRoundCheck } from "react-icons/lu";
 import { IoHomeOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { FaForumbee } from "react-icons/fa";
+import { IoChatbubblesOutline } from "react-icons/io5";
+import { FaRegComment } from "react-icons/fa";
 export const SIDEBAR_DATA = [
   {
     title: "Trang chủ",
@@ -37,7 +37,12 @@ export const SIDEBAR_DATA = [
   },
   {
     title: "Diễn đàn",
-    icon: <FontAwesomeIcon icon={faCommentDots} />,
-    to: "/home/forum",
+    icon: <FaRegComment />,
+    to: "/forum",
+  },
+  {
+    title: "Chat",
+    icon: <IoChatbubblesOutline />,
+    to: "/home/chat",
   },
 ];

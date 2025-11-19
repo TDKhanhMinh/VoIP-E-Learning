@@ -1,5 +1,5 @@
-import { userService } from './../../services/userService';
-import { chatService } from './../../services/chatService';
+import { userService } from '../../services/userService';
+import { chatService } from '../../services/chatService';
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 import { Send, MessageCircle, User, Circle, Clock } from "lucide-react";
@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { formatTime } from '../../utils/formatTime';
 import ConversationHeaderDetails from '../../components/ConversationHeaderDetails';
 
-const ManageChats = () => {
+const ManageTeacherChats = () => {
     const userID = sessionStorage.getItem("userId").split('"').join('').toString();
     const [conversations, setConversations] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
@@ -194,9 +194,8 @@ const ManageChats = () => {
                 const sortedConversations = response.sort((a, b) => {
                     return new Date(b.updatedAt) - new Date(a.updatedAt);
                 });
-
+                console.log("Conversations", conversations);
                 setConversations(sortedConversations);
-
                 const unreadCountsData = {};
                 for (const conv of sortedConversations) {
                     try {
@@ -335,15 +334,8 @@ const ManageChats = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="mt-4">
             <div className="container px-4 py-1 mx-auto">
-
-                <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800">
-                        Hộp thư hỗ trợ
-                    </h1>
-                </div>
-
                 <div className="overflow-hidden bg-white shadow-lg rounded-xl">
                     <div className="flex h-[calc(100vh-180px)]">
 
@@ -409,6 +401,7 @@ const ManageChats = () => {
                                                             unreadCount={unreadCount}
                                                             formatLastMessageTime={formatLastMessageTime}
                                                         />
+
 
                                                         {conv.lastMessage ? (
                                                             <p className={`mt-2 text-sm truncate ${unreadCount > 0 ? "text-gray-800 font-bold" : "text-gray-600"
@@ -601,4 +594,4 @@ const ManageChats = () => {
     );
 };
 
-export default ManageChats;
+export default ManageTeacherChats;

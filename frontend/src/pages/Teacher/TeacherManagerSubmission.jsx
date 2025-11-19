@@ -26,7 +26,6 @@ export default function TeacherManageSubmission() {
         if (teacherId) fetchAllClasses();
     }, [teacherId]);
 
-    // Lọc lớp theo học kỳ
     const filteredClasses =
         selectedSemester === "all"
             ? teacherClasses
