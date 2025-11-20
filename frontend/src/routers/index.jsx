@@ -57,10 +57,6 @@ const publicRoutes = createBrowserRouter([
     ],
   },
   {
-    element: <ForumLayout />,
-    path: "forum",
-  },
-  {
     element: <AdminLayout />,
     path: "admin",
     children: [
@@ -177,6 +173,40 @@ const publicRoutes = createBrowserRouter([
       {
         path: "class-details/:id/tests/:testId",
         element: <TestQuestion />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout />,
+    path: "home",
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "attendance",
+        element: <Attendance />,
+      },
+      {
+        path: "notification",
+        element: <Notification />,
+      },
+      {
+        path: "online-test",
+        element: <OnlineTest />,
+      },
+      {
+        path: "class-details/:id",
+        element: <ClassDetails />,
+      },
+      {
+        path: "exam/:test_id",
+        element: <ExamScreen />,
+      },
+      {
+        path: "forum",
+        element: <Forum />,
       },
     ],
   },

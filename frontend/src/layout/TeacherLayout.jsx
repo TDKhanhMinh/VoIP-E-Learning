@@ -64,7 +64,7 @@ export default function TeacherLayout() {
     },
     { path: "/teacher/submissions", icon: FaFileAlt, label: "Bài nộp" },
     { path: "/teacher/notifications", icon: FaBell, label: "Thông báo" },
-    { path: "/forum", icon: MdOutlineForum, label: "Diễn đàn" },
+    { path: "/teacher/forum", icon: MdOutlineForum, label: "Diễn đàn" },
   ];
   useEffect(() => {
     const fetchTeacherInfo = async () => {

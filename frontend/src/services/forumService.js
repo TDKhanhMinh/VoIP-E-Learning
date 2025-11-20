@@ -39,7 +39,7 @@ export const forumService = {
   },
 
   getPostById: async (id) => {
-    const res = await http.get(`/forum/posts/${id}`, { cache: false });
+    const res = await http.get(`/post/forum/${id}`, { cache: false });
     return res.data;
   },
 
@@ -54,27 +54,29 @@ export const forumService = {
   },
 
   updatePost: async (id, data) => {
-    const res = await http.put(`/post/${id}`, data);
+    const res = await http.put(`/post/forum/${id}`, data);
     return res.data;
   },
 
   deletePost: async (id) => {
-    const res = await http.delete(`/forum/posts/${id}`);
+    const res = await http.delete(`/post/forum/${id}`);
     return res.data;
   },
 
   approvePost: async (id) => {
-    const res = await http.patch(`/forum/posts/${id}/approve`);
+    const res = await http.patch(`/post/forum/${id}/approve`);
     return res.data;
   },
 
   rejectPost: async (id) => {
-    const res = await http.patch(`/forum/posts/${id}/reject`);
+    const res = await http.patch(`/post/forum/${id}/reject`);
     return res.data;
   },
 
-  addComment: async (postId, content) => {
-    const res = await http.post(`/forum/posts/${postId}/comments`, {
+  addComment: async (postId, author_id, author_name, content) => {
+    const res = await http.post(`/comment/${postId}`, {
+      author_id,
+      author_name,
       content,
     });
     return res.data;

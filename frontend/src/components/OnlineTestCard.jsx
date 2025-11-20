@@ -136,7 +136,8 @@ const OnlineTestCard = ({ data, role = "student", refreshKey }) => {
           <div className={`${role === "student" ? "block" : "hidden"} mt-2`}>
             <button
               onClick={() => {
-                navigate(`/home/exam/${data._id}`);
+                const timestamp = Date.now();
+                navigate(`/home/exam/${data._id}?t=${timestamp}`);
               }}
               disabled={!data.available || attempts.length >= data.attempts}
               className={`w-full  py-2 px-4 rounded-md ${

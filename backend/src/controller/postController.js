@@ -43,3 +43,37 @@ export const deletePost = async (req, res) => {
   await PostService.deletePost(req.params.id);
   res.json({ message: "Post deleted successfully" });
 };
+
+export const getPostById = async (req, res) => {
+  try {
+    const post = await PostService.getPostById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const approvePost = async (req, res) => {
+  try {
+    const post = await PostService.updatePost(req.params.id, {
+      status: "approved",
+    });
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const rejectPost = async (req, res) => {
+  try {
+    const post = await PostService.updatePost(req.params.id, {
+      status: "rejected",
+    });
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

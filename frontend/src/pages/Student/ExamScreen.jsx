@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { testService } from "../../services/testService";
 import { testSessionService } from "../../services/testSessionService";
 import { toast } from "react-toastify";
 export default function ExamScreen() {
   const { test_id } = useParams();
+  const location = useLocation();
   const [test, setTest] = useState(null);
   const [testSession, setTestSession] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -13,14 +14,30 @@ export default function ExamScreen() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Reset state mỗi khi vào lại trang
+    setTest(null);
+    setTestSession(null);
+    setCurrentIndex(0);
+    setAnswers({});
+    setTimeLeft(0);
+
     const fetchData = async () => {
       try {
+        console.log("Fetching test and session...");
         const testData = await testService.getTestById(test_id);
         setTest(testData);
 
         const sessionRes =
           await testSessionService.getTestSessionsByTestAndStudent(test_id);
         const session = sessionRes[0];
+
+        if (!session) {
+          toast.error("Không thể tải phiên làm bài.");
+          navigate("/home/online-test", { state: { refreshAt: Date.now() } });
+          return;
+        }
+
+        console.log("Session loaded:", session);
 
         const savedAnswers = {};
         session.questions.forEach((q) => {
@@ -43,7 +60,8 @@ export default function ExamScreen() {
       }
     };
     fetchData();
-  }, [test_id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [test_id, location.key]);
 
   const handleSelect = async (questionId, optionId) => {
     try {
@@ -62,7 +80,14 @@ export default function ExamScreen() {
     try {
       await testService.createTestAttempt(testSession._id);
       toast.success("Nộp bài thành công!");
-      navigate("/home/online-test", { state: { refreshAt: Date.now() } });
+      // Reset state để clear cache
+      setTest(null);
+      setTestSession(null);
+      setAnswers({});
+      navigate("/home/online-test", {
+        state: { refreshAt: Date.now() },
+        replace: true,
+      });
     } catch (err) {
       console.error(err);
     }

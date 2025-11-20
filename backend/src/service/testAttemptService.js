@@ -49,7 +49,15 @@ export const createTestAttempt = async (sessionId) => {
 
   const attempt = new TestAttempt(data);
   await attempt.save();
+
   await TestSession.findByIdAndDelete(sessionId);
+
+  await TestSession.deleteMany({
+    test: testSession.test,
+    student: testSession.student,
+    finished: false,
+  });
+
   return attempt;
 };
 
