@@ -7,7 +7,7 @@ export const testSessionService = {
   },
 
   updateTestSession: async (sessionId, data) => {
-    const res = await http.patch(`/test-session/${sessionId}`, data);
+    const res = await http.patch(`/test-session/${sessionId}`, data, { silent: true });
     return res.data;
   },
 };

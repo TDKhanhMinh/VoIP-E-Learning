@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { classService } from "../../services/classService";
-import { BsCameraVideo } from "react-icons/bs";
+import { BsCameraVideo, BsChat } from "react-icons/bs";
 import { announcementService } from "../../services/announcementService";
 import NotificationItem from "../../components/NotificationItem";
 import CreatePostModal from "../../components/PostModal";
 import { postService } from "../../services/postService";
 import { io } from "socket.io-client";
 import PostItem from "../../components/PostItems";
+import ChatWithTeacher from "../../components/ChatWithTeacher";
+import { userService } from "../../services/userService";
 export default function ClassDetails() {
     const { id } = useParams();
     const [classInfo, setClassInfo] = useState(null);
+    const [teacher, setTeacher] = useState(null)
     const [notifications, setNotifications] = useState([]);
     const [openModal, setOpenModal] = useState(false);
     const [posts, setPosts] = useState([]);
@@ -38,7 +41,12 @@ export default function ClassDetails() {
         try {
             setNotifications(await announcementService.getAnnouncementByClassId(id));
             console.log("Notifications ", await announcementService.getAnnouncementByClassId(id));
-            setClassInfo(await classService.getClassById(id));
+            const classDetails = await classService.getClassById(id)
+            setClassInfo(classDetails);
+            console.log("Class info", await classService.getClassById(id));
+            console.log("teacher info", await userService.getUserById(classDetails.teacher));
+            setTeacher(await userService.getUserById(classDetails.teacher));
+
         } catch (err) {
             console.log(err);
         }
@@ -52,7 +60,7 @@ export default function ClassDetails() {
                 <div className="p-8 text-white" >
                     <h1 className="text-3xl font-semibold truncate">{classInfo.name}</h1>
                     <p className="text-lg mt-1 opacity-95">
-                        GV: {classInfo.teacher?.full_name} –{" "}
+                        GV: {teacher?.full_name} –{" "}
                         {classInfo.schedule?.map((s) => `Thứ ${s.dayOfWeek}, Ca ${s.shift}`).join("; ")} –{" "}
                         phòng {classInfo.room}
                     </p>
@@ -66,6 +74,7 @@ export default function ClassDetails() {
                             Vào phòng
                         </button>
                     </div>
+                    <ChatWithTeacher TEACHER_ID={teacher?._id} />
                 </div>
 
                 <div className="mt-6">

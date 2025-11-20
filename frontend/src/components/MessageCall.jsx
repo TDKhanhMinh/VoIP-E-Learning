@@ -34,7 +34,7 @@ export default function MessageCall({ target }) {
                 disabled={!registered}
                 onClick={() => actions.startCall(targetSip, target?.name || targetSip)}
                 title={registered ? `Gọi ${target?.name || targetSip}` : "Đang kết nối SIP..."}
-                className={`fixed bottom-6 right-6 p-4 rounded-full shadow-xl transition transform hover:scale-110
+                className={`p-4 rounded-full shadow-xl transition transform hover:scale-110
                     ${registered ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-gray-300 text-gray-600 cursor-not-allowed"}
                 `}
             >

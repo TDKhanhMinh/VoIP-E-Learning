@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaPlus, FaEdit, FaTrash, FaCalendarAlt, FaClock, FaGraduationCap, FaUserAltSlash, FaUser } from "react-icons/fa";
 import SemesterModal from "../../components/SemesterModal";
 import { semesterService } from "../../services/semesterService";
@@ -24,11 +24,9 @@ export default function ManageSemester() {
     const currentSemesters = semesters.slice(startIndex, endIndex);
     const totalPages = Math.ceil(semesters.length / itemsPerPage);
 
-    useEffect(() => {
-        fetchSemesters();
-    }, []);
 
-    const fetchSemesters = async () => {
+
+    const fetchSemesters = useCallback(async () => {
         try {
             const data = await semesterService.getAllSemesters();
             const usersData = await userService.getAllUsers();
@@ -37,7 +35,7 @@ export default function ManageSemester() {
         } catch (error) {
             console.error("Error fetching semesters:", error);
         }
-    };
+    }, []);
     const handleLoadSemesterDetails = async (semesterId) => {
         const semester = semesters.find(sem => sem._id === semesterId);
         console.log("Loaded semester detail:", semester);
@@ -48,23 +46,24 @@ export default function ManageSemester() {
         setClasses(filteredClasses);
         setOpenDetail(true);
     }
-    const handleAddSemester = async (semesterData) => {
+    const handleAddSemester = useCallback(async (semesterData) => {
         try {
             if (new Date(semesterData.endDate) < new Date(semesterData.startDate)) {
                 toast.error("Ngày kết thúc phải sau ngày bắt đầu!");
                 return;
             }
             await semesterService.createSemester(semesterData);
-            toast.success("Thêm học kỳ thành công");
-            fetchSemesters();
+            await fetchSemesters();
+            setCurrentPage(1);
             setOpen(false);
+            toast.success("Thêm học kỳ thành công");
         } catch (error) {
             toast.error(error?.response?.data?.message || "Lỗi khi thêm học kỳ");
             console.error("Error adding semester:", error);
         }
-    };
+    }, [fetchSemesters]);
 
-    const handleUpdateSemester = async (semesterData) => {
+    const handleUpdateSemester = useCallback(async (semesterData) => {
         try {
             if (new Date(semesterData.endDate) < new Date(semesterData.startDate)) {
                 toast.error("Ngày kết thúc phải sau ngày bắt đầu!");
@@ -75,16 +74,16 @@ export default function ManageSemester() {
 
             const data = await semesterService.updateSemester(selectedSemester._id, payload);
             console.log("Semester update:", data);
-            toast.success("Cập nhật học kỳ thành công");
             setSelectedSemester(null);
-            fetchSemesters();
+            await fetchSemesters();
+            setCurrentPage(1);
             setOpen(false);
+            toast.success("Cập nhật học kỳ thành công");
         } catch (error) {
             toast.error(error?.response?.data?.message || "Lỗi khi cập nhật học kỳ");
             console.error("Error update semester:", error);
         }
-    };
-
+    }, [fetchSemesters, selectedSemester?._id]);
     const getActiveSemesters = () => {
         const now = new Date();
         return semesters.filter(sem => {
@@ -112,7 +111,9 @@ export default function ManageSemester() {
             return { label: "Active", color: "bg-green-100 text-green-700 border-green-200" };
         }
     };
-
+    useEffect(() => {
+        fetchSemesters();
+    }, [fetchSemesters]);
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 p-6">
             <div className="max-w-7xl mx-auto">
@@ -200,7 +201,7 @@ export default function ManageSemester() {
                                 const status = getSemesterStatus(sem.start_date, sem.end_date);
                                 return (
                                     <div
-                                        key={sem.id}
+                                        key={sem._id}
                                         className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all"
                                     >
                                         <div onClick={() => {
@@ -321,8 +322,6 @@ export default function ManageSemester() {
                     />
                 )}
             </div>
-
-
             <SemesterModal
                 isOpen={open}
                 onClose={() => {

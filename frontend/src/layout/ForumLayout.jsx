@@ -35,7 +35,7 @@ export default function TeacherLayout() {
         <div className="flex-1 flex flex-col min-w-0">
           <header className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-40">
             <div className="flex justify-between items-center px-6 py-4">
-              <div className="flex items-center gap-4 flex-1 max-w-xl">
+              <div onClick={() => navigate('/teacher')} className="flex items-center gap-4 flex-1 max-w-xl hover:cursor-pointer">
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   Hệ thống E-learning
                 </h1>

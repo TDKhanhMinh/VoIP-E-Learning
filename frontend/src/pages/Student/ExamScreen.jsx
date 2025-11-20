@@ -14,7 +14,6 @@ export default function ExamScreen() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Reset state mỗi khi vào lại trang
     setTest(null);
     setTestSession(null);
     setCurrentIndex(0);
@@ -64,13 +63,13 @@ export default function ExamScreen() {
   }, [test_id, location.key]);
 
   const handleSelect = async (questionId, optionId) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
+
     try {
       const data = {
         questions: [{ questionId, selectedOptionId: optionId }],
       };
-      await testSessionService.updateTestSession(testSession._id, data);
-
-      setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
+      testSessionService.updateTestSession(testSession._id, data);
     } catch (err) {
       console.error(err);
     }
@@ -80,7 +79,6 @@ export default function ExamScreen() {
     try {
       await testService.createTestAttempt(testSession._id);
       toast.success("Nộp bài thành công!");
-      // Reset state để clear cache
       setTest(null);
       setTestSession(null);
       setAnswers({});

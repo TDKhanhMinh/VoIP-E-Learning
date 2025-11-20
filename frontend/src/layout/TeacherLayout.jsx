@@ -22,10 +22,10 @@ import MessageCall from "../components/MessageCall";
 import ChatWithAdmin from "./../components/ChatWithAdmin";
 import {
   MdChecklistRtl,
+  MdOutlineChatBubbleOutline,
   MdOutlineForum,
-  MdOutlineScore,
-  MdScore,
 } from "react-icons/md";
+import SupportWidget from "../components/SupportedWidget";
 
 export default function TeacherLayout() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -65,6 +65,11 @@ export default function TeacherLayout() {
     { path: "/teacher/submissions", icon: FaFileAlt, label: "Bài nộp" },
     { path: "/teacher/notifications", icon: FaBell, label: "Thông báo" },
     { path: "/teacher/forum", icon: MdOutlineForum, label: "Diễn đàn" },
+    {
+      path: "/teacher/chat",
+      icon: MdOutlineChatBubbleOutline,
+      label: "Quản lý chat",
+    },
   ];
   useEffect(() => {
     const fetchTeacherInfo = async () => {
@@ -254,8 +259,7 @@ export default function TeacherLayout() {
                 theme="colored"
               />
               <LoaderOverlay />
-              <MessageCall target={targetUser} />
-              <ChatWithAdmin />
+              <SupportWidget targetUser={targetUser} />
               <Outlet />
             </div>
           </main>
