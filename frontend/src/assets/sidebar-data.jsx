@@ -1,8 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLaptop,
-  faListCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLaptop, faListCheck } from "@fortawesome/free-solid-svg-icons";
 import { LuUserRoundCheck } from "react-icons/lu";
 import { IoHomeOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -38,7 +35,7 @@ export const SIDEBAR_DATA = [
   {
     title: "Diễn đàn",
     icon: <FaRegComment />,
-    to: "/forum",
+    to: "/home/forum",
   },
   {
     title: "Chat",

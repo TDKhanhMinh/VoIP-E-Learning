@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { forumService } from "../services/forumService";
+import { commentService } from "../services/commentService";
 import { toast } from "react-toastify";
+import TopicSidebar from "./Forum/TopicSidebar";
+import PostList from "./Forum/PostList";
+import TopicModal from "./Forum/TopicModal";
+import PostModal from "./Forum/PostModal";
+import PostDetailModal from "./Forum/PostDetailModal";
 
 export default function Forum() {
   const user = {
@@ -9,7 +15,6 @@ export default function Forum() {
     role: sessionStorage.getItem("role")?.replace(/['"]/g, ""),
     email: sessionStorage.getItem("email")?.replace(/['"]/g, ""),
   };
-  console.log("user", user);
   const [topics, setTopics] = useState([]);
   const [posts, setPosts] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
@@ -17,7 +22,6 @@ export default function Forum() {
   const [showTopicModal, setShowTopicModal] = useState(false);
   const [showPostModal, setShowPostModal] = useState(false);
   const [showPostDetail, setShowPostDetail] = useState(false);
-  const [newComment, setNewComment] = useState("");
   const [filter, setFilter] = useState("all");
 
   const [topicForm, setTopicForm] = useState({ title: "", description: "" });
@@ -157,47 +161,83 @@ export default function Forum() {
     }
   };
 
-  const handleAddComment = (postId) => {
-    if (!newComment.trim()) return;
-    const newCommentObj = {
-      _id: Date.now().toString(),
-      author: { _id: user._id, full_name: user.full_name, role: user.role },
-      content: newComment,
-      createdAt: new Date().toISOString(),
-    };
-    setPosts(
-      posts.map((p) =>
-        p._id === postId
-          ? { ...p, comments: [...p.comments, newCommentObj] }
-          : p
-      )
-    );
-    if (selectedPost?._id === postId) {
-      setSelectedPost({
-        ...selectedPost,
-        comments: [...selectedPost.comments, newCommentObj],
-      });
+  const handleAddComment = async (postId, commentText) => {
+    if (!commentText.trim()) return;
+
+    try {
+      await forumService.addComment(
+        postId,
+        user._id,
+        user.full_name,
+        commentText
+      );
+
+      if (selectedPost?._id === postId) {
+        const updatedPost = await forumService.getPostById(postId);
+        setSelectedPost(updatedPost);
+
+        setPosts(
+          posts.map((p) =>
+            p._id === postId
+              ? { ...p, commentCount: updatedPost.comments?.length || 0 }
+              : p
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Failed to add comment:", err);
+      toast.error("Không thể thêm bình luận!");
     }
-    setNewComment("");
-    alert("Đã thêm bình luận!");
   };
 
-  const handleDeleteComment = (postId, commentId) => {
+  const handleDeleteComment = async (postId, commentId) => {
     if (!window.confirm("Xóa bình luận này?")) return;
-    setPosts(
-      posts.map((p) =>
-        p._id === postId
-          ? { ...p, comments: p.comments.filter((c) => c._id !== commentId) }
-          : p
-      )
-    );
-    if (selectedPost?._id === postId) {
-      setSelectedPost({
-        ...selectedPost,
-        comments: selectedPost.comments.filter((c) => c._id !== commentId),
-      });
+
+    try {
+      await commentService.deleteComment(commentId);
+
+      const updatedPost = await forumService.getPostById(postId);
+      setSelectedPost(updatedPost);
+
+      setPosts(
+        posts.map((p) =>
+          p._id === postId
+            ? { ...p, commentCount: updatedPost.comments?.length || 0 }
+            : p
+        )
+      );
+
+      toast.success("Đã xóa bình luận!");
+    } catch (err) {
+      console.error("Failed to delete comment:", err);
+      toast.error("Không thể xóa bình luận!");
     }
-    alert("Đã xóa bình luận!");
+  };
+
+  const handleEditComment = async (postId, commentId, newContent) => {
+    if (!newContent.trim()) return;
+
+    try {
+      await commentService.updateComment(commentId, {
+        content: newContent,
+      });
+
+      const updatedPost = await forumService.getPostById(postId);
+      setSelectedPost(updatedPost);
+
+      setPosts(
+        posts.map((p) =>
+          p._id === postId
+            ? { ...p, commentCount: updatedPost.comments?.length || 0 }
+            : p
+        )
+      );
+
+      toast.success("Đã cập nhật bình luận!");
+    } catch (err) {
+      console.error("Failed to update comment:", err);
+      toast.error("Không thể cập nhật bình luận!");
+    }
   };
 
   const openEditTopic = (topic) => {
@@ -216,9 +256,16 @@ export default function Forum() {
     setShowPostModal(true);
   };
 
-  const openPostDetail = (post) => {
-    setSelectedPost(post);
-    setShowPostDetail(true);
+  const openPostDetail = async (post) => {
+    try {
+      const fullPost = await forumService.getPostById(post._id);
+      setSelectedPost(fullPost);
+      setShowPostDetail(true);
+    } catch (err) {
+      console.error("Failed to fetch post details:", err);
+      setSelectedPost(post);
+      setShowPostDetail(true);
+    }
   };
 
   const filteredPosts = posts.filter((post) => {
@@ -229,26 +276,6 @@ export default function Forum() {
     if (!canApprove && postStatus !== "approved") return false;
     return true;
   });
-
-  const getStatusBadge = (status) => {
-    const styles = {
-      pending: "bg-yellow-100 text-yellow-800",
-      approved: "bg-green-100 text-green-800",
-      rejected: "bg-red-100 text-red-800",
-    };
-    const labels = {
-      pending: "Chờ duyệt",
-      approved: "Đã duyệt",
-      rejected: "Từ chối",
-    };
-    return (
-      <span
-        className={`px-2 py-1 rounded text-xs font-medium ${styles[status]}`}
-      >
-        {labels[status]}
-      </span>
-    );
-  };
 
   return (
     <div className="bg-gradient-to-br from-gray-50 via-blue-50 p-6">
@@ -281,451 +308,69 @@ export default function Forum() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">
-                Chủ Đề
-              </h2>
-              <div className="space-y-2">
-                <button
-                  onClick={() => setSelectedTopic(null)}
-                  className={`w-full text-left px-3 py-2 rounded transition ${!selectedTopic
-                      ? "bg-blue-100 text-blue-700 font-medium"
-                      : "hover:bg-gray-100"
-                    }`}
-                >
-                  Tất cả
-                </button>
-                {topics.map((topic) => (
-                  <div key={topic._id} className="flex items-center gap-2">
-                    <button
-                      onClick={() => setSelectedTopic(topic._id)}
-                      className={`flex-1 text-left px-3 py-2 rounded transition ${selectedTopic === topic._id
-                          ? "bg-blue-100 text-blue-700 font-medium"
-                          : "hover:bg-gray-100"
-                        }`}
-                    >
-                      {topic.title}
-                    </button>
-                    {canCreateTopic && (
-                      <button
-                        onClick={() => openEditTopic(topic)}
-                        className="p-1 hover:bg-gray-200 rounded"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="size-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                          />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {canApprove && (
-              <div className="bg-white rounded-lg shadow-md p-4 mt-4">
-                <h3 className="font-semibold mb-3 text-gray-800">
-                  Lọc theo trạng thái
-                </h3>
-                <select
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                  className="w-full p-2 border rounded"
-                >
-                  <option value="all">Tất cả</option>
-                  <option value="pending">Chờ duyệt</option>
-                  <option value="approved">Đã duyệt</option>
-                  <option value="rejected">Từ chối</option>
-                </select>
-              </div>
-            )}
-          </div>
+          <TopicSidebar
+            topics={topics}
+            selectedTopic={selectedTopic}
+            onTopicSelect={setSelectedTopic}
+            onEditTopic={openEditTopic}
+            canCreateTopic={canCreateTopic}
+            canApprove={canApprove}
+            filter={filter}
+            onFilterChange={setFilter}
+          />
 
           <div className="lg:col-span-3">
-            {filteredPosts.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-md p-8 justify-center h-full flex items-center text-gray-500">
-                Chưa có bài viết nào
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {filteredPosts.map((post) => (
-                  <div
-                    key={post._id}
-                    className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition cursor-pointer"
-                    onClick={() => openPostDetail(post)}
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-1">
-                          {post.title}
-                        </h3>
-                        <div className="flex items-center gap-3 text-sm text-gray-600">
-                          <span className="font-medium">
-                            {post.author?.full_name}
-                          </span>
-                          <span>•</span>
-                          <span>
-                            {new Date(post.createdAt).toLocaleDateString(
-                              "vi-VN"
-                            )}
-                          </span>
-                          {post.topic && (
-                            <>
-                              <span>•</span>
-                              <span className="text-blue-600">
-                                {post.topic.title}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex gap-2 items-center">
-                        {getStatusBadge(post.status)}
-                        {(post.author?._id === user?._id || canApprove) && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openEditPost(post);
-                            }}
-                            className="text-blue-600 hover:text-blue-800 px-2"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="size-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                              />
-                            </svg>
-                          </button>
-                        )}
-                        {(post.author?._id === user?._id || canApprove) && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeletePost(post._id);
-                            }}
-                            className="text-red-600 hover:text-red-800 px-2"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="size-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                              />
-                            </svg>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    <p className="text-gray-700 line-clamp-2">{post.content}</p>
-                    <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
-                      <span> {post.comments?.length || 0} bình luận</span>
-                      {canApprove && post.status === "pending" && (
-                        <div className="flex gap-2 ml-auto">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleApprovePost(post._id);
-                            }}
-                            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                          >
-                            Duyệt
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRejectPost(post._id);
-                            }}
-                            className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                          >
-                            Từ chối
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            <PostList
+              posts={filteredPosts}
+              user={user}
+              canApprove={canApprove}
+              onPostClick={openPostDetail}
+              onEditPost={openEditPost}
+              onDeletePost={handleDeletePost}
+              onApprovePost={handleApprovePost}
+              onRejectPost={handleRejectPost}
+            />
           </div>
         </div>
       </div>
 
-      {showTopicModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h2 className="text-2xl font-bold mb-4">
-              {editingTopic ? "Sửa Chủ Đề" : "Tạo Chủ Đề Mới"}
-            </h2>
-            <form onSubmit={handleCreateTopic}>
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Tiêu đề</label>
-                <input
-                  type="text"
-                  value={topicForm.title}
-                  onChange={(e) =>
-                    setTopicForm({ ...topicForm, title: e.target.value })
-                  }
-                  className="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Mô tả</label>
-                <textarea
-                  required
-                  value={topicForm.description}
-                  onChange={(e) =>
-                    setTopicForm({ ...topicForm, description: e.target.value })
-                  }
-                  className="w-full p-2 border rounded h-24"
-                />
-              </div>
-              <div className="flex gap-3 justify-end">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowTopicModal(false);
-                    setEditingTopic(null);
-                  }}
-                  className="px-4 py-2 border rounded hover:bg-gray-100"
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  {editingTopic ? "Cập nhật" : "Tạo"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <TopicModal
+        show={showTopicModal}
+        onClose={() => {
+          setShowTopicModal(false);
+          setEditingTopic(null);
+        }}
+        onSubmit={handleCreateTopic}
+        topicForm={topicForm}
+        setTopicForm={setTopicForm}
+        editingTopic={editingTopic}
+      />
 
-      {showPostModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold mb-4">
-              {editingPost ? "Sửa Bài Viết" : "Tạo Bài Viết Mới"}
-            </h2>
-            <form onSubmit={handleCreatePost}>
-              {!editingPost && (
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2">Chủ đề</label>
-                  <select
-                    value={postForm.topic}
-                    onChange={(e) =>
-                      setPostForm({ ...postForm, topic: e.target.value })
-                    }
-                    className="w-full p-2 border rounded"
-                    required
-                  >
-                    <option value="">Chọn chủ đề</option>
-                    {topics.map((topic) => (
-                      <option key={topic._id} value={topic._id}>
-                        {topic.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Tiêu đề</label>
-                <input
-                  type="text"
-                  value={postForm.title}
-                  onChange={(e) =>
-                    setPostForm({ ...postForm, title: e.target.value })
-                  }
-                  className="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Nội dung</label>
-                <textarea
-                  value={postForm.content}
-                  onChange={(e) =>
-                    setPostForm({ ...postForm, content: e.target.value })
-                  }
-                  className="w-full p-2 border rounded h-40"
-                  required
-                />
-              </div>
-              <div className="flex gap-3 justify-end">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowPostModal(false);
-                    setEditingPost(null);
-                  }}
-                  className="px-4 py-2 border rounded hover:bg-gray-100"
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  {editingPost ? "Cập nhật" : "Tạo"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <PostModal
+        show={showPostModal}
+        onClose={() => {
+          setShowPostModal(false);
+          setEditingPost(null);
+        }}
+        onSubmit={handleCreatePost}
+        postForm={postForm}
+        setPostForm={setPostForm}
+        editingPost={editingPost}
+        topics={topics}
+      />
 
-      {showPostDetail && selectedPost && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex-1">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                    {selectedPost.title}
-                  </h2>
-                  <div className="flex items-center gap-3 text-sm text-gray-600">
-                    <span className="font-medium">
-                      {selectedPost.author?.full_name}
-                    </span>
-                    <span>•</span>
-                    <span>
-                      {new Date(selectedPost.createdAt).toLocaleDateString(
-                        "vi-VN"
-                      )}
-                    </span>
-                    {selectedPost.topic && (
-                      <>
-                        <span>•</span>
-                        <span className="text-blue-600">
-                          {selectedPost.topic.title}
-                        </span>
-                      </>
-                    )}
-                    <span>•</span>
-                    {getStatusBadge(selectedPost.status)}
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowPostDetail(false)}
-                  className="text-gray-500 hover:text-gray-700 text-2xl"
-                >
-                  ×
-                </button>
-              </div>
-
-              <div className="prose max-w-none mb-6">
-                <p className="text-gray-700 whitespace-pre-wrap">
-                  {selectedPost.content}
-                </p>
-              </div>
-
-              {canApprove && selectedPost.status === "pending" && (
-                <div className="flex gap-3 mb-6 pb-6 border-b">
-                  <button
-                    onClick={() => handleApprovePost(selectedPost._id)}
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                  >
-                    Duyệt bài
-                  </button>
-                  <button
-                    onClick={() => handleRejectPost(selectedPost._id)}
-                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-                  >
-                    Từ chối
-                  </button>
-                </div>
-              )}
-
-              {/* Comments Section */}
-              <div className="border-t pt-6">
-                <h3 className="text-xl font-semibold mb-4">
-                  Bình luận ({selectedPost.comments?.length || 0})
-                </h3>
-
-                {/* Comment Input */}
-                <div className="mb-6">
-                  <textarea
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Viết bình luận..."
-                    className="w-full p-3 border rounded-lg"
-                    rows="3"
-                  />
-                  <button
-                    onClick={() => handleAddComment(selectedPost._id)}
-                    disabled={!newComment.trim()}
-                    className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
-                  >
-                    Gửi bình luận
-                  </button>
-                </div>
-
-                {/* Comments List */}
-                <div className="space-y-4">
-                  {selectedPost.comments?.map((comment) => (
-                    <div
-                      key={comment._id}
-                      className="bg-gray-50 p-4 rounded-lg"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-gray-800">
-                            {comment.author?.full_name}
-                          </span>
-                          <span className="text-sm text-gray-500">
-                            {new Date(comment.createdAt).toLocaleDateString(
-                              "vi-VN"
-                            )}
-                          </span>
-                        </div>
-                        {(comment.author?._id === user?._id || canApprove) && (
-                          <button
-                            onClick={() =>
-                              handleDeleteComment(selectedPost._id, comment._id)
-                            }
-                            className="text-red-600 hover:text-red-800 text-sm"
-                          >
-                            Xóa
-                          </button>
-                        )}
-                      </div>
-                      <p className="text-gray-700">{comment.content}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <PostDetailModal
+        show={showPostDetail}
+        post={selectedPost}
+        user={user}
+        canApprove={canApprove}
+        onClose={() => setShowPostDetail(false)}
+        onApprovePost={handleApprovePost}
+        onRejectPost={handleRejectPost}
+        onAddComment={handleAddComment}
+        onEditComment={handleEditComment}
+        onDeleteComment={handleDeleteComment}
+      />
     </div>
   );
 }

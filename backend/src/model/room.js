@@ -43,37 +43,37 @@ import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
 const participantSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    email: String,
-    name: String,
-    role: { type: String, enum: ["teacher", "student"], default: "student" },
-    joinedAt: { type: Date, default: Date.now },
-    leftAt: { type: Date },
-    duration: Number,
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  email: String,
+  name: String,
+  role: { type: String, enum: ["teacher", "student"], default: "student" },
+  joinedAt: { type: Date, default: Date.now },
+  leftAt: { type: Date },
+  duration: Number,
 });
 
 const roomSchema = new mongoose.Schema(
-    {        
-        classId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Class",
-            required: true,
-        },
-        teacherId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        teacherEmail: String,
-        teacherName: String,
-
-        roomName: { type: String, unique: true }, // đổi từ bridgeId
-        joinCode: { type: String, unique: true }, // sinh khi tạo phòng
-
-        createdAt: { type: Date, default: Date.now },
-        startedAt: Date,
-        endedAt: Date,
-        status: { type: String, enum: ["active", "ended"], default: "active" },
-        participants: [participantSchema],
-        metadata: Object,
+  {
+    classId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Class",
+      required: true,
     },
-    { timestamps: true }
+    teacherId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    teacherEmail: String,
+    teacherName: String,
+
+    roomName: { type: String, unique: true },
+    joinCode: { type: String, unique: true },
+
+    createdAt: { type: Date, default: Date.now },
+    startedAt: Date,
+    endedAt: Date,
+    status: { type: String, enum: ["active", "ended"], default: "active" },
+    participants: [participantSchema],
+    metadata: Object,
+  },
+  { timestamps: true }
 );
 
 export default mongoose.model("Room", roomSchema);

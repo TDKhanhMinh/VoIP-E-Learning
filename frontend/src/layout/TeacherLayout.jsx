@@ -64,8 +64,12 @@ export default function TeacherLayout() {
     },
     { path: "/teacher/submissions", icon: FaFileAlt, label: "Bài nộp" },
     { path: "/teacher/notifications", icon: FaBell, label: "Thông báo" },
-    { path: "/forum", icon: MdOutlineForum, label: "Diễn đàn" },
-    { path: "/teacher/chat", icon: MdOutlineChatBubbleOutline, label: "Quản lý chat" },
+    { path: "/teacher/forum", icon: MdOutlineForum, label: "Diễn đàn" },
+    {
+      path: "/teacher/chat",
+      icon: MdOutlineChatBubbleOutline,
+      label: "Quản lý chat",
+    },
   ];
   useEffect(() => {
     const fetchTeacherInfo = async () => {
@@ -84,8 +88,9 @@ export default function TeacherLayout() {
     <LoadingProvider>
       <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
         <aside
-          className={`${isCollapsed ? "w-20" : "w-72"
-            } bg-white shadow-2xl flex flex-col transition-all duration-300 relative border-r border-gray-200`}
+          className={`${
+            isCollapsed ? "w-20" : "w-72"
+          } bg-white shadow-2xl flex flex-col transition-all duration-300 relative border-r border-gray-200`}
         >
           <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600">
             <div className="flex items-center justify-between">
@@ -120,16 +125,18 @@ export default function TeacherLayout() {
                   <li key={item.path}>
                     <Link
                       to={item.path}
-                      className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group relative ${active
-                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
-                        : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
-                        }`}
+                      className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group relative ${
+                        active
+                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
+                          : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+                      }`}
                     >
                       <Icon
-                        className={`text-xl ${active
-                          ? "text-white"
-                          : "text-gray-500 group-hover:text-blue-600"
-                          }`}
+                        className={`text-xl ${
+                          active
+                            ? "text-white"
+                            : "text-gray-500 group-hover:text-blue-600"
+                        }`}
                       />
                       {!isCollapsed && (
                         <span className="font-medium">{item.label}</span>

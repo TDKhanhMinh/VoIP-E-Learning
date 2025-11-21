@@ -1,10 +1,21 @@
 import { useEffect, useState } from "react";
-import { FaArrowLeft, FaBookOpen, FaPlus, FaEye, FaEdit, FaTrash, FaClock, FaCheckCircle, FaExclamationCircle, FaUsers } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaBookOpen,
+  FaPlus,
+  FaEye,
+  FaEdit,
+  FaTrash,
+  FaClock,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaUsers,
+} from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import AssignmentModal from "../../components/AssignmentModal";
 import { toast } from "react-toastify";
 import { assignmentService } from "../../services/assignmentService";
-import formatDateTime from './../../utils/formatDateTime';
+import formatDateTime from "./../../utils/formatDateTime";
 import ConfirmDialog from "../../components/ConfirmDialog";
 
 export default function ClassAssignment() {
@@ -49,7 +60,10 @@ export default function ClassAssignment() {
 
   const handleUpdateAssignment = async (newAssignment) => {
     try {
-      const data = await assignmentService.updateAssignment(selectedAssignment._id, newAssignment);
+      const data = await assignmentService.updateAssignment(
+        selectedAssignment._id,
+        newAssignment
+      );
       console.log("update Assignment data", data);
       setModalOpen(false);
       fetchAssignments();
@@ -62,7 +76,9 @@ export default function ClassAssignment() {
 
   const handleDeleteAssignment = async () => {
     try {
-      const data = await assignmentService.deleteAssignment(selectedAssignment._id);
+      const data = await assignmentService.deleteAssignment(
+        selectedAssignment._id
+      );
       console.log("delete Assignment data", data);
       setModalOpen(false);
       fetchAssignments();
@@ -75,8 +91,10 @@ export default function ClassAssignment() {
 
   const getSubmissionStatus = (assignment) => {
     const submissionRate = (assignment.submissions / assignment.total) * 100;
-    if (submissionRate >= 80) return { color: "green", label: "Tốt", icon: FaCheckCircle };
-    if (submissionRate >= 50) return { color: "yellow", label: "Trung bình", icon: FaClock };
+    if (submissionRate >= 80)
+      return { color: "green", label: "Tốt", icon: FaCheckCircle };
+    if (submissionRate >= 50)
+      return { color: "yellow", label: "Trung bình", icon: FaClock };
     return { color: "red", label: "Thấp", icon: FaExclamationCircle };
   };
 
@@ -84,18 +102,17 @@ export default function ClassAssignment() {
     return new Date(dueDate) < new Date();
   };
 
-  const filteredAssignments = assignments.filter(a => {
+  const filteredAssignments = assignments.filter((a) => {
     if (filterStatus === "all") return true;
     if (filterStatus === "active") return !isOverdue(a.due_at);
     if (filterStatus === "overdue") return isOverdue(a.due_at);
     return true;
   });
 
-  // Calculate statistics
   const stats = {
     total: assignments.length,
-    active: assignments.filter(a => !isOverdue(a.due_at)).length,
-    overdue: assignments.filter(a => isOverdue(a.due_at)).length,
+    active: assignments.filter((a) => !isOverdue(a.due_at)).length,
+    overdue: assignments.filter((a) => isOverdue(a.due_at)).length,
   };
 
   if (isLoading) {
@@ -112,7 +129,6 @@ export default function ClassAssignment() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        
         <div className="mb-6">
           <button
             onClick={() => navigate(-1)}
@@ -141,13 +157,16 @@ export default function ClassAssignment() {
           </div>
         </div>
 
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium">Tổng bài tập</p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">{stats.total}</p>
+                <p className="text-gray-500 text-sm font-medium">
+                  Tổng bài tập
+                </p>
+                <p className="text-3xl font-bold text-gray-800 mt-2">
+                  {stats.total}
+                </p>
               </div>
               <div className="p-4 bg-blue-100 rounded-xl">
                 <FaBookOpen className="text-blue-600 text-3xl" />
@@ -159,7 +178,9 @@ export default function ClassAssignment() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm font-medium">Đang mở</p>
-                <p className="text-3xl font-bold text-green-600 mt-2">{stats.active}</p>
+                <p className="text-3xl font-bold text-green-600 mt-2">
+                  {stats.active}
+                </p>
               </div>
               <div className="p-4 bg-green-100 rounded-xl">
                 <FaCheckCircle className="text-green-600 text-3xl" />
@@ -171,7 +192,9 @@ export default function ClassAssignment() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm font-medium">Quá hạn</p>
-                <p className="text-3xl font-bold text-red-600 mt-2">{stats.overdue}</p>
+                <p className="text-3xl font-bold text-red-600 mt-2">
+                  {stats.overdue}
+                </p>
               </div>
               <div className="p-4 bg-red-100 rounded-xl">
                 <FaExclamationCircle className="text-red-600 text-3xl" />
@@ -180,40 +203,41 @@ export default function ClassAssignment() {
           </div>
         </div>
 
-        
         <div className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
           <div className="flex gap-2 overflow-x-auto">
             <button
               onClick={() => setFilterStatus("all")}
-              className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${filterStatus === "all"
+              className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
+                filterStatus === "all"
                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
+              }`}
             >
               Tất cả ({stats.total})
             </button>
             <button
               onClick={() => setFilterStatus("active")}
-              className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${filterStatus === "active"
+              className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
+                filterStatus === "active"
                   ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-md"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
+              }`}
             >
               Đang mở ({stats.active})
             </button>
             <button
               onClick={() => setFilterStatus("overdue")}
-              className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${filterStatus === "overdue"
+              className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
+                filterStatus === "overdue"
                   ? "bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
+              }`}
             >
               Quá hạn ({stats.overdue})
             </button>
           </div>
         </div>
 
-        
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           {filteredAssignments.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 px-4">
@@ -221,7 +245,9 @@ export default function ClassAssignment() {
                 <FaBookOpen className="text-blue-600 text-4xl" />
               </div>
               <p className="text-gray-600 font-medium text-lg">
-                {filterStatus === "all" ? "Chưa có bài tập nào" : "Không có bài tập nào"}
+                {filterStatus === "all"
+                  ? "Chưa có bài tập nào"
+                  : "Không có bài tập nào"}
               </p>
               <p className="text-gray-400 text-sm mt-2">
                 {filterStatus === "all"
@@ -255,16 +281,29 @@ export default function ClassAssignment() {
                     const overdueStatus = isOverdue(a.due_at);
 
                     return (
-                      <tr key={a._id || a.id} className="hover:bg-blue-50 transition-colors duration-150">
+                      <tr
+                        key={a._id || a.id}
+                        className="hover:bg-blue-50 transition-colors duration-150"
+                      >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className={`p-3 rounded-xl ${overdueStatus ? "bg-red-100" : "bg-blue-100"
-                              }`}>
-                              <FaBookOpen className={`${overdueStatus ? "text-red-600" : "text-blue-600"
-                                } text-lg`} />
+                            <div
+                              className={`p-3 rounded-xl ${
+                                overdueStatus ? "bg-red-100" : "bg-blue-100"
+                              }`}
+                            >
+                              <FaBookOpen
+                                className={`${
+                                  overdueStatus
+                                    ? "text-red-600"
+                                    : "text-blue-600"
+                                } text-lg`}
+                              />
                             </div>
                             <div>
-                              <p className="font-semibold text-gray-800">{a.title}</p>
+                              <p className="font-semibold text-gray-800">
+                                {a.title}
+                              </p>
                               {overdueStatus && (
                                 <span className="inline-flex items-center gap-1 text-xs text-red-600 mt-1">
                                   <FaExclamationCircle /> Đã quá hạn
@@ -275,8 +314,16 @@ export default function ClassAssignment() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2 text-gray-600">
-                            <FaClock className={overdueStatus ? "text-red-500" : "text-gray-400"} />
-                            <span className={overdueStatus ? "text-red-600 font-medium" : ""}>
+                            <FaClock
+                              className={
+                                overdueStatus ? "text-red-500" : "text-gray-400"
+                              }
+                            />
+                            <span
+                              className={
+                                overdueStatus ? "text-red-600 font-medium" : ""
+                              }
+                            >
                               {formatDateTime(a.due_at)}
                             </span>
                           </div>
@@ -288,24 +335,36 @@ export default function ClassAssignment() {
                                 <span className="text-sm font-medium text-gray-700">
                                   {a.submissions}/{a.total}
                                 </span>
-                                <span className={`text-xs font-semibold text-${status.color}-600`}>
+                                <span
+                                  className={`text-xs font-semibold text-${status.color}-600`}
+                                >
                                   {Math.round((a.submissions / a.total) * 100)}%
                                 </span>
                               </div>
                               <div className="w-full bg-gray-200 rounded-full h-2">
                                 <div
                                   className={`bg-gradient-to-r from-${status.color}-500 to-${status.color}-600 h-2 rounded-full transition-all duration-300`}
-                                  style={{ width: `${(a.submissions / a.total) * 100}%` }}
+                                  style={{
+                                    width: `${
+                                      (a.submissions / a.total) * 100
+                                    }%`,
+                                  }}
                                 ></div>
                               </div>
                             </div>
-                            <StatusIcon className={`text-${status.color}-600 text-lg`} />
+                            <StatusIcon
+                              className={`text-${status.color}-600 text-lg`}
+                            />
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-center gap-2">
                             <button
-                              onClick={() => navigate(`/teacher/assignments/${a._id || a.id}`)}
+                              onClick={() =>
+                                navigate(
+                                  `/teacher/assignments/${a._id || a.id}`
+                                )
+                              }
                               className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                               title="Xem chi tiết"
                             >
@@ -343,11 +402,12 @@ export default function ClassAssignment() {
         </div>
       </div>
 
-      
       <AssignmentModal
         isOpen={open}
         onClose={() => setModalOpen(false)}
-        onSave={selectedAssignment ? handleUpdateAssignment : handleAddAssignment}
+        onSave={
+          selectedAssignment ? handleUpdateAssignment : handleAddAssignment
+        }
         classId={id}
         initialData={selectedAssignment}
       />

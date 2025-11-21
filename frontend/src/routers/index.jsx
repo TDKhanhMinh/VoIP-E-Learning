@@ -119,6 +119,7 @@ const publicRoutes = createBrowserRouter([
     ],
   },
 
+
   {
     element: <AuthGuard />,
     children: [
