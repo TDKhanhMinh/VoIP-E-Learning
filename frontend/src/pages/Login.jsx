@@ -2,15 +2,16 @@ import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import TextInput from "../components/TextInput";
-import { authService } from './../services/authService';
 import { toast } from "react-toastify";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Login() {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const { login } = useAuth()
   const onSubmit = async (data) => {
     try {
-      const loginData = await authService.login(data.email, data.password);
+      const loginData = await login(data.email, data.password);
       console.log(loginData);
 
       if (loginData.role === "admin") {
