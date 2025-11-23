@@ -24,6 +24,7 @@ import TeacherClasses from "../pages/Teacher/TeacherClasses";
 import TeacherClassDetails from "../pages/Teacher/TeacherClassDetails";
 import TeacherLayout from "../layout/TeacherLayout";
 import TeacherSchedule from "../pages/Teacher/TeacherSchedule";
+import Schedule from "../pages/Schedule";
 import ClassDetail from "../pages/Admin/ManageClassDetails";
 import ClassAssignment from "../pages/Teacher/ClassAssignment";
 import ClassAttendance from "../pages/Teacher/ClassAttendance";
@@ -93,6 +94,10 @@ const publicRoutes = createBrowserRouter([
       {
         path: "forum",
         element: <Forum />,
+      },
+      {
+        path: "schedule",
+        element: <Schedule />,
       },
     ],
   },
@@ -186,7 +191,7 @@ const publicRoutes = createBrowserRouter([
       },
       {
         path: "schedule",
-        element: <TeacherSchedule />,
+        element: <Schedule />,
       },
       {
         path: "class-details/:id",

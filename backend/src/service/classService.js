@@ -1,7 +1,7 @@
 import Class from "../model/class.js";
 import Course from "../model/course.js";
+import room from "../model/room.js";
 import Semester from "../model/semester.js";
-import TeachingSchedule from "../model/teachingSchedule.js";
 import User from "../model/user.js";
 import { createRoom } from "./roomService.js";
 
@@ -33,8 +33,6 @@ const dayLabel = (day) => {
 };
 
 export const createClass = async (data) => {
-  console.log("Received class data:", data);
-
   const [semester, teacher, course] = await Promise.all([
     Semester.findById(data.semester),
     User.findOne({ _id: data.teacher, role: "teacher" }),
@@ -46,16 +44,10 @@ export const createClass = async (data) => {
     error.statusCode = 404;
     throw error;
   }
-
   const teacherClasses = await Class.find({
     teacher: data.teacher,
     semester: data.semester,
   });
-  if (data.schedule.length > 1) {
-    const error = new Error("Mỗi lớp chỉ được có 1 buổi/tuần");
-    error.statusCode = 400;
-    throw error;
-  }
 
   for (const existingClass of teacherClasses) {
     for (const existing of existingClass.schedule) {
@@ -84,6 +76,8 @@ export const createClass = async (data) => {
     semester: semester._id,
     teacher: teacher._id,
     schedule: data.schedule,
+    theoryWeeks: data.theoryWeeks,
+    practiceWeeks: data.practiceWeeks,
   });
 
   await createRoom({
@@ -92,38 +86,6 @@ export const createClass = async (data) => {
     teacherEmail: teacher.email,
     teacherName: teacher.name,
   });
-  console.log(`Class created: ${newClass.name}`);
-  const shiftTimes = {
-    1: { startTime: "06:50", endTime: "09:20" },
-    2: { startTime: "09:30", endTime: "12:00" },
-    3: { startTime: "12:45", endTime: "15:15" },
-    4: { startTime: "15:25", endTime: "17:55" },
-  };
-  const schedules = [];
-  const current = new Date(semester.startDate || semester.start_date);
-  const end = new Date(semester.endDate || semester.end_date);
-
-  while (current <= end) {
-    const day = current.getDay();
-    const matched = newClass.schedule.find((s) => s.dayOfWeek === day);
-    if (matched) {
-      const { startTime, endTime } = shiftTimes[matched.shift];
-      schedules.push({
-        class: newClass._id,
-        teacher: teacher._id,
-        date: new Date(current),
-        startTime,
-        endTime,
-        status: "SCHEDULED",
-      });
-    }
-    current.setDate(current.getDate() + 1);
-  }
-
-  if (schedules.length > 0) {
-    await TeachingSchedule.insertMany(schedules);
-    console.log(`Generated ${schedules.length} teaching sessions`);
-  }
 
   return newClass;
 };
@@ -145,6 +107,13 @@ export const updateClass = async (id, data) => {
       error.statusCode = 404;
       throw error;
     }
+    const existingRoom = await room.findOne({ classId: id });
+    if (existingRoom) {
+      existingRoom.teacherId = teacher._id;
+      existingRoom.teacherName = teacher.full_name;
+      existingRoom.teacherEmail = teacher.email;
+      await existingRoom.save();
+    }
   }
 
   let semester = null;
@@ -155,11 +124,6 @@ export const updateClass = async (id, data) => {
       error.statusCode = 404;
       throw error;
     }
-  }
-  if (updates.schedule.length > 1) {
-    const error = new Error("Mỗi lớp chỉ được có 1 buổi/tuần");
-    error.statusCode = 400;
-    throw error;
   }
 
   if (updates.schedule) {
@@ -210,51 +174,19 @@ export const updateClass = async (id, data) => {
 
   console.log("Class updated:", updatedClass.name);
 
-  const needToRegenerate =
-    updates.schedule || updates.semester || updates.teacher;
-
-  if (needToRegenerate) {
-    console.log("Regenerating teaching schedule...");
-
-    const targetSemester =
-      semester || (await Semester.findById(updatedClass.semester));
-
-    await TeachingSchedule.deleteMany({ class: id });
-    const shiftTimes = {
-      1: { startTime: "06:50", endTime: "09:20" },
-      2: { startTime: "09:30", endTime: "12:00" },
-      3: { startTime: "12:45", endTime: "15:15" },
-      4: { startTime: "15:25", endTime: "17:55" },
-    };
-    const schedules = [];
-    const current = new Date(
-      targetSemester.startDate || targetSemester.start_date
-    );
-    const end = new Date(targetSemester.endDate || targetSemester.end_date);
-
-    while (current <= end) {
-      const day = current.getDay();
-      const match = updatedClass.schedule.find((s) => s.dayOfWeek === day);
-      if (match) {
-        const { startTime, endTime } = shiftTimes[match.shift];
-        schedules.push({
-          class: updatedClass._id,
-          teacher: updatedClass.teacher,
-          date: new Date(current),
-          startTime,
-          endTime,
-        });
-      }
-      current.setDate(current.getDate() + 1);
-    }
-
-    if (schedules.length > 0) {
-      await TeachingSchedule.insertMany(schedules);
-      console.log(`Regenerated ${schedules.length} teaching sessions`);
-    }
-  }
-
   return updatedClass;
+};
+
+export const addAbsenceDate = async (classId, date) => {
+  const classObj = await Class.findById(classId);
+  if (!classObj) {
+    const error = new Error("Class not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  classObj.absent.push({ date: new Date(date) });
+  await classObj.save();
+  return classObj;
 };
 
 export const deleteClass = async (id) => {

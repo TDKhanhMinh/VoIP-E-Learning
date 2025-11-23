@@ -1,21 +1,28 @@
 import React, { useState } from "react";
 
-const AddQuestionModal = ({ isOpen, onClose, onImport }) => {
+const AddQuestionModal = ({
+  isOpen,
+  onClose,
+  onImport,
+  title,
+  description,
+  fileType = ".docx",
+}) => {
   const [file, setFile] = useState(null);
 
   if (!isOpen) return null;
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
-    if (selected && selected.name.endsWith(".docx")) {
+    if (selected && selected.name.endsWith(fileType)) {
       setFile(selected);
     } else {
-      alert("Vui lòng chọn file .docx");
+      alert(`Vui lòng chọn file ${fileType ?? ".docx"}`);
     }
   };
 
   const handleImport = () => {
-    if (!file) return alert("Hãy chọn file trước");
+    if (!file) return alert(`Hãy chọn file ${fileType ?? ".docx"} trước`);
     onImport(file);
     onClose();
   };
@@ -24,17 +31,17 @@ const AddQuestionModal = ({ isOpen, onClose, onImport }) => {
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 animate-[fadeIn_0.2s]">
         <h2 className="text-xl font-bold text-gray-800 mb-4">
-          Import câu hỏi từ file Word
+          {title ?? "Import câu hỏi từ file .docx"}
         </h2>
 
         <p className="text-gray-500 text-sm mb-4">
-          Chọn file Word (.docx) chứa danh sách câu hỏi của bạn.
+          {description ?? "Chọn file .docx chứa danh sách câu hỏi của bạn."}
         </p>
 
         <label className="w-full flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition">
           <input
             type="file"
-            accept=".docx"
+            accept={fileType ?? ".docx"}
             onChange={handleFileChange}
             className="hidden"
           />
@@ -54,7 +61,7 @@ const AddQuestionModal = ({ isOpen, onClose, onImport }) => {
           </svg>
 
           <span className="text-gray-600">
-            {file ? file.name : "Chọn file .docx"}
+            {file ? file.name : `Chọn file ${fileType ?? ".docx"}`}
           </span>
         </label>
 

@@ -31,3 +31,10 @@ export const deleteClass = asyncHandler(async (req, res) => {
   const deletedClass = await service.deleteClass(id);
   res.status(200).json(deletedClass);
 });
+
+export const addAbsenceDate = asyncHandler(async (req, res) => {
+  const { classId } = req.params;
+  const { date } = req.body;
+  const updatedClass = await service.addAbsenceDate(classId, date);
+  res.status(200).json(updatedClass);
+});

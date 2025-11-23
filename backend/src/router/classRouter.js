@@ -29,4 +29,11 @@ router.put(
 );
 router.delete("/:id", protect, authorizeRoles("admin"), controller.deleteClass);
 
+router.post(
+  "/:classId/absence",
+  protect,
+  authorizeRoles("admin", "teacher"),
+  controller.addAbsenceDate
+);
+
 export default router;

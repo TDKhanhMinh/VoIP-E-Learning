@@ -25,6 +25,26 @@ router.post("/word", upload.single("file"), async (req, res) => {
   }
 });
 
+router.post("/csv", upload.single("file"), async (req, res) => {
+  try {
+    const filePath = req.file.path;
+    const data = fs.readFileSync(filePath, "utf-8");
+
+    const lines = data.split("\n").map((line) => line.trim());
+    const users = lines.map((line) => {
+      const [name, email, role] = line.split(",").map((field) => field.trim());
+      return { name, email, role };
+    });
+
+    res.json({ users });
+
+    fs.unlinkSync(filePath);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Import file thất bại" });
+  }
+});
+
 export default router;
 
 function parseQuestions(text) {

@@ -12,6 +12,11 @@ export const SIDEBAR_DATA = [
     to: "/home",
   },
   {
+    title: "Thời khóa biểu",
+    icon: <FontAwesomeIcon icon={faLaptop} />,
+    to: "/home/schedule",
+  },
+  {
     title: "Bài tập",
     icon: <FontAwesomeIcon icon={faListCheck} />,
     to: "/course/home",

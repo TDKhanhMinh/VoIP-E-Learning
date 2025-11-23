@@ -22,7 +22,7 @@ import uploadQuesionsRouter from "./router/uploadQuestionRouter.js";
 import submissionRoutes from "./router/submissionRouter.js";
 import attendanceRoutes from "./router/attendanceRouter.js";
 import announcementRoutes from "./router/announcementRouter.js";
-import teachingScheduleRoutes from "./router/teachingScheduleRouter.js";
+import scheduleRoutes from "./router/scheduleRouter.js";
 import roomRouters from "./router/roomRouter.js";
 import driveRoutes from "./router/driveRouter.js";
 import fileRoutes from "./router/fileRouter.js";
@@ -37,8 +37,13 @@ import discussionSocket from "./sockets/discussionSocket.js";
 import chatSocket from "./sockets/chatSocket.js";
 await connectDB();
 const app = express();
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "https://voip-e-learning-1.onrender.com", "https://meet.livekit.io", "http://localhost:5000"];
-
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://voip-e-learning-1.onrender.com",
+  "https://meet.livekit.io",
+  "http://localhost:5000",
+];
 
 app.use(
   cors({
@@ -77,7 +82,7 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/announcement", announcementRoutes);
 app.use("/api/drive", driveRoutes);
 app.use("/api/file", fileRoutes);
-app.use("/api/schedule", teachingScheduleRoutes);
+app.use("/api/schedule", scheduleRoutes);
 app.use("/api/room", roomRouters);
 app.use("/api/voip", voipRoutes);
 app.use("/api/livekit", livekitRouter);

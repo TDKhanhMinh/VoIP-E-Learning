@@ -36,14 +36,19 @@ export const findByStudentId = async (studentId) => {
   const enrollments = await ClassStudent.find({ student: studentId })
     .populate({
       path: "class",
-      populate: { path: "course teacher semester" },
+      select: "name schedule",
+      populate: [
+        { path: "course", select: "title code credit" },
+        { path: "teacher", select: "full_name email" },
+        { path: "semester", select: "name start_date end_date mid_term" },
+      ],
     })
-    .populate("student")
+    .populate("student", "full_name email")
     .sort({ joined_at: -1 });
 
-  
-  return enrollments || [];
+  return enrollments;
 };
+
 export const findById = async (id) => {
   const classStudent = await ClassStudent.findById(id);
   if (!classStudent) {
@@ -106,7 +111,9 @@ export const createClassStudent = async (data) => {
     joined_at: Date.now(),
   }));
 
-  const created = await ClassStudent.insertMany(enrollments, { ordered: false });
+  const created = await ClassStudent.insertMany(enrollments, {
+    ordered: false,
+  });
 
   return {
     class: joiningClass._id,
