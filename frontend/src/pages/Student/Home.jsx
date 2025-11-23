@@ -41,30 +41,34 @@ function Home() {
           className="w-full cursor-pointer bg-black rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border hover:border-gray-800 duration-300"
         >
           <div className="bg-green-600 p-4 flex justify-between items-start text-white relative">
-            <div>
+            <div className="flex-1 min-w-0">
               <h2 className="text-lg font-semibold truncate hover:underline decoration-white">
                 {item.class?.name}
               </h2>
 
               <p className="text-base my-1 text-white">
-                GV: {item.class.teacher?.full_name} -
+                GV: {item.class.teacher?.full_name}
+              </p>
+              <div className="text-sm text-white">
                 {Array.isArray(item.class.schedule) &&
                 item.class.schedule.length > 0
-                  ? item.class.schedule
-                      .map((s) => {
-                        const days = {
-                          2: "Thứ 2",
-                          3: "Thứ 3",
-                          4: "Thứ 4",
-                          5: "Thứ 5",
-                          6: "Thứ 6",
-                          7: "Thứ 7",
-                        };
-                        return `${days[s.dayOfWeek] || "?"} - Ca ${s.shift}`;
-                      })
-                      .join("; ")
+                  ? item.class.schedule.map((s, idx) => {
+                      const days = {
+                        2: "Thứ 2",
+                        3: "Thứ 3",
+                        4: "Thứ 4",
+                        5: "Thứ 5",
+                        6: "Thứ 6",
+                        7: "Thứ 7",
+                      };
+                      return (
+                        <div key={idx}>
+                          {days[s.dayOfWeek] || "?"} - Ca {s.shift}
+                        </div>
+                      );
+                    })
                   : "Chưa có lịch"}
-              </p>
+              </div>
               <p className="text-xs mt-1 text-white">
                 Khoa công nghệ thông tin
               </p>

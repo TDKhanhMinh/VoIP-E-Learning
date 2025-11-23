@@ -59,6 +59,7 @@ export const getScheduleBySemester = async (user_id, semester_id) => {
           schedule: 1,
           theoryWeeks: 1,
           practiceWeeks: 1,
+          absent: 1,
           course: {
             _id: "$courseDetails._id",
             title: "$courseDetails.title",
