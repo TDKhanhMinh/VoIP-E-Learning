@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
-import { FaPlus, FaEdit, FaTrash, FaBook, FaCode, FaSearch, FaLayerGroup } from "react-icons/fa";
-import Button from './../../components/Button';
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaBook,
+  FaCode,
+  FaSearch,
+  FaLayerGroup,
+} from "react-icons/fa";
+import Button from "./../../components/Button";
 import CourseModal from "../../components/CourseModal";
 import { courseService } from "../../services/courseService";
 import { toast } from "react-toastify";
-import Pagination from '../../components/Pagination';
+import Pagination from "../../components/Pagination";
 
 export default function ManageCourses() {
   const [open, setOpen] = useState(false);
@@ -38,10 +46,11 @@ export default function ManageCourses() {
     if (!searchQuery) {
       setFilteredCourses(courses);
     } else {
-      const filtered = courses.filter((course) =>
-        course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      const filtered = courses.filter(
+        (course) =>
+          course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          course.description?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredCourses(filtered);
     }
@@ -64,7 +73,10 @@ export default function ManageCourses() {
   const handleUpdateCourse = async (courseData) => {
     try {
       const { _id, ...payload } = courseData;
-      const data = await courseService.updateCourse(selectedCourse._id, payload);
+      const data = await courseService.updateCourse(
+        selectedCourse._id,
+        payload
+      );
       console.log("Course update:", data);
       toast.success("Cập nhật môn học thành công");
       setSelectedCourse(null);
@@ -78,33 +90,31 @@ export default function ManageCourses() {
 
   const getCourseColor = (index) => {
     const colors = [
-      "from-blue-500 to-cyan-500",
-      "from-purple-500 to-pink-500",
-      "from-orange-500 to-red-500",
-      "from-green-500 to-emerald-500",
-      "from-indigo-500 to-purple-500",
-      "from-rose-500 to-pink-500",
+      "bg-blue-600",
+      "bg-blue-500",
+      "bg-indigo-600",
+      "bg-cyan-600",
+      "bg-sky-600",
+      "bg-blue-700",
     ];
     return colors[index % colors.length];
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-3">
-            <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
               <FaBook className="text-white text-2xl" />
             </div>
             <div>
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent pb-4">
+              <h2 className="text-4xl font-bold text-blue-600 pb-4">
                 Quản lý Môn học
               </h2>
             </div>
           </div>
 
-          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
             <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
               <div className="flex items-center gap-3">
@@ -113,12 +123,14 @@ export default function ManageCourses() {
                 </div>
                 <div>
                   <div className="text-sm text-gray-600">Total Courses</div>
-                  <div className="text-3xl font-bold text-gray-800">{courses.length}</div>
+                  <div className="text-3xl font-bold text-gray-800">
+                    {courses.length}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl p-5 shadow-lg text-white">
+            <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <FaBook className="text-white text-xl" />
@@ -130,7 +142,7 @@ export default function ManageCourses() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl p-5 shadow-lg text-white">
+            <div className="bg-blue-500 rounded-2xl p-5 shadow-lg text-white">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <FaCode className="text-white text-xl" />
@@ -144,10 +156,8 @@ export default function ManageCourses() {
           </div>
         </div>
 
-        
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            
             <div className="relative flex-1 max-w-md w-full">
               <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -159,13 +169,12 @@ export default function ManageCourses() {
               />
             </div>
 
-            
             <button
               onClick={() => {
                 setSelectedCourse(null);
                 setOpen(true);
               }}
-              className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-blue-700 shadow-lg shadow-indigo-500/30 transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap"
+              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap"
             >
               <FaPlus />
               <span>Thêm môn học</span>
@@ -173,7 +182,6 @@ export default function ManageCourses() {
           </div>
         </div>
 
-        
         {currentCourses.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
             {currentCourses.map((course, index) => (
@@ -181,20 +189,26 @@ export default function ManageCourses() {
                 key={course.id}
                 className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1"
               >
-                
-                <div className={`h-32 bg-gradient-to-br ${getCourseColor(index)} p-6 relative overflow-hidden`}>
+                <div
+                  className={`h-32 ${getCourseColor(
+                    index
+                  )} p-6 relative overflow-hidden`}
+                >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
                   <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
                   <div className="relative z-10">
                     <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full mb-2">
                       <FaCode className="text-white text-xs" />
-                      <span className="text-white font-bold text-sm">{course.code}</span>
+                      <span className="text-white font-bold text-sm">
+                        {course.code}
+                      </span>
                     </div>
-                    <h3 className="text-white font-bold text-xl line-clamp-2">{course.title}</h3>
+                    <h3 className="text-white font-bold text-xl line-clamp-2">
+                      {course.title}
+                    </h3>
                   </div>
                 </div>
 
-                
                 <div className="p-6">
                   <div className="mb-4">
                     <p className="text-gray-600 text-sm line-clamp-3 min-h-[60px]">
@@ -202,19 +216,18 @@ export default function ManageCourses() {
                     </p>
                   </div>
 
-                  
                   <div className="flex gap-2 pt-4 border-t border-gray-100">
                     <button
                       onClick={() => {
                         setSelectedCourse(course);
                         setOpen(true);
                       }}
-                      className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 text-white px-4 py-2.5 rounded-xl hover:bg-yellow-600 transition-all hover:shadow-lg font-semibold"
+                      className="flex-1 flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-2.5 rounded-xl hover:bg-blue-600 transition-all hover:shadow-lg font-semibold"
                     >
                       <FaEdit />
                       <span>Edit</span>
                     </button>
-                    <button className="flex-1 flex items-center justify-center gap-2 bg-red-500 text-white px-4 py-2.5 rounded-xl hover:bg-red-600 transition-all hover:shadow-lg font-semibold">
+                    <button className="flex-1 flex items-center justify-center gap-2 bg-gray-500 text-white px-4 py-2.5 rounded-xl hover:bg-gray-600 transition-all hover:shadow-lg font-semibold">
                       <FaTrash />
                       <span>Delete</span>
                     </button>
@@ -230,7 +243,9 @@ export default function ManageCourses() {
                 <FaBook className="text-gray-400 text-3xl" />
               </div>
               <p className="text-gray-500 font-medium text-lg">
-                {searchQuery ? "No courses found matching your search" : "No courses found"}
+                {searchQuery
+                  ? "No courses found matching your search"
+                  : "No courses found"}
               </p>
               {!searchQuery && (
                 <button
@@ -238,7 +253,7 @@ export default function ManageCourses() {
                     setSelectedCourse(null);
                     setOpen(true);
                   }}
-                  className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-blue-700 shadow-lg transition-all font-semibold"
+                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold"
                 >
                   <FaPlus />
                   <span>Add Your First Course</span>
@@ -248,7 +263,6 @@ export default function ManageCourses() {
           </div>
         )}
 
-        
         {filteredCourses.length > itemsPerPage && (
           <Pagination
             currentPage={currentPage}
@@ -258,7 +272,6 @@ export default function ManageCourses() {
         )}
       </div>
 
-      
       <CourseModal
         isOpen={open}
         onClose={() => {

@@ -239,7 +239,7 @@ export default function ManageUsers() {
               onClick={() => onPageChange(i + 1)}
               className={`w-10 h-10 rounded-lg font-semibold transition-all ${
                 currentPage === i + 1
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
+                  ? "bg-blue-600 text-white shadow-lg"
                   : "border-2 border-gray-200 hover:bg-gray-50"
               }`}
             >
@@ -260,15 +260,15 @@ export default function ManageUsers() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-3">
-            <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
               <FaUsers className="text-white text-2xl" />
             </div>
             <div>
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent pb-4">
+              <h2 className="text-4xl font-bold text-blue-600 pb-4">
                 Quản lý Người dùng
               </h2>
             </div>
@@ -281,19 +281,19 @@ export default function ManageUsers() {
                 {users.length}
               </div>
             </div>
-            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-5 shadow-lg text-white">
+            <div className="bg-blue-500 rounded-2xl p-5 shadow-lg text-white">
               <div className="text-sm opacity-90 mb-1">Admins</div>
               <div className="text-3xl font-bold">
                 {users.filter((u) => u.role === "admin").length}
               </div>
             </div>
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 shadow-lg text-white">
+            <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
               <div className="text-sm opacity-90 mb-1">Teachers</div>
               <div className="text-3xl font-bold">
                 {users.filter((u) => u.role === "teacher").length}
               </div>
             </div>
-            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-5 shadow-lg text-white">
+            <div className="bg-green-600 rounded-2xl p-5 shadow-lg text-white">
               <div className="text-sm opacity-90 mb-1">Students</div>
               <div className="text-3xl font-bold">
                 {users.filter((u) => u.role === "student").length}
@@ -350,7 +350,7 @@ export default function ManageUsers() {
                   setSelectedUser(null);
                   setOpenModal(true);
                 }}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5"
+                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5"
               >
                 <FaPlus />
                 <span>Thêm người dùng</span>
@@ -360,7 +360,7 @@ export default function ManageUsers() {
                   setSelectedUser(null);
                   setOpenImportModal(true);
                 }}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5"
+                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5"
               >
                 <FaPlus />
                 <span>Import File</span>
@@ -373,7 +373,7 @@ export default function ManageUsers() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-gray-50 to-blue-50 border-b-2 border-gray-200">
+                <tr className="bg-gray-100 border-b-2 border-gray-200">
                   <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
                     Tên đầy đủ
                   </th>
@@ -400,7 +400,7 @@ export default function ManageUsers() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md">
+                          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shadow-md">
                             {user.full_name?.charAt(0).toUpperCase()}
                           </div>
                           <span className="font-semibold text-gray-800">

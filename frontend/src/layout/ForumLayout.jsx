@@ -31,12 +31,15 @@ export default function TeacherLayout() {
 
   return (
     <LoadingProvider>
-      <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+      <div className="flex min-h-screen bg-gray-50">
         <div className="flex-1 flex flex-col min-w-0">
           <header className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-40">
             <div className="flex justify-between items-center px-6 py-4">
-              <div onClick={() => navigate('/teacher')} className="flex items-center gap-4 flex-1 max-w-xl hover:cursor-pointer">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <div
+                onClick={() => navigate("/teacher")}
+                className="flex items-center gap-4 flex-1 max-w-xl hover:cursor-pointer"
+              >
+                <h1 className="text-2xl font-bold text-blue-600">
                   Hệ thống E-learning
                 </h1>
               </div>

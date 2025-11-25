@@ -32,12 +32,10 @@ export default function ManageAssignments() {
       : teacherClasses.filter((cls) => cls.semester === selectedSemester);
 
   return (
-    <div className="p-8 min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+    <div className="p-8 min-h-screen bg-gray-50">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            Quản lý bài thi
-          </h2>
+          <h2 className="text-3xl font-bold text-blue-600">Quản lý bài thi</h2>
           <p className="text-gray-500 text-sm mt-1">
             Danh sách các lớp bạn đang giảng dạy và bài thi được tạo
           </p>
@@ -126,7 +124,7 @@ export default function ManageAssignments() {
 
                 <Button
                   to={`/teacher/class-details/${cls._id}/tests`}
-                  className="mt-6 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-2"
+                  className="mt-6 w-full py-2.5 bg-blue-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
                 >
                   Mở bài thi
                 </Button>

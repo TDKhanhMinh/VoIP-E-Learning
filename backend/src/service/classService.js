@@ -4,9 +4,60 @@ import room from "../model/room.js";
 import Semester from "../model/semester.js";
 import User from "../model/user.js";
 import { createRoom } from "./roomService.js";
+import mongoose from "mongoose";
 
 export const getAll = async () => {
   const classes = await Class.find().sort({ createdAt: -1 });
+  return classes;
+};
+
+export const getUserClasses = async (userId) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = new Error("User not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  let classes = [];
+  if (user.role === "teacher") {
+    classes = await Class.aggregate([
+      {
+        $match: {
+          teacher: new mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $lookup: {
+          from: "classstudents",
+          localField: "_id",
+          foreignField: "class",
+          as: "classStudents",
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      { $addFields: { studentCount: { $size: "$classStudents" } } },
+      { $project: { classStudents: 0 } },
+    ]);
+  } else if (user.role === "student") {
+    classes = await Class.aggregate([
+      {
+        $lookup: {
+          from: "classstudents",
+          localField: "_id",
+          foreignField: "class",
+          as: "classStudents",
+        },
+      },
+      {
+        $match: {
+          "classStudents.student": new mongoose.Types.ObjectId(userId),
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      { $addFields: { studentCount: { $size: "$classStudents" } } },
+      { $project: { classStudents: 0 } },
+    ]);
+  }
   return classes;
 };
 

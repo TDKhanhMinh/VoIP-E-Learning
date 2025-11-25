@@ -49,7 +49,7 @@ const TestResult = () => {
 
       <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200 bg-white">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 uppercase text-sm">
+          <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
             <tr>
               <th className="p-4 font-semibold text-left">Học sinh</th>
               <th className="p-4 font-semibold text-left">Email</th>
