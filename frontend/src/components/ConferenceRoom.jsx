@@ -3,8 +3,8 @@ import { LiveKitRoom, VideoConference } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { roomService } from "../services/roomService";
 import { useNavigate } from "react-router-dom";
+import WhiteboardTldraw from './WhiteboardTldraw';
 
-// const LIVEKIT_SERVER_URL = "ws://localhost:7880";
 
 
 const ConferenceRoom = ({ roomId, userId, userName, userEmail, userRole, classId }) => {
@@ -12,6 +12,8 @@ const ConferenceRoom = ({ roomId, userId, userName, userEmail, userRole, classId
     const [url, setUrl] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showWhiteboard, setShowWhiteboard] = useState(false);
+
     const navigate = useNavigate();
     useEffect(() => {
         if (!roomId || !userId || !userName) {
@@ -98,9 +100,25 @@ const ConferenceRoom = ({ roomId, userId, userName, userEmail, userRole, classId
                 data-lk-theme="default"
                 onDisconnected={() => handleParticipantEvent("leave")}
             >
-                <VideoConference />
-            </LiveKitRoom>
-        </div>
+                {showWhiteboard ? (
+                    <WhiteboardTldraw />
+                ) : (
+                    <VideoConference />
+                )}
+                {userRole === "teacher" &&
+                    <div div className="flex justify-center gap-2 p-3 bg-black text-white">
+
+                        <button
+                            className="px-4 py-2 bg-blue-600 rounded"
+                            onClick={() => setShowWhiteboard(!showWhiteboard)}
+                        >
+                            {showWhiteboard ? "Close Whiteboard" : "Whiteboard"}
+                        </button>
+                    </div>
+                }
+                {/* <ConferenceContent userRole={userRole} /> */}
+            </LiveKitRoom >
+        </div >
     );
 };
 
