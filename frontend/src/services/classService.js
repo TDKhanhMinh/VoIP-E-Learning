@@ -9,6 +9,10 @@ export const classService = {
     const res = await http.get(`/class/${id}`);
     return res.data;
   },
+  getUserClasses: async () => {
+    const res = await http.get(`/class/user`);
+    return res.data;
+  },
   getClassesByTeacher: async (teacherId) => {
     const res = await http.get("/class");
     console.log("data", res.data);

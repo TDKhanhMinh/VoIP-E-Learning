@@ -58,12 +58,13 @@ function AdminLayout() {
 
   return (
     <LoadingProvider>
-      <div className="flex h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-indigo-50">
+      <div className="flex h-screen bg-gray-50">
         <div
-          className={`bg-white shadow-2xl text-gray-800 transition-all duration-300 flex flex-col border-r border-gray-200 ${open ? "w-72" : "w-20"
-            }`}
+          className={`bg-white shadow-2xl text-gray-800 transition-all duration-300 flex flex-col border-r border-gray-200 ${
+            open ? "w-72" : "w-20"
+          }`}
         >
-          <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 py-5 border-b border-white/20">
+          <div className="bg-blue-600 px-4 py-5 border-b border-white/20">
             <div className="flex items-center justify-between">
               {open && (
                 <div className="flex items-center gap-3">
@@ -96,16 +97,18 @@ function AdminLayout() {
                   <li key={item.path}>
                     <Link
                       to={item.path}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${active
-                          ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-200"
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${
+                        active
+                          ? "bg-blue-600 text-white shadow-lg"
                           : "text-gray-600 hover:bg-indigo-50 hover:text-indigo-600"
-                        }`}
+                      }`}
                     >
                       <Icon
-                        className={`text-xl ${active
+                        className={`text-xl ${
+                          active
                             ? "text-white"
                             : "text-gray-500 group-hover:text-indigo-600"
-                          }`}
+                        }`}
                       />
                       {open && (
                         <span className="font-medium">{item.label}</span>
@@ -135,7 +138,7 @@ function AdminLayout() {
           <header className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-40">
             <div className="flex justify-between items-center px-6 py-4">
               <div className="flex items-center gap-4 flex-1 max-w-2xl">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent whitespace-nowrap">
+                <h1 className="text-2xl font-bold text-blue-600 whitespace-nowrap">
                   Quản trị hệ thống
                 </h1>
               </div>

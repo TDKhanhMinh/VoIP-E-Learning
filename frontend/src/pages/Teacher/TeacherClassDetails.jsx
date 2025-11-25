@@ -84,7 +84,7 @@ export default function TeacherClassDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <button
@@ -94,7 +94,7 @@ export default function TeacherClassDetails() {
             <FaArrowLeft /> Quay lại
           </button>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow-lg">
+            <div className="p-3 bg-blue-600 rounded-xl shadow-lg">
               <FaUserGraduate className="text-white text-2xl" />
             </div>
             Chi tiết lớp học
@@ -103,7 +103,7 @@ export default function TeacherClassDetails() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+            <div className="bg-blue-600 px-6 py-4">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <FaBook /> Thông tin lớp học
               </h2>
@@ -192,7 +192,7 @@ export default function TeacherClassDetails() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-lg p-6 text-white">
+          <div className="bg-blue-600 rounded-2xl shadow-lg p-6 text-white">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Thống kê lớp học</h3>
               <FaUsers className="text-3xl opacity-50" />
@@ -253,7 +253,7 @@ export default function TeacherClassDetails() {
           </div>
         </div>
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-6 py-4 border-b">
+          <div className="bg-gray-100 px-6 py-4 border-b">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -331,7 +331,7 @@ export default function TeacherClassDetails() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">
+                            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
                               {s.student?.full_name?.charAt(0)?.toUpperCase() ||
                                 "?"}
                             </div>

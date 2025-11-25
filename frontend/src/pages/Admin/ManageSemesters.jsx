@@ -150,11 +150,11 @@ export default function ManageSemester() {
     fetchSemesters();
   }, [fetchSemesters]);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-3">
-            <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-800 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
               <FaGraduationCap className="text-white text-2xl" />
             </div>
             <div
@@ -162,7 +162,7 @@ export default function ManageSemester() {
                 openDetail ? "flex flex-row w-full justify-between" : ""
               }`}
             >
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-800 bg-clip-text pb-4 text-transparent">
+              <h2 className="text-4xl font-bold text-blue-600 pb-4">
                 Quản lý Học kỳ
               </h2>
               {openDetail && (
@@ -191,7 +191,7 @@ export default function ManageSemester() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-5 shadow-lg text-white">
+            <div className="bg-green-600 rounded-2xl p-5 shadow-lg text-white">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <FaClock className="text-white text-xl" />
@@ -205,7 +205,7 @@ export default function ManageSemester() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-5 shadow-lg text-white">
+            <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <FaCalendarAlt className="text-white text-xl" />
@@ -238,7 +238,7 @@ export default function ManageSemester() {
                   setSelectedSemester(null);
                   setOpen(true);
                 }}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-800 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/30 transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5"
+                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5"
               >
                 <FaPlus />
                 <span>Thêm học kỳ</span>
@@ -264,7 +264,7 @@ export default function ManageSemester() {
                     className="flex flex-col md:flex-row md:items-center justify-between gap-4 "
                   >
                     <div className="flex items-center gap-4 flex-1">
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-800 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                      <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
                         <FaGraduationCap className="text-white text-2xl" />
                       </div>
                       <div className="flex-1">
@@ -331,7 +331,7 @@ export default function ManageSemester() {
                   setSelectedSemester(null);
                   setOpen(true);
                 }}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-800 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-pink-700 shadow-lg transition-all font-semibold"
+                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold"
               >
                 <FaPlus />
                 <span>Thêm học kì mới cho năm học</span>
@@ -359,7 +359,7 @@ export default function ManageSemester() {
                     className="flex flex-col md:flex-row md:items-center justify-between gap-4  "
                   >
                     <div className="flex items-center gap-4 flex-1 ">
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-800 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                      <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
                         <FaGraduationCap className="text-white text-2xl" />
                       </div>
                       <div className="flex-1">

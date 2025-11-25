@@ -32,7 +32,6 @@ import ManageAttendance from "../pages/Teacher/ManageAttendance";
 import ManageSubmissions from "../pages/Teacher/ManageSubmissions";
 import TeacherClasses from "../pages/Teacher/TeacherClasses";
 import TeacherClassDetails from "../pages/Teacher/TeacherClassDetails";
-import TeacherSchedule from "../pages/Teacher/TeacherSchedule";
 import ClassAssignment from "../pages/Teacher/ClassAssignment";
 import ClassAttendance from "../pages/Teacher/ClassAttendance";
 import ClassSubmission from "../pages/Teacher/ClassSubmission";
@@ -106,7 +105,7 @@ const publicRoutes = createBrowserRouter([
           { path: "submissions", element: <TeacherManageSubmission /> },
           { path: "notifications", element: <ManageNotifications /> },
           { path: "classes", element: <TeacherClasses /> },
-          { path: "schedule", element: <TeacherSchedule /> },
+          { path: "schedule", element: <Schedule /> },
           { path: "class-details/:id", element: <TeacherClassDetails /> },
           {
             path: "class-details/:id/assignments",

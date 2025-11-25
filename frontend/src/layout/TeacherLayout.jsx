@@ -86,13 +86,13 @@ export default function TeacherLayout() {
 
   return (
     <LoadingProvider>
-      <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+      <div className="flex min-h-screen bg-gray-50">
         <aside
           className={`${
             isCollapsed ? "w-20" : "w-72"
           } bg-white shadow-2xl flex flex-col transition-all duration-300 relative border-r border-gray-200`}
         >
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600">
+          <div className="p-6 border-b border-gray-200 bg-blue-600">
             <div className="flex items-center justify-between">
               {!isCollapsed && (
                 <div className="flex items-center gap-3">
@@ -127,7 +127,7 @@ export default function TeacherLayout() {
                       to={item.path}
                       className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group relative ${
                         active
-                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
+                          ? "bg-blue-600 text-white shadow-lg"
                           : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
                       }`}
                     >
@@ -166,7 +166,7 @@ export default function TeacherLayout() {
           <header className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-40">
             <div className="flex justify-between items-center px-6 py-4">
               <div className="flex items-center gap-4 flex-1 max-w-xl">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold text-blue-600">
                   Hệ thống E-learning
                 </h1>
               </div>

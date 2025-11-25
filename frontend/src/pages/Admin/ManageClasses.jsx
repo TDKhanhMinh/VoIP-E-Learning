@@ -101,14 +101,14 @@ export default function ManageClasses() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-4 mb-3">
-          <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+          <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
             <FaLayerGroup className="text-white text-2xl" />
           </div>
           <div>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent pb-4">
+            <h2 className="text-4xl font-bold text-blue-600 pb-4">
               Quản lý lớp học
             </h2>
           </div>
@@ -173,7 +173,7 @@ export default function ManageClasses() {
         </div>
 
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+          <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-100">
             <div>
               <h3 className="text-xl font-semibold text-gray-800">
                 Danh sách lớp học
