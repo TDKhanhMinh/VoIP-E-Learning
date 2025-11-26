@@ -1,193 +1,342 @@
 # VoIP E-Learning System
 
-A comprehensive online learning management system built with modern web technologies, featuring real-time communication, online testing, assignment management, and video conferencing capabilities.
+A modern, full-featured Learning Management System (LMS) with integrated VoIP communication capabilities, real-time video conferencing, and comprehensive educational tools built for Ton Duc Thang University.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [API Documentation](#api-documentation)
-- [Contributing](#contributing)
-- [License](#license)
+![E-Learning System](https://res.cloudinary.com/dsj6sba9f/image/upload/v1745247841/c085ad076c442c8191e6b7f48ef59aad_k7izor.jpg)
 
 ## Overview
 
-VoIP E-Learning is a full-stack learning management system designed for educational institutions. It provides a complete solution for managing courses, classes, assignments, online tests, and real-time communication between students and teachers.
+VoIP E-Learning is a comprehensive educational platform that combines traditional LMS features with advanced real-time communication capabilities. The system provides seamless integration of course management, online assessments, video conferencing, VoIP calling, and collaborative learning tools.
 
-The system supports three user roles:
-- **Admin**: Manages users, courses, classes, and semesters
-- **Teacher**: Creates assignments, tests, manages class materials and grades students
-- **Student**: Attends classes, submits assignments, takes tests, and communicates with teachers
+### Key Highlights
+
+- **Real-time VoIP Communication**: Direct SIP-based calling between students and teachers using SIP.js
+- **Video Conferencing**: LiveKit-powered virtual classrooms with interactive whiteboard (Tldraw)
+- **Online Testing**: Advanced testing system with auto-grading, multiple attempts, and scheduled activation
+- **Assignment Management**: Complete workflow from creation to submission and grading
+- **Discussion Forums**: Topic-based discussions with nested comments and real-time updates
+- **File Management**: Google Drive integration for materials and Cloudinary for images
+- **Live Chat**: Socket.IO powered real-time messaging with conversation tracking
 
 ## Features
 
-### Core Features
+### Educational Features
 
-**User Management**
-- Multi-role authentication (Admin, Teacher, Student)
-- JWT-based secure authentication
-- User profile management
+#### Class & Course Management
+- **Semester-based Organization**: Classes organized by academic terms (HK1-2024/2025, HK2-2024/2025)
+- **Multi-class Enrollment**: Students can enroll in multiple classes per semester
+- **Course Materials Library**: Google Drive integration for uploading and sharing resources
+- **Schedule Management**: Support for theory and practice sessions with day/shift scheduling
+- **Attendance Tracking**: Digital check-in system with session-based attendance
 
-**Class Management**
-- Semester-based class organization
-- Course curriculum management
-- Class scheduling with theory and practical sessions
-- Student enrollment system
+#### Online Testing System
+- **Test Creation**: Flexible configuration with title, description, time limits, and attempt limits
+- **Question Bank**: Multiple-choice questions with import from .docx files using Mammoth
+- **Auto-Grading**: Immediate results calculation with detailed feedback
+- **Test Sessions**: Individual test instances tracking student attempts and timing
+- **Scheduled Tests**: Automatic lifecycle management (not_started → ongoing → ended)
+- **Cron Jobs**: Automated status updates and forced submission on timeout
+- **Multiple Attempts**: Configure maximum attempts per student with best score tracking
 
-**Assignment System**
-- Create and manage assignments
-- File upload and submission
-- Grading and feedback system
-- Late submission tracking
+#### Assignment Management
+- **Create Assignments**: With deadlines, descriptions, and file attachments
+- **File Upload**: Via Google Drive API with automatic permission management
+- **Submission Tracking**: Monitor submission status with late detection
+- **Grading System**: Numeric grades with text feedback
+- **File Validation**: Type and size restrictions for submissions
 
-**Online Testing**
-- Timed online exams
-- Multiple choice questions
-- Automatic grading
-- Multiple attempt support
-- Question bank management
+### Communication Features
 
-**Real-time Communication**
-- Video conferencing with LiveKit integration
-- Real-time chat with Socket.IO
-- Discussion forums
-- Announcement system
+#### VoIP Calling (SIP.js Integration)
+- **Direct Calling**: Student-to-teacher voice calls via WebRTC
+- **Session Management**: Proper handling of incoming, outgoing, and active calls
+- **Call States**: Real-time state tracking (idle, calling, in-call, terminated)
+- **Audio Streaming**: Remote audio playback through HTML5 audio elements
+- **STUN/TURN Servers**: Configured for NAT traversal
+  ```javascript
+  STUN: stun.l.google.com:19302
+  TURN: webrtc.voipelearning.shop:3478 (UDP/TCP)
+  TURNS: webrtc.voipelearning.shop:5349 (TLS)
+  ```
 
-**Attendance System**
-- Digital attendance tracking
-- Session-based check-ins
-- Attendance reports
+#### Video Conferencing (LiveKit)
+- **Virtual Classrooms**: Teacher-initiated live sessions with unique room IDs
+- **Screen Sharing**: Built-in presentation capabilities
+- **Interactive Whiteboard**: Tldraw-based collaborative drawing tool
+- **Teacher Controls**: Mute all participants, toggle whiteboard, end session
+- **Participant Management**: Real-time tracking with automatic cleanup
+- **Auto-reconnect**: Resilient connection handling with token refresh
+- **Session Recording**: Optional recording capabilities (LiveKit feature)
 
-**File Management**
-- Google Drive integration
-- Course material upload and sharing
-- Assignment file submissions
-- Cloudinary for image storage
+#### Real-time Chat (Socket.IO)
+- **Personal Chat**: Direct messaging with admin and teachers
+- **Conversation Management**: Persistent chat history with MongoDB
+- **Socket.IO Authentication**: JWT-based secure connections on `/chat` namespace
+- **Read Receipts**: Message read status tracking
+- **Unread Counter**: Real-time notification badges
+- **Message Delivery**: Optimistic updates with server confirmation
 
-### Additional Features
+#### Discussion Forums
+- **Topic-based Discussions**: Organize conversations by subject areas
+- **Nested Comments**: Reply to posts and create threaded discussions
+- **Real-time Updates**: Live comment notifications via Socket.IO
+- **Rich Text Support**: Formatted post content with React Quill
+- **Comment Counter**: Aggregate comment counts per post
 
-- Interactive discussion forums with topics and comments
-- Real-time notifications
-- Schedule management
-- Material resource library
-- Grade book and performance tracking
+### User Roles & Permissions
+
+#### Admin
+- Complete system management dashboard
+- User CRUD operations (students, teachers, admins)
+- Course and class creation with semester assignment
+- Class enrollment management
+- Semester lifecycle management
+- System-wide analytics and reporting
+- Chat support interface for all users
+
+#### Teacher
+- Assigned class management
+- Assignment creation with deadlines
+- Online test design with question banks
+- Material uploads to Google Drive
+- Submission grading with feedback
+- Attendance tracking per session
+- Announcements to class
+- Video conference hosting with whiteboard
+- Student chat support
+
+#### Student
+- View enrolled classes per semester
+- Submit assignments before deadlines
+- Take scheduled online tests
+- Access course materials and resources
+- Participate in discussion forums
+- Join video conferences when active
+- VoIP calling to assigned teachers
+- Real-time chat with admin/teachers
 
 ## Technology Stack
 
 ### Frontend
 
-- **Framework**: React 18 with Vite
-- **UI Libraries**: 
-  - TailwindCSS for styling
-  - Framer Motion for animations
-  - Headless UI for accessible components
-- **State Management**: React Hooks
-- **Form Handling**: React Hook Form
-- **HTTP Client**: Axios
-- **Real-time**: Socket.IO Client
-- **Video**: LiveKit React Components
-- **Icons**: React Icons, Font Awesome
-- **Notifications**: React Toastify
-- **Rich Text**: React Quill
-- **File Upload**: React Dropzone
+**Core Framework**
+- React 18.3.1 with Vite 5.4.2
+- React Router DOM 6.28.0
+
+**UI & Styling**
+- TailwindCSS 3.4.17 (utility-first CSS)
+- Framer Motion 11.15.0 (animations)
+- Headless UI 2.2.0 (accessible components)
+- React Icons 5.4.0
+- Lucide React 0.469.0
+
+**Communication & Real-time**
+- Socket.IO Client 4.8.1 (chat & discussions)
+- SIP.js 0.21.2 (VoIP calling)
+- @livekit/components-react 2.7.3 (video conferencing)
+- @livekit/components-styles 1.1.4
+
+**Forms & Validation**
+- React Hook Form 7.54.2
+- Zod 3.24.1 (schema validation)
+
+**Media & Files**
+- React Dropzone 14.3.5 (drag-and-drop uploads)
+- React Quill 2.0.0 (rich text editor)
+- Axios 1.7.9 (HTTP client)
+
+**UI Components**
+- React Toastify 11.0.3 (notifications)
+- Tippy.js 6.3.7 (tooltips)
+- Clsx 2.1.1 (conditional classes)
+
+**Whiteboard**
+- @tldraw/tldraw 2.4.0 (collaborative drawing)
 
 ### Backend
 
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: MongoDB with Mongoose ODM
-- **Authentication**: JWT (jsonwebtoken)
-- **File Storage**: 
-  - Google Drive API
-  - Cloudinary
-- **Real-time**: Socket.IO
-- **Video**: LiveKit Server SDK
-- **File Upload**: Multer
-- **Security**: 
-  - bcrypt for password hashing
-  - CORS for cross-origin requests
-  - express-validator for input validation
-- **Task Scheduling**: node-cron
-- **Date Handling**: moment, moment-timezone
+**Runtime & Framework**
+- Node.js 20.x
+- Express 4.21.2
+
+**Database**
+- MongoDB 6.12.0
+- Mongoose 8.9.3 (ODM)
+
+**Authentication & Security**
+- jsonwebtoken 9.0.2 (JWT auth)
+- bcrypt 5.1.1 (password hashing)
+- express-validator 7.2.1 (input validation)
+- CORS 2.8.5 (cross-origin requests)
+
+**Real-time Communication**
+- Socket.IO 4.8.1 (bidirectional events)
+- LiveKit Server SDK 2.10.1 (video rooms)
+
+**File Storage & Processing**
+- Multer 1.4.5-lts.1 (file uploads)
+- Google APIs (googleapis 144.0.0) (Drive integration)
+- Cloudinary 2.6.0 (image storage)
+- Mammoth 1.8.0 (Word document parsing)
+
+**Task Scheduling**
+- node-cron 3.0.3 (scheduled jobs)
+
+**Utilities**
+- Moment.js 2.30.1 (date/time)
+- Moment-timezone 0.5.46 (timezone handling)
+- Crypto (native, UUID generation)
+
+**Development**
+- Nodemon 3.1.9 (auto-restart)
+- ESLint (code quality)
 
 ## Project Structure
 
 ```
 VoIP E-Learning/
-├── frontend/                 # React frontend application
+├── frontend/
 │   ├── src/
-│   │   ├── assets/          # Static assets and icons
-│   │   ├── components/      # Reusable React components
-│   │   ├── context/         # React context providers
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── layout/          # Layout components
-│   │   ├── pages/           # Page components
-│   │   │   ├── Admin/       # Admin dashboard pages
-│   │   │   ├── Teacher/     # Teacher dashboard pages
-│   │   │   └── Student/     # Student pages
-│   │   ├── services/        # API service layer
-│   │   ├── utils/           # Utility functions
-│   │   └── main.jsx         # Application entry point
+│   │   ├── assets/              # Images, icons, global styles
+│   │   ├── components/
+│   │   │   ├── Chat/           # Chat components
+│   │   │   │   ├── ChatWithAdmin.jsx
+│   │   │   │   └── ChatWithTeacher.jsx
+│   │   │   ├── Common/         # Shared components
+│   │   │   │   ├── NavBar.jsx
+│   │   │   │   ├── SupportedWidget.jsx
+│   │   │   │   └── DropdownButton.jsx
+│   │   │   ├── Modals/         # Dialog components
+│   │   │   │   ├── AddQuestionModal.jsx
+│   │   │   │   ├── TestModal.jsx
+│   │   │   │   ├── AddStudentModal.jsx
+│   │   │   │   └── AssignmentModal.jsx
+│   │   │   ├── UI/             # Reusable UI elements
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── Pagination.jsx
+│   │   │   │   ├── ConfirmDialog.jsx
+│   │   │   │   ├── TextInput.jsx
+│   │   │   │   └── LoaderOverlay.jsx
+│   │   │   └── Voip/           # VoIP & Video components
+│   │   │       ├── ConferenceRoom.jsx
+│   │   │       ├── MessageCall.jsx
+│   │   │       ├── WhiteboardTldraw.jsx
+│   │   │       └── TeacherControls.jsx
+│   │   ├── context/            # React contexts
+│   │   │   └── LoadingContext.jsx
+│   │   ├── hooks/              # Custom hooks
+│   │   │   └── useAuth.js
+│   │   ├── layout/             # Layout wrappers
+│   │   │   ├── HomeworkLayout.jsx
+│   │   │   ├── AdminLayout.jsx
+│   │   │   └── TeacherLayout.jsx
+│   │   ├── pages/              # Page components
+│   │   │   ├── Admin/
+│   │   │   │   ├── ManageClassDetails.jsx
+│   │   │   │   ├── ManageUsers.jsx
+│   │   │   │   └── Dashboard.jsx
+│   │   │   ├── Teacher/
+│   │   │   │   ├── ClassDetails.jsx
+│   │   │   │   └── GradeSubmissions.jsx
+│   │   │   ├── Student/
+│   │   │   │   ├── ClassDetails.jsx
+│   │   │   │   └── TakeTest.jsx
+│   │   │   └── Login.jsx
+│   │   ├── services/           # API service layer
+│   │   │   ├── authService.js
+│   │   │   ├── chatService.js
+│   │   │   ├── classService.js
+│   │   │   ├── enrollmentService.js
+│   │   │   ├── roomService.js
+│   │   │   ├── sipClientService.js
+│   │   │   └── http.js
+│   │   ├── utils/              # Helper functions
+│   │   │   └── formatTime.js
+│   │   └── main.jsx            # App entry point
 │   ├── index.html
-│   └── package.json
+│   ├── tailwind.config.js
+│   └── vite.config.js
 │
-└── backend/                  # Node.js backend application
+└── backend/
     ├── src/
-    │   ├── config/          # Configuration files
-    │   ├── controller/      # Request handlers
-    │   ├── cron/            # Scheduled tasks
-    │   ├── middlewares/     # Express middlewares
-    │   ├── models/          # Mongoose models
-    │   ├── router/          # API routes
-    │   ├── service/         # Business logic layer
-    │   ├── sockets/         # Socket.IO handlers
-    │   └── server.js        # Application entry point
+    │   ├── config/
+    │   │   ├── db.js              # MongoDB connection
+    │   │   ├── credentials.json    # Google Drive service account
+    │   │   └── googleConfig.js     # OAuth2 client
+    │   ├── controller/
+    │   │   ├── authController.js
+    │   │   ├── chatController.js
+    │   │   ├── classController.js
+    │   │   ├── testOnlineController.js
+    │   │   ├── voipController.js
+    │   │   └── [others...]
+    │   ├── cron/
+    │   │   ├── updateOnlineTest.js    # Test status automation
+    │   │   └── submitTestSession.js   # Auto-submit timeout
+    │   ├── middlewares/
+    │   │   ├── auth.js                # JWT verification
+    │   │   ├── errorHandler.js
+    │   │   └── logger.js
+    │   ├── model/
+    │   │   ├── User.js
+    │   │   ├── Class.js
+    │   │   ├── Assignment.js
+    │   │   ├── OnlineTest.js
+    │   │   ├── TestQuestion.js
+    │   │   ├── TestSession.js
+    │   │   ├── Conversation.js
+    │   │   ├── Message.js
+    │   │   └── [others...]
+    │   ├── router/
+    │   │   ├── authRouter.js
+    │   │   ├── chatRouter.js
+    │   │   ├── classRouter.js
+    │   │   ├── voipRouter.js
+    │   │   ├── livekitRouter.js
+    │   │   ├── testOnlineRouter.js
+    │   │   └── [others...]
+    │   ├── service/
+    │   │   ├── authService.js
+    │   │   ├── chatService.js
+    │   │   ├── driveService.js        # Google Drive API
+    │   │   ├── postService.js
+    │   │   └── testService.js
+    │   ├── sockets/
+    │   │   ├── chatSocket.js          # Chat namespace
+    │   │   └── discussionSocket.js    # Discussion events
+    │   └── server.js                  # Express server
     └── package.json
 ```
 
-## Getting Started
+## Installation & Setup
 
 ### Prerequisites
 
-- Node.js (v16 or higher)
-- MongoDB (v5 or higher)
-- Google Cloud Platform account (for Drive API)
-- Cloudinary account
-- LiveKit account (for video conferencing)
+- **Node.js**: v20.x or higher
+- **MongoDB**: v6.x or higher
+- **Google Cloud Project**: For Drive API credentials
+- **Cloudinary Account**: For image storage
+- **LiveKit Account**: For video conferencing
+- **SIP Server**: For VoIP functionality (WebRTC-compatible)
 
-### Installation
+### Backend Setup
 
-1. Clone the repository:
+1. **Clone and navigate**
 ```bash
 git clone <repository-url>
-cd VoIP-E-Learning
+cd VoIP-E-Learning/backend
 ```
 
-2. Install frontend dependencies:
+2. **Install dependencies**
 ```bash
-cd frontend
 npm install
 ```
 
-3. Install backend dependencies:
-```bash
-cd backend
-npm install
-```
+3. **Environment Configuration**
 
-### Configuration
-
-#### Backend Configuration
-
-Create a `.env` file in the `backend` directory:
-
+Create `.env` file:
 ```env
-# Server Configuration
+# Server
 PORT=5000
 NODE_ENV=development
 
@@ -195,7 +344,7 @@ NODE_ENV=development
 MONGODB_URI=mongodb://localhost:27017/voip-elearning
 
 # JWT
-JWT_SECRET=your-secret-key-here
+JWT_SECRET=your-super-secret-jwt-key-change-this
 JWT_EXPIRES_IN=7d
 
 # Cloudinary
@@ -206,326 +355,651 @@ CLOUDINARY_API_SECRET=your-api-secret
 # LiveKit
 LIVEKIT_API_KEY=your-livekit-api-key
 LIVEKIT_API_SECRET=your-livekit-api-secret
-LIVEKIT_URL=wss://your-livekit-url
+LIVEKIT_URL=wss://your-livekit-instance.livekit.cloud
 
-# Google Drive API
-# Place your credentials.json in backend/src/config/
+# Google OAuth (optional for Google login)
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
-#### Frontend Configuration
+4. **Google Drive API Setup**
 
-Create a `.env` file in the `frontend` directory:
+- Create project in [Google Cloud Console](https://console.cloud.google.com)
+- Enable Google Drive API
+- Create service account
+- Download credentials JSON
+- Place as `src/config/credentials.json`
+- Share Drive folder with service account email
 
+5. **Start server**
+```bash
+npm run dev    # Development with nodemon
+npm start      # Production
+```
+
+Server runs on: `http://localhost:5000`
+
+### Frontend Setup
+
+1. **Navigate to frontend**
+```bash
+cd ../frontend
+```
+
+2. **Install dependencies**
+```bash
+npm install
+```
+
+3. **Environment Configuration**
+
+Create `.env` file:
 ```env
 VITE_API_URL=http://localhost:5000/api
-VITE_SOCKET_URL=http://localhost:5000
+VITE_WEBSOCKET_URL=ws://localhost:5000
+VITE_DOMAIN=voipelearning.shop
 ```
 
-#### Google Drive API Setup
-
-1. Create a project in Google Cloud Console
-2. Enable Google Drive API
-3. Create a service account and download credentials
-4. Place `credentials.json` in `backend/src/config/`
-5. Share your Google Drive folder with the service account email
-
-### Running the Application
-
-1. Start MongoDB service
-
-2. Start the backend server:
+4. **Start development server**
 ```bash
-cd backend
 npm run dev
 ```
 
-3. Start the frontend development server:
-```bash
-cd frontend
-npm run dev
+Application runs on: `http://localhost:5173`
+
+## Configuration Details
+
+### VoIP Configuration (sipClientService.js)
+
+```javascript
+const iceServers = [
+    { urls: "stun:stun.l.google.com:19302" },
+    {
+        urls: [
+            "turn:webrtc.voipelearning.shop:3478?transport=udp",
+            "turn:webrtc.voipelearning.shop:3478?transport=tcp",
+            "turns:webrtc.voipelearning.shop:5349"
+        ],
+        username: "any",
+        credential: "31a2313d897a7ca91b21486dac0c3184f7e3a673cacbe465b57687668fd8af43"
+    }
+];
 ```
 
-4. Access the application:
-- Frontend: `http://localhost:5173`
-- Backend API: `http://localhost:5000`
+**Update these values for your SIP infrastructure:**
+- STUN server for public IP discovery
+- TURN server for NAT traversal (UDP/TCP/TLS)
+- Credentials for TURN authentication
 
-## Usage
+### CORS Configuration (server.js)
 
-### Default Login Credentials
+```javascript
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://voip-e-learning-1.onrender.com",
+  "https://meet.livekit.io",
+  "http://localhost:5000",
+];
+```
 
-After seeding the database, you can use these default credentials:
+Add your production domain to this list.
 
-**Admin**
-- Email: admin@tdtu.edu.vn
-- Password: (set during database initialization)
+### Socket.IO Namespaces
 
-**Teacher**
-- Email: teacher@tdtu.edu.vn
-- Password: (set during database initialization)
+- **Chat Namespace**: `/chat` - JWT-authenticated real-time messaging
+- **Default Namespace**: `/` - Discussion forums and general events
 
-**Student**
-- Email: student@tdtu.edu.vn
-- Password: (set during database initialization)
+### Google Drive Parent Folder
 
-### User Workflows
+Located in `driveService.js`:
+```javascript
+const PARENT_FOLDER_ID = "1nQTKksCVedKtt0hJqWyZQ8T57EMmjR0P";
+```
 
-#### Admin Workflow
-1. Login to admin dashboard
-2. Manage semesters, courses, and classes
-3. Create and assign teachers to classes
-4. Enroll students in classes
-5. Monitor system-wide statistics
-
-#### Teacher Workflow
-1. Login to teacher dashboard
-2. View assigned classes
-3. Create assignments and online tests
-4. Upload course materials
-5. Grade student submissions
-6. Track attendance
-7. Post announcements
-
-#### Student Workflow
-1. Login to student portal
-2. View enrolled classes
-3. Access course materials
-4. Submit assignments
-5. Take online tests
-6. Check grades and feedback
-7. Participate in discussions
-8. Join video conferences
+Update with your shared Drive folder ID.
 
 ## API Documentation
 
-### Authentication Endpoints
+### Authentication
 
-```
-POST /api/auth/register          # Register new user
-POST /api/auth/login             # User login
-POST /api/auth/logout            # User logout
-GET  /api/auth/verify            # Verify JWT token
+```http
+POST   /api/auth/register       # Register new user
+POST   /api/auth/login          # Login (returns JWT)
+POST   /api/auth/logout         # Logout
+GET    /api/auth/verify         # Verify token validity
 ```
 
 ### User Management
 
-```
-GET    /api/user                 # Get all users
-GET    /api/user/:id             # Get user by ID
-POST   /api/user                 # Create new user
-PUT    /api/user/:id             # Update user
-DELETE /api/user/:id             # Delete user
-```
-
-### Class Management
-
-```
-GET    /api/class                # Get all classes
-GET    /api/class/:id            # Get class by ID
-POST   /api/class                # Create new class
-PUT    /api/class/:id            # Update class
-DELETE /api/class/:id            # Delete class
-GET    /api/class/teacher/:id    # Get classes by teacher
+```http
+GET    /api/user                # Get all users (admin only)
+GET    /api/user/:id            # Get user by ID
+POST   /api/user                # Create user (admin only)
+PUT    /api/user/:id            # Update user
+DELETE /api/user/:id            # Delete user (admin only)
 ```
 
-### Assignment Management
+### Class & Enrollment
 
+```http
+GET    /api/class                        # Get all classes
+GET    /api/class/:id                    # Get class details
+POST   /api/class                        # Create class (admin)
+PUT    /api/class/:id                    # Update class
+DELETE /api/class/:id                    # Delete class
+GET    /api/class/teacher/:teacherId     # Get teacher's classes
+
+GET    /api/enrollment/student/:studentId  # Get student enrollments
+POST   /api/enrollment                     # Enroll student
+DELETE /api/enrollment/:id                 # Remove enrollment
 ```
-GET    /api/assignment/class/:classId    # Get assignments by class
-GET    /api/assignment/:id               # Get assignment by ID
+
+### Online Tests
+
+```http
+GET    /api/online-test/class/:classId   # Get tests for class
+GET    /api/online-test/:id              # Get test details
+POST   /api/online-test                  # Create test
+PUT    /api/online-test/:id              # Update test
+DELETE /api/online-test/:id              # Delete test
+
+GET    /api/test-question/test/:testId   # Get test questions
+POST   /api/test-question                # Add question
+POST   /api/upload-question              # Bulk import from .docx
+
+POST   /api/test-session                 # Start test session
+GET    /api/test-session/:id             # Get session details
+POST   /api/attempt                      # Submit answers
+GET    /api/attempt/session/:sessionId   # Get attempt history
+```
+
+### Assignments
+
+```http
+GET    /api/assignment/class/:classId    # Get assignments
+GET    /api/assignment/:id               # Get assignment details
 POST   /api/assignment                   # Create assignment
 PUT    /api/assignment/:id               # Update assignment
 DELETE /api/assignment/:id               # Delete assignment
-```
 
-### Submission Management
-
-```
-GET    /api/submission/assignment/:id    # Get submissions by assignment
 POST   /api/submission                   # Submit assignment
-PUT    /api/submission/:id               # Update submission (grading)
+GET    /api/submission/assignment/:id    # Get submissions
+PUT    /api/submission/:id               # Grade submission
 ```
 
-### Online Test Management
+### Chat
 
+```http
+GET    /api/chat/:conversationId         # Get conversation
+POST   /api/chat                         # Create/get conversation
+GET    /api/chat/:conversationId/messages  # Get messages
+POST   /api/chat/:conversationId/read    # Mark as read
+GET    /api/chat/:userId/unread-count    # Get unread count
+GET    /api/chat/admin/:adminId/users    # Admin conversations
 ```
-GET    /api/online-test/class/:classId   # Get tests by class
-POST   /api/online-test                  # Create online test
-PUT    /api/online-test/:id              # Update test
-DELETE /api/online-test/:id              # Delete test
+
+### Video Conferencing (LiveKit)
+
+```http
+POST   /api/room/create                  # Create conference room
+GET    /api/room/:roomId                 # Get room details
+POST   /api/room/:roomId/start           # Start conference
+POST   /api/room/:roomId/end             # End conference
+POST   /api/livekit/token                # Get LiveKit access token
 ```
 
-### Real-time Features
+### File Management
 
-#### Socket.IO Events
+```http
+POST   /api/drive/upload                 # Upload to Google Drive
+DELETE /api/drive/:fileId                # Delete from Drive
+POST   /api/file/upload                  # Upload to Cloudinary
+```
 
-**Chat Namespace** (`/chat`)
+### Discussion Forum
+
+```http
+GET    /api/post                         # Get forum posts
+GET    /api/post/:id                     # Get post with comments
+POST   /api/post                         # Create post
+PUT    /api/post/:id                     # Update post
+DELETE /api/post/:id                     # Delete post
+
+POST   /api/comment                      # Add comment
+DELETE /api/comment/:id                  # Delete comment
+
+GET    /api/topic                        # Get all topics
+POST   /api/topic                        # Create topic (admin)
+```
+
+## Socket.IO Events
+
+### Chat Namespace (`/chat`)
+
+**Client → Server**
 ```javascript
-// Client to Server
-socket.emit('send_message', { conversationId, content, receiverId })
-
-// Server to Client
-socket.on('receive_message', (message) => {})
-socket.on('message_sent', (message) => {})
+// Send message
+socket.emit('send_message', {
+  content: string,
+  conversationId: string,
+  receiverId: string
+});
 ```
 
-**Discussion Namespace** (default)
+**Server → Client**
 ```javascript
-// Join discussion
-socket.emit('join_discussion', { postId })
+// Receive incoming message
+socket.on('receive_message', (message) => {
+  // message: { _id, sender, content, conversationId, createdAt }
+});
 
-// New comment
-socket.emit('new_comment', { postId, content })
-socket.on('comment_added', (comment) => {})
+// Confirmation of sent message
+socket.on('message_sent', (finalMessage) => {
+  // finalMessage: complete message object from DB
+});
+
+// Error handling
+socket.on('error', (error) => {
+  // error: { message: string }
+});
 ```
 
-## Key Components
+### Discussion Namespace (default `/`)
 
-### Frontend Components
+**Client → Server**
+```javascript
+// Join discussion room
+socket.emit('join_discussion', { postId: string });
 
-**Authentication**
-- Login page with role-based routing
-- Protected routes with authentication checks
+// Post new comment
+socket.emit('new_comment', { 
+  postId: string, 
+  content: string, 
+  parentCommentId?: string 
+});
+```
 
-**Dashboard Layouts**
-- AdminLayout: Admin dashboard structure
-- TeacherLayout: Teacher workspace
-- HomeworkLayout: Student assignment view
+**Server → Client**
+```javascript
+// New comment notification
+socket.on('comment_added', (comment) => {
+  // comment: full comment object
+});
+```
 
-**Reusable Components**
-- Modal dialogs (Assignment, Test, Grade)
-- Pagination component
-- File upload with drag-and-drop
-- Rich text editor
-- Confirmation dialogs
+## Usage Guide
 
-### Backend Services
+### For Students
 
-**Authentication Service**
-- JWT token generation and validation
-- Password hashing with bcrypt
-- Role-based access control
+1. **Login** with student credentials at `/login`
+2. **Dashboard** redirects to `/home` showing enrolled classes
+3. **View Classes**: Sidebar lists all classes for current semester
+4. **Assignments**: 
+   - Navigate to class details
+   - View assignment list with deadlines
+   - Submit files via drag-and-drop
+   - Check grades and feedback
+5. **Tests**: 
+   - Take tests during scheduled periods
+   - View remaining time and attempts
+   - Auto-submit on timeout
+6. **Materials**: Download course resources from Google Drive
+7. **Communication**:
+   - **Chat**: Click support widget to message admin/teacher
+   - **VoIP Call**: Use "Call Teacher" button for voice communication
+   - **Video**: Join conference when teacher starts session
+8. **Discussions**: Post questions and reply to classmates
 
-**File Upload Service**
-- Google Drive integration for large files
-- Cloudinary for images
-- Automatic file cleanup
+### For Teachers
 
-**Chat Service**
-- Real-time messaging with Socket.IO
-- Conversation management
-- Unread message tracking
+1. **Login** to teacher dashboard at `/teacher`
+2. **Manage Classes**: View assigned classes in sidebar
+3. **Create Content**:
+   - **Materials**: Upload files to Google Drive
+   - **Assignments**: Set title, description, deadline
+   - **Tests**: 
+     - Create test with time limit and attempts
+     - Add questions manually or import .docx
+     - Schedule start/end times
+4. **Grade Work**: 
+   - Review submissions
+   - Assign numeric grades
+   - Provide text feedback
+5. **Attendance**: Mark students present/absent per session
+6. **Video Conferences**:
+   - Start LiveKit session from class page
+   - Toggle interactive whiteboard
+   - Share screen
+   - Mute all participants
+   - End session
+7. **Support**: Respond to student messages and calls
 
-**Test Service**
-- Automated test session management
-- Question randomization
-- Auto-submission on timeout
+### For Admins
 
-## Scheduled Tasks
-
-The system uses `node-cron` for scheduled operations:
-
-1. **Test Status Update**: Updates online test status based on start/end times
-2. **Auto Submit**: Automatically submits test sessions when time expires
+1. **Login** to admin panel at `/admin`
+2. **User Management**:
+   - Create students, teachers, admins
+   - Edit user profiles
+   - Delete users
+3. **Course Setup**:
+   - Create semesters (e.g., HK1-2024/2025)
+   - Define courses with credits
+   - Create classes with schedules
+4. **Class Configuration**:
+   - Assign teachers to classes
+   - Enroll students in bulk or individually
+   - Manage class schedules (day, shift)
+5. **Monitoring**: View system-wide statistics
+6. **Chat Support**: Handle student inquiries via admin chat
 
 ## Security Features
 
-- Password hashing with bcrypt
-- JWT-based authentication
-- Protected API routes with middleware
-- CORS configuration
-- Input validation
-- File type and size restrictions
-- XSS protection
+- **Password Hashing**: bcrypt with salt rounds
+- **JWT Authentication**: Secure token-based auth with expiration
+- **Protected Routes**: Middleware-enforced access control
+- **CORS Protection**: Whitelist-based origin validation
+- **Input Validation**: express-validator for all inputs
+- **File Type Restrictions**: Whitelist for uploads (.pdf, .docx, .jpg, etc.)
+- **File Size Limits**: Configurable max upload size
+- **XSS Protection**: Content sanitization
+- **SQL Injection Prevention**: Mongoose ODM with parameterized queries
+- **Socket Authentication**: JWT verification for Socket.IO connections
 
-## Performance Optimizations
+## Scheduled Tasks (Cron Jobs)
 
-- Pagination for large datasets
-- Lazy loading of components
-- Image optimization with Cloudinary
-- Database indexing
-- API response caching
-- Socket.IO room-based messaging
+### Test Status Update
+**Schedule**: Every minute (`* * * * *`)
+**File**: `cron/updateOnlineTest.js`
+**Purpose**: Automatically update test status:
+- `not_started` → `ongoing` (when current time reaches start time)
+- `ongoing` → `ended` (when current time passes end time)
 
-## Browser Support
+### Auto Submit Test Sessions
+**Schedule**: Every minute (`* * * * *`)
+**File**: `cron/submitTestSession.js`
+**Purpose**: Force submit test sessions when:
+- Time limit expires
+- Test ends
+- Student hasn't submitted
 
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
+## UI/UX Features
 
-## Known Limitations
+- **Responsive Design**: Mobile-friendly with TailwindCSS
+- **Animations**: Smooth transitions with Framer Motion
+- **Loading States**: Skeleton screens and spinners
+- **Toast Notifications**: React Toastify for user feedback
+- **Modals**: Headless UI for accessible dialogs
+- **Tooltips**: Tippy.js for contextual help
+- **Drag & Drop**: React Dropzone for file uploads
+- **Rich Text**: React Quill for formatted content
+- **Collapsible Sidebar**: Space-efficient navigation
+- **Theme Colors**: Blue primary with gradient accents
 
-- Maximum file upload size: 50MB
-- Video conferencing requires WebRTC support
-- Real-time features require stable internet connection
+## Database Schema
+
+### Key Collections
+
+**Users**
+```javascript
+{
+  email: String (unique),
+  password: String (hashed),
+  full_name: String,
+  role: Enum ['admin', 'teacher', 'student'],
+  phone: String,
+  address: String
+}
+```
+
+**Classes**
+```javascript
+{
+  name: String,
+  course: ObjectId (ref: Course),
+  teacher: ObjectId (ref: User),
+  semester: ObjectId (ref: Semester),
+  schedule: [{ dayOfWeek, shift }]
+}
+```
+
+**OnlineTests**
+```javascript
+{
+  title: String,
+  description: String,
+  class: ObjectId,
+  start: Date,
+  end: Date,
+  time: Number (minutes),
+  attempts: Number,
+  status: Enum ['not_started', 'ongoing', 'ended']
+}
+```
+
+**TestSessions**
+```javascript
+{
+  student: ObjectId,
+  test: ObjectId,
+  startTime: Date,
+  endTime: Date,
+  status: Enum ['in_progress', 'submitted', 'auto_submitted'],
+  attempts: Number,
+  bestScore: Number
+}
+```
+
+**Conversations**
+```javascript
+{
+  participants: [ObjectId],
+  lastMessage: ObjectId,
+  unreadCount: Map<String, Number>
+}
+```
+
+## Testing
+
+### Manual Testing Checklist
+
+**Authentication**
+- [ ] Register new user
+- [ ] Login with valid credentials
+- [ ] Login with invalid credentials
+- [ ] Token expiration handling
+
+**Assignments**
+- [ ] Create assignment
+- [ ] Submit before deadline
+- [ ] Submit after deadline
+- [ ] Grade submission
+- [ ] File upload/download
+
+**Online Tests**
+- [ ] Create test with questions
+- [ ] Import questions from .docx
+- [ ] Take test within time limit
+- [ ] Auto-submit on timeout
+- [ ] Multiple attempts
+- [ ] View results
+
+**VoIP & Video**
+- [ ] Initiate voice call
+- [ ] Accept/reject incoming call
+- [ ] Join video conference
+- [ ] Toggle whiteboard
+- [ ] Screen sharing
+
+**Chat**
+- [ ] Send message
+- [ ] Receive message
+- [ ] Mark as read
+- [ ] Unread counter
 
 ## Troubleshooting
 
 ### Common Issues
 
-**Cannot connect to MongoDB**
-- Ensure MongoDB service is running
-- Check connection string in .env file
+**VoIP Call Fails**
+- Check browser microphone permissions
+- Verify TURN server credentials
+- Ensure firewall allows WebRTC ports
+- Test with different browser
 
-**File upload fails**
-- Verify Google Drive API credentials
-- Check folder permissions
-- Ensure sufficient storage space
+**Video Conference Black Screen**
+- Allow camera/microphone access
+- Check LiveKit credentials in `.env`
+- Verify LiveKit URL format
+- Try refreshing page
 
-**Socket.IO connection errors**
-- Check CORS configuration
-- Verify Socket.IO server URL
-- Check firewall settings
+**File Upload Fails**
+- Check Google Drive API quota
+- Verify service account permissions
+- Ensure file size within limits
+- Check Drive folder ID
 
-**LiveKit video not working**
-- Verify LiveKit credentials
-- Check browser WebRTC support
-- Allow camera/microphone permissions
+**Socket.IO Disconnects**
+- Verify CORS configuration
+- Check JWT token validity
+- Ensure stable network connection
+- Review server logs
 
-## Contributing
+**Test Auto-Submit Not Working**
+- Check cron job is running
+- Verify server time synchronization
+- Review `updateOnlineTest.js` logs
+- Ensure MongoDB connection
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+**MongoDB Connection Error**
+```bash
+# Check MongoDB is running
+sudo systemctl status mongod
 
-### Coding Standards
+# Restart if needed
+sudo systemctl restart mongod
+```
 
-- Follow ESLint configuration
-- Use meaningful variable and function names
-- Write comments for complex logic
-- Update documentation for new features
+**Port Already in Use**
+```bash
+# Find process using port 5000
+lsof -ti:5000
 
-## Future Enhancements
+# Kill process
+kill -9 <PID>
+```
 
-- Mobile application
-- Advanced analytics dashboard
-- AI-powered grading assistance
-- Plagiarism detection
-- Multi-language support
-- Integration with external LMS platforms
-- Advanced reporting features
-- Gamification elements
+## Deployment
 
-## Support
+### Backend Deployment (Render)
 
-For support and questions:
-- Email: support@lms.com
-- Create an issue on GitHub
+1. **Environment Variables**: Set all `.env` variables in hosting platform
+2. **MongoDB**: Use MongoDB Atlas for cloud database
+3. **Build Command**: `npm install`
+4. **Start Command**: `npm start`
+5. **Port**: Use `process.env.PORT`
+
+### Frontend Deployment (Render)
+
+1. **Build Command**: `npm run build`
+2. **Output Directory**: `dist`
+3. **Environment Variables**: Set `VITE_*` variables
+4. **Redirects**: Configure for SPA routing
+5. **CORS**: Update backend allowedOrigins
+
+### Production Checklist
+
+- [ ] Update `NODE_ENV=production`
+- [ ] Set strong `JWT_SECRET`
+- [ ] Configure production MongoDB URI
+- [ ] Update CORS allowed origins
+- [ ] Enable HTTPS
+- [ ] Configure CDN for static assets
+- [ ] Set up error logging (Sentry)
+- [ ] Configure backup strategy
+- [ ] Monitor cron jobs
+- [ ] Test all features end-to-end
+
+## Performance Optimization
+
+- **Pagination**: All list views support pagination (10 items/page)
+- **Image Optimization**: Cloudinary automatic optimization
+- **Database Indexing**: Indexes on frequently queried fields
+- **Code Splitting**: React lazy loading for routes
+- **API Caching**: Conditional requests with ETags
+- **Socket.IO Rooms**: Efficient event broadcasting
+- **File Streaming**: Chunked uploads for large files
+- **Lazy Loading**: Images and components load on demand
+
+## Browser Support
+
+- Chrome 90+ (recommended)
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+- IE 11 (not supported)
+
+**WebRTC Requirements**: Modern browser with WebRTC support
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - see [LICENSE](LICENSE) file for details
 
-## Acknowledgments
+## Contributing
 
-- Ton Duc Thang University for project inspiration
-- Open source community for excellent libraries and tools
-- LiveKit for video infrastructure
-- Google for Drive API
-- Cloudinary for image management
+1. Fork repository
+2. Create feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit changes: `git commit -m 'Add AmazingFeature'`
+4. Push to branch: `git push origin feature/AmazingFeature`
+5. Open Pull Request
+
+### Code Style
+
+- Follow ESLint configuration
+- Use Prettier for formatting
+- Write meaningful commit messages
+- Add comments for complex logic
+- Update documentation for new features
+
+## Educational Context
+
+Built for **Ton Duc Thang University** to modernize online education with:
+- Seamless voice/video communication
+- Automated assessment workflows
+- Real-time collaboration tools
+- Comprehensive learning analytics
+
+## Team & Credits
+
+- **University**: Ton Duc Thang University
+- **Technologies**: React, Node.js, MongoDB, LiveKit, SIP.js
+- **Icons**: Ton Duc Thang University logo
+- **Infrastructure**: Google Drive, Cloudinary, LiveKit Cloud
+
+## Support
+
+- **Email**: support@voipelearning.shop
+- **Issues**: GitHub Issues
+- **Documentation**: This README
+
+## 🔮 Future Enhancements
+
+- [ ] Mobile app (React Native)
+- [ ] AI-powered grading assistance
+- [ ] Plagiarism detection
+- [ ] Advanced analytics dashboard
+- [ ] Multi-language support (i18n)
+- [ ] SSO integration (OAuth2)
+- [ ] Calendar integration
+- [ ] Push notifications
+- [ ] Dark mode
+- [ ] Export reports (PDF/Excel)
+- [ ] Gamification (badges, leaderboards)
+- [ ] Parent portal
+- [ ] Integration with external LMS (Moodle, Canvas)
 
 ---
 
-Built with dedication for modern education
+**Built with for modern education**
+
+© 2025 VoIP E-Learning System | Ton Duc Thang University
