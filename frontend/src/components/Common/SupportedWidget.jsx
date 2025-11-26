@@ -1,10 +1,10 @@
 import { useState } from "react";
-import MessageCall from "./MessageCall";
 import { MoreHorizontal, X } from "lucide-react";
-import ChatWithAdmin from "./ChatWithAdmin";
 import clsx from 'clsx';
 import { AnimatePresence } from 'framer-motion';
 import { motion } from "framer-motion";
+import ChatWithAdmin from './../Chat/ChatWithAdmin';
+import MessageCall from './../Voip/MessageCall';
 export default function SupportWidget({ targetUser }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const containerVariants = {

@@ -1,24 +1,23 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import io from 'socket.io-client';
-import { FaPaperPlane, FaTimes } from 'react-icons/fa';
+import { FaCommentAlt, FaPaperPlane, FaTimes } from 'react-icons/fa';
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
-import { chatService } from '../services/chatService';
+import { chatService } from '../../services/chatService';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatTime } from '../utils/formatTime';
-import { IoChatbubblesOutline } from "react-icons/io5";
-import { useNavigate } from 'react-router-dom';
+import { formatTime } from '../../utils/formatTime';
+
 const USER_ID = sessionStorage.getItem("userId")?.replace(/"/g, "");
+const ADMIN_ID = '690c256f073c3f2b9a72eaa3';
 const getToken = () => localStorage.getItem("token");
 
-export default function ChatWithTeacher({ TEACHER_ID }) {
+export default function ChatWithAdmin() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [socket, setSocket] = useState(null);
     const [conversationId, setConversationId] = useState(null);
     const messagesEndRef = useRef(null);
-    const navigate = useNavigate();
     const tempMessageRefs = useRef(new Map());
 
     const scrollToBottom = () => {
@@ -27,10 +26,8 @@ export default function ChatWithTeacher({ TEACHER_ID }) {
 
     const fetchChatHistory = useCallback(async () => {
         try {
-            const data = await chatService.createChat({ userId: USER_ID, participantId: TEACHER_ID });
+            const data = await chatService.createChat({ userId: USER_ID, participantId: ADMIN_ID });
             console.log("cón data", data);
-            console.log("Teacher id", TEACHER_ID);
-
             if (data.success) {
                 setConversationId(data.data._id);
                 const msgData = await chatService.getChatMessages(data.data._id);
@@ -38,6 +35,18 @@ export default function ChatWithTeacher({ TEACHER_ID }) {
 
                 if (msgData) {
                     let msgs = msgData.messages || [];
+
+                    if (msgs.length === 0) {
+                        msgs = [
+                            {
+                                _id: 'welcome-' + Date.now(),
+                                sender: ADMIN_ID,
+                                content: "Xin chào! Tôi có thể giúp gì cho bạn hôm nay?",
+                                createdAt: new Date().toISOString(),
+                            },
+                        ];
+                    }
+
                     setMessages(msgs);
                     setTimeout(scrollToBottom, 100);
                 }
@@ -102,7 +111,7 @@ export default function ChatWithTeacher({ TEACHER_ID }) {
         socket.emit("send_message", {
             content,
             conversationId,
-            receiverId: TEACHER_ID,
+            receiverId: ADMIN_ID,
         });
 
         tempMessageRefs.current.set(content, tempId);
@@ -123,19 +132,15 @@ export default function ChatWithTeacher({ TEACHER_ID }) {
         <div className=" z-50 font-sans">
             {!isOpen && (
                 <button
-                    className="px-4 mt-4 hover:bg-blue-500 hover:text-white w-full rounded-md  h-10 flex justify-center items-center shadow-lg bg-gray-100 "
-                    onClick={() => {
-                        setIsOpen(true)
-                        navigate("/home/chat")
-                    }}
+                    className="bg-blue-600 text-white rounded-full w-14 h-14 flex justify-center items-center shadow-lg hover:bg-blue-700"
+                    onClick={() => setIsOpen(true)}
                 >
-                    Liên hệ Giảng viên
-                    <IoChatbubblesOutline size={22} className='mx-2' />
+                    <FaCommentAlt size={22} />
                 </button>
             )}
 
             {isOpen && (
-                <div className="w-[350px] h-[500px] bg-white rounded-lg shadow-xl flex flex-col hidden">
+                <div className="w-[350px] h-[500px] bg-white rounded-lg shadow-xl flex flex-col">
                     <div className="bg-blue-600 text-white p-3 flex justify-between items-center rounded-t-lg">
                         <h3 className="font-semibold">Chat Hỗ Trợ</h3>
                         <FaTimes

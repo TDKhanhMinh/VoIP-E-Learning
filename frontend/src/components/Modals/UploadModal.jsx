@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import Button from "./Button";
+import Button from "../UI/Button";
 
 export default function UploadModal({ isOpen, onClose, title, onSubmitData }) {
   const {

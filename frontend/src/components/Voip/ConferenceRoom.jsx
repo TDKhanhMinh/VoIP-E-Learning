@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { LiveKitRoom, VideoConference } from "@livekit/components-react";
 import "@livekit/components-styles";
-import { roomService } from "../services/roomService";
+import { roomService } from "../../services/roomService";
 import { useNavigate } from "react-router-dom";
 import WhiteboardTldraw from './WhiteboardTldraw';
 

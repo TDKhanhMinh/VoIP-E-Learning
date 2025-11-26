@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaBell, FaPlus, FaEdit, FaTrash, FaArrowLeft, FaClock, FaUser, FaExclamationCircle, FaCheckCircle, FaInfoCircle } from "react-icons/fa";
-import Button from "../../components/Button";
 import { toast } from "react-toastify";
-import NotificationModal from "../../components/NotificationModal";
 import { classService } from "../../services/classService";
 import { announcementService } from './../../services/announcementService';
-import ConfirmDialog from "../../components/ConfirmDialog";
+import NotificationModal from './../../components/Modals/NotificationModal';
+import ConfirmDialog from './../../components/UI/ConfirmDialog';
 
 export default function ClassNotification() {
     const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");

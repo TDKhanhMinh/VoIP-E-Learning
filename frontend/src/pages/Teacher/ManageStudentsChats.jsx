@@ -1,11 +1,12 @@
 import { userService } from '../../services/userService';
+import ConversationHeaderDetails from './../../components/Chat/ConversationHeaderDetails';
 import { chatService } from '../../services/chatService';
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 import { Send, MessageCircle, User, Circle, Clock } from "lucide-react";
 import clsx from "clsx";
 import { formatTime } from '../../utils/formatTime';
-import ConversationHeaderDetails from '../../components/ConversationHeaderDetails';
+
 
 const ManageStudentsChats = () => {
     const userID = sessionStorage.getItem("userId").split('"').join('').toString();

@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { LoadingProvider } from "../context/LoadingContext";
-import LoaderOverlay from './../components/LoaderOverlay';
+import LoaderOverlay from './../components/UI/LoaderOverlay';
 
 export default function AuthLayout() {
     return (

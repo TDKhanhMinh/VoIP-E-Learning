@@ -1,8 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { FaSearch, FaUserPlus, FaTimes, FaCheckCircle } from "react-icons/fa";
-import Button from "./Button";
-import { enrollmentService } from "../services/enrollmentService";
+import { enrollmentService } from "../../services/enrollmentService";
 
 export default function AddStudentsModal({
     isOpen,

@@ -3,11 +3,9 @@ import { classService } from "../../services/classService";
 import { semesterService } from "../../services/semesterService";
 import {
   FaCalendarAlt,
-  FaUsers,
   FaClock,
-  FaClipboardList,
 } from "react-icons/fa";
-import Button from "../../components/Button";
+import Button from "../../components/UI/Button";
 
 export default function TeacherManageSubmission() {
   const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");

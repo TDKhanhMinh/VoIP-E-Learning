@@ -1,4 +1,4 @@
-import Button from "./Button";
+import Button from "../UI/Button";
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
     return (

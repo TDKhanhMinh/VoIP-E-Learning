@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { testService } from "../../services/testService";
-import QuestionCard from "../../components/QuestionCard";
-import AddQuestionModal from "../../components/AddQuestionModal";
 import { toast } from "react-toastify";
+import QuestionCard from "../../components/Tests/QuestionCard";
+import AddQuestionModal from './../../components/Modals/AddQuestionModal';
 
 const TestQuestion = () => {
   const [test, setTest] = useState(null);

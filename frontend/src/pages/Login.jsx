@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import TextInput from "../components/TextInput";
+import TextInput from "../components/UI/TextInput";
 import { toast } from "react-toastify";
 import { useAuth } from "../hooks/useAuth";
 

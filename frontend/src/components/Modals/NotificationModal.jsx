@@ -2,7 +2,7 @@ import { Dialog } from "@headlessui/react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaBell, FaTimes } from "react-icons/fa";
-import Button from "./Button";
+import Button from "../UI/Button";
 
 export default function NotificationModal({
     isOpen,

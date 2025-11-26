@@ -6,11 +6,11 @@ import { FaChalkboardTeacher } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { generateScheduleWithMidTerm } from "../utils/generateSchedule";
-import { semesterService } from "../services/semesterService";
-import { scheduleService } from "../services/scheduleService";
-import ConfirmDialog from "../components/ConfirmDialog";
-import formatDate from "../utils/formatDate";
+import { generateScheduleWithMidTerm } from "../../utils/generateSchedule";
+import { semesterService } from "../../services/semesterService";
+import { scheduleService } from "../../services/scheduleService";
+import formatDate from "../../utils/formatDate";
+import ConfirmDialog from "../../components/UI/ConfirmDialog";
 
 export default function Schedule() {
   const navigate = useNavigate();

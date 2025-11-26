@@ -12,11 +12,11 @@ import {
   FaUsers,
 } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import AssignmentModal from "../../components/AssignmentModal";
+import AssignmentModal from "../../components/Modals/AssignmentModal";
 import { toast } from "react-toastify";
 import { assignmentService } from "../../services/assignmentService";
 import formatDateTime from "./../../utils/formatDateTime";
-import ConfirmDialog from "../../components/ConfirmDialog";
+import ConfirmDialog from "../../components/UI/ConfirmDialog";
 
 export default function ClassAssignment() {
   const [assignments, setAssignments] = useState([]);

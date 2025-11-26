@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useWebCall } from "../hooks/useWebCall";
-import { voipService } from "../services/voipService";
+import { useWebCall } from "../../hooks/useWebCall";
+import { voipService } from "../../services/voipService";
 import { FaPhone } from "react-icons/fa";
 import PopupCallInvite from './PopupCallInvite';
 export default function MessageCall({ target }) {

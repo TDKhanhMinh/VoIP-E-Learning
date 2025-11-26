@@ -1,5 +1,5 @@
-import { UseLoading } from "../context/LoadingContext";
-import { registerLoadingController } from "../context/LoadingController";
+import { UseLoading } from "../../context/LoadingContext";
+import { registerLoadingController } from "../../context/LoadingController";
 
 const LoaderOverlay = () => {
     const { loading, startLoading, stopLoading } = UseLoading();

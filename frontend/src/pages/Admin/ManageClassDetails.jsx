@@ -17,10 +17,10 @@ import { courseService } from "../../services/courseService";
 import { semesterService } from "../../services/semesterService";
 import { toast } from "react-toastify";
 import { enrollmentService } from "../../services/enrollmentService";
-import AddStudentsModal from "../../components/AddStudentModal";
+import AddStudentsModal from "../../components/Modals/AddStudentModal";
 import { useParams, useNavigate } from "react-router-dom";
-import ConfirmDialog from "../../components/ConfirmDialog";
-import Pagination from "../../components/Pagination";
+import ConfirmDialog from "../../components/UI/ConfirmDialog";
+import Pagination from "../../components/UI/Pagination";
 
 export default function ClassDetail() {
   const { id } = useParams();

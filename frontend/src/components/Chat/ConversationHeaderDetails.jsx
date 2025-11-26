@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Clock } from 'lucide-react';
-import { userService } from '../services/userService';
+import { userService } from '../../services/userService';
 
 const ConversationHeaderDetails = ({ userId, conv, unreadCount, formatLastMessageTime }) => {
 

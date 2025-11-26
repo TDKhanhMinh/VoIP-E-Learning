@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import { commentService } from "../services/commentService";
+import { commentService } from "../../services/commentService";
 const COMMENT_LIMIT = 5;
 export default function CommentSection({ postId, user }) {
     const [comments, setComments] = useState([]);

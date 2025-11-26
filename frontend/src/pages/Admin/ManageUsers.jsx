@@ -10,11 +10,11 @@ import {
   FaLockOpen,
 } from "react-icons/fa";
 import { userService } from "../../services/userService";
-import AddUserModal from "../../components/AddUserModal";
+import AddUserModal from "../../components/Modals/AddUserModal";
 import { toast } from "react-toastify";
-import ConfirmDialog from "../../components/ConfirmDialog";
-import AddQuestionModal from "../../components/AddQuestionModal";
-import UserImportPreview from "../../components/UserImportPreview";
+import ConfirmDialog from "../../components/UI/ConfirmDialog";
+import AddQuestionModal from "../../components/Modals/AddQuestionModal";
+import UserImportPreview from "../../components/Upload/UserImportPreview";
 import Papa from "papaparse";
 
 export default function ManageUsers() {

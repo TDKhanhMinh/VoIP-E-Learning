@@ -4,10 +4,7 @@ import {
   FaBars,
   FaChartPie,
   FaUsers,
-  FaBell,
-  FaCog,
   FaChevronLeft,
-  FaSearch,
 } from "react-icons/fa";
 import { MdOutlineChatBubbleOutline, MdOutlineForum } from "react-icons/md";
 import { MdOutlineLibraryBooks } from "react-icons/md";
@@ -17,9 +14,8 @@ import { ToastContainer } from "react-toastify";
 import { SiGoogleclassroom } from "react-icons/si";
 import { authService } from "../services/authService";
 import { LoadingProvider } from "../context/LoadingContext";
-import LoaderOverlay from "../components/LoaderOverlay";
-import MessageCall from "../components/MessageCall";
-import SupportWidget from "../components/SupportedWidget";
+import LoaderOverlay from "../components/UI/LoaderOverlay";
+import SupportWidget from "../components/Common/SupportedWidget";
 
 function AdminLayout() {
   const [open, setOpen] = useState(true);

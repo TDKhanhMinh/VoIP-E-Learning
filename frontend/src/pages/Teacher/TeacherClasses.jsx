@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Button from "../../components/Button";
-import Pagination from "../../components/Pagination";
+import Button from "../../components/UI/Button";
+import Pagination from "../../components/UI/Pagination";
 import { classService } from "./../../services/classService";
 import { semesterService } from "./../../services/semesterService";
 import {

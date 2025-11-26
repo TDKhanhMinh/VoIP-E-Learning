@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { forumService } from "../services/forumService";
-import { commentService } from "../services/commentService";
+import { forumService } from "../../services/forumService";
+import { commentService } from "../../services/commentService";
 import { toast } from "react-toastify";
-import TopicSidebar from "./Forum/TopicSidebar";
-import PostList from "./Forum/PostList";
-import TopicModal from "./Forum/TopicModal";
-import PostModal from "./Forum/PostModal";
-import PostDetailModal from "./Forum/PostDetailModal";
+import TopicSidebar from "./TopicSidebar";
+import PostList from "./PostList";
+import TopicModal from "./TopicModal";
+import PostModal from "./PostModal";
+import PostDetailModal from "./PostDetailModal";
 
 export default function Forum() {
   const user = {

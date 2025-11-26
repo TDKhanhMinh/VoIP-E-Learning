@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import UploadModal from "./UploadModal";
-import Button from "./Button";
-import formatDateTime from './../utils/formatDateTime';
-import { submissionService } from "../services/submissionService";
-import { uploadService } from "../services/uploadService";
+import Button from "../UI/Button";
+import formatDateTime from '../../utils/formatDateTime';
+import { submissionService } from "../../services/submissionService";
+import { uploadService } from "../../services/uploadService";
+import UploadModal from './../Modals/UploadModal';
 
 export default function AssignmentItem({
   title,

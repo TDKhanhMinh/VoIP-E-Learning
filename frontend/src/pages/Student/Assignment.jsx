@@ -1,10 +1,9 @@
 import { useParams } from "react-router-dom";
-import AssignmentItem from "../../components/AssignmentItem";
+import AssignmentItem from "../../components/Assignments/AssignmentItem";
 import { useEffect, useState } from "react";
 import { assignmentService } from './../../services/assignmentService';
 import { classService } from "../../services/classService";
 import { announcementService } from "../../services/announcementService";
-import NotificationItem from "../../components/NotificationItem";
 
 
 export default function Assignment() {

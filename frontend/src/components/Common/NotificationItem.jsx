@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaChalkboardTeacher, FaClock, FaBell } from "react-icons/fa";
-import { userService } from "../services/userService";
-import formatDateTime from "../utils/formatDateTime";
+import { userService } from "../../services/userService";
+import formatDateTime from "../../utils/formatDateTime";
 import { useNavigate } from "react-router-dom";
 
 export default function NotificationItem({ data }) {

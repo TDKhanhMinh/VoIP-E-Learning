@@ -7,7 +7,7 @@ import {
   FaClock,
   FaClipboardList,
 } from "react-icons/fa";
-import Button from "../../components/Button";
+import Button from "../../components/UI/Button";
 
 export default function ManageAttendance() {
   const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");

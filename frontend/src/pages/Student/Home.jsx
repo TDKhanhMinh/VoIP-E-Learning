@@ -78,7 +78,7 @@ function Home() {
           <div className="p-3 h-20 bg-gray-50 relative">
             <img
               className="rounded-full absolute -top-[40%] right-5"
-              src="https://lh3.googleusercontent.com/a-/ALV-UjVg0Tk9yDH0Hx-Pexecvv4xa_Tjr4ytzR0Mf6yZbuRv_kW7p45oNw=s75-c"
+              src="/logo.jpg"
               alt="logo"
             />
           </div>

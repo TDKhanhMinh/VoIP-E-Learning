@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import MessengerCall from "../../components/MessageCall";
 
 export default function TeacherDashboard() {
   const adminName = sessionStorage.getItem("name") || "Giáo viên";

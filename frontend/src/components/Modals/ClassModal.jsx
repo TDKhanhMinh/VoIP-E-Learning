@@ -1,9 +1,9 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import Button from "./Button";
-import SelectField from "./SelectField";
+import Button from "../UI/Button";
 import { FaChalkboardTeacher, FaTrash, FaPlus } from "react-icons/fa";
+import SelectField from "../UI/SelectField";
 
 export default function ClassModal({
   isOpen,

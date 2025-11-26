@@ -2,19 +2,17 @@ import { useCallback, useEffect, useState } from "react";
 import {
   FaPlus,
   FaEdit,
-  FaTrash,
   FaCalendarAlt,
   FaClock,
   FaGraduationCap,
-  FaUserAltSlash,
   FaUser,
   FaArrowLeft,
 } from "react-icons/fa";
-import SemesterModal from "../../components/SemesterModal";
+import SemesterModal from "../../components/Modals/SemesterModal";
 import { semesterService } from "../../services/semesterService";
 import { toast } from "react-toastify";
 import formatDate from "../../utils/formatDate";
-import Pagination from "../../components/Pagination";
+import Pagination from "../../components/UI/Pagination";
 import { classService } from "./../../services/classService";
 import { userService } from "./../../services/userService";
 import { useNavigate } from "react-router-dom";

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { classService } from "../../services/classService";
 import { semesterService } from "../../services/semesterService";
 import { FaCalendarAlt, FaBookOpen, FaClock, FaTasks } from "react-icons/fa";
-import Button from "../../components/Button";
+import Button from "../../components/UI/Button";
 
 export default function ManageAssignments() {
   const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");

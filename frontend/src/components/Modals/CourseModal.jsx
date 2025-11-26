@@ -1,14 +1,10 @@
 import { useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { useForm } from "react-hook-form";
-import Button from "./Button";
+import Button from "../UI/Button";
 
-export default function SemesterModal({
-  isOpen,
-  onClose,
-  onSave,
-  initialData,
-}) {
+
+export default function CourseModal({ isOpen, onClose, onSave, initialData }) {
   const {
     register,
     handleSubmit,
@@ -16,44 +12,36 @@ export default function SemesterModal({
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "",
-      start_date: "",
-      end_date: "",
-      mid_term: {
-        start_date: "",
-        end_date: "",
-      },
+      code: "",
+      title: "",
+      credit: "",
+      description: "",
     },
   });
 
   useEffect(() => {
     if (initialData) {
       reset({
-        name: initialData.name || "",
-        start_date: initialData.start_date?.split("T")[0] || "",
-        end_date: initialData.end_date?.split("T")[0] || "",
-        mid_term: {
-          start_date: initialData.mid_term?.start_date?.split("T")[0] || "",
-          end_date: initialData.mid_term?.end_date?.split("T")[0] || "",
-        },
+        code: initialData.code || "",
+        title: initialData.title || "",
+        credit: initialData.credit || "",
+        description: initialData.description || "",
       });
     } else {
       reset({
-        name: "",
-        start_date: "",
-        end_date: "",
-        mid_term: {
-          start_date: "",
-          end_date: "",
-        },
+        code: "",
+        title: "",
+        credit: "",
+        description: "",
       });
     }
   }, [initialData, reset]);
 
-  const onSubmit = async (data) => {
-    const formattedData = { ...data };
-    if (initialData?._id) formattedData._id = initialData._id;
-    await onSave(formattedData);
+  const onSubmit = (data) => {
+    const payload = { ...data };
+    if (initialData?._id) payload._id = initialData._id;
+    onSave(payload);
+    onClose();
     reset();
   };
 
@@ -77,101 +65,93 @@ export default function SemesterModal({
         aria-hidden="true"
       />
 
-      <div className="bg-gray-100 rounded-3xl shadow-2xl w-[460px] z-10 relative overflow-hidden border border-gray-200">
-        <div className="absolute top-0 left-0 right-0 h-28 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 opacity-80"></div>
+      <div className=" bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-2xl w-[480px] z-10 relative overflow-hidden border border-gray-200">
+        <div className="absolute top-0 left-0 right-0 h-28 bg-gradient-to-br from-blue-200 to-blue-800"></div>
 
         <div className="relative p-8">
           <Dialog.Title className="text-2xl font-bold text-center mb-2 bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-white">
-            {isUpdate ? "Chỉnh sửa học kỳ" : "Thêm học kỳ mới"}
+            {isUpdate ? "Chỉnh sửa môn học" : "Thêm môn học mới"}
           </Dialog.Title>
           <p className="text-center text-white text-sm mb-8">
             {isUpdate
-              ? "Cập nhật thông tin học kỳ bên dưới"
-              : "Điền đầy đủ thông tin để tạo học kỳ mới"}
+              ? "Cập nhật thông tin môn học bên dưới"
+              : "Điền đầy đủ thông tin để thêm môn học mới"}
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Tên học kỳ
+                Mã môn học
               </label>
               <input
                 type="text"
-                placeholder="VD: Học kỳ 1 - Năm học 2025"
+                placeholder="VD: IT001"
                 className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                {...register("name", { required: "Vui lòng nhập tên học kỳ" })}
+                {...register("code", { required: "Vui lòng nhập mã môn học" })}
               />
-              {errors.name && (
+              {errors.code && (
                 <p className="text-red-500 text-xs mt-1 ml-1">
-                  {errors.name.message}
+                  {errors.code.message}
                 </p>
               )}
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Thời gian bắt đầu
+                Tên môn học
               </label>
               <input
-                type="date"
+                type="text"
+                placeholder="VD: Lập trình Web"
                 className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                {...register("start_date", {
-                  required: "Vui lòng chọn ngày bắt đầu",
+                {...register("title", {
+                  required: "Vui lòng nhập tên môn học",
                 })}
               />
-              {errors.start_date && (
+              {errors.title && (
                 <p className="text-red-500 text-xs mt-1 ml-1">
-                  {errors.start_date.message}
+                  {errors.title.message}
                 </p>
               )}
             </div>
-
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Thời gian kết thúc
+                Số tín chỉ
               </label>
               <input
-                type="date"
+                type="number"
+                placeholder="VD: 3"
                 className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                {...register("end_date", {
-                  required: "Vui lòng chọn ngày kết thúc",
+                {...register("credit", {
+                  required: "Vui lòng nhập số tín chỉ",
+                  min: {
+                    value: 1,
+                    message: "Số tín chỉ phải lớn hơn hoặc bằng 1",
+                  },
                 })}
               />
-              {errors.end_date && (
+              {errors.credit && (
                 <p className="text-red-500 text-xs mt-1 ml-1">
-                  {errors.end_date.message}
+                  {errors.credit.message}
                 </p>
               )}
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Thời gian giữa kỳ - Ngày bắt đầu
+                Mô tả
               </label>
-              <input
-                type="date"
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                {...register("mid_term.start_date")}
+              <textarea
+                rows={3}
+                placeholder="Nhập mô tả ngắn gọn về môn học"
+                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
+                {...register("description", {
+                  required: "Vui lòng nhập mô tả",
+                })}
               />
-              {errors.mid_term?.start_date && (
+              {errors.description && (
                 <p className="text-red-500 text-xs mt-1 ml-1">
-                  {errors.mid_term.start_date.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Thời gian giữa kỳ - Ngày kết thúc
-              </label>
-              <input
-                type="date"
-                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                {...register("mid_term.end_date")}
-              />
-              {errors.mid_term?.end_date && (
-                <p className="text-red-500 text-xs mt-1 ml-1">
-                  {errors.mid_term.end_date.message}
+                  {errors.description.message}
                 </p>
               )}
             </div>
@@ -192,7 +172,7 @@ export default function SemesterModal({
                     : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-blue-500/30"
                 }`}
               >
-                {isUpdate ? "Cập nhật" : "Lưu học kỳ"}
+                {isUpdate ? "Cập nhật" : "Lưu môn học"}
               </Button>
             </div>
           </form>

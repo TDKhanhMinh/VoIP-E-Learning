@@ -1,9 +1,9 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import Button from "./Button";
+import Button from "../UI/Button";
 
-export default function AssignmentModal({
+export default function TestModal({
   isOpen,
   onClose,
   onSave,
@@ -18,35 +18,47 @@ export default function AssignmentModal({
   } = useForm({
     defaultValues: {
       title: "",
-      due_at: "",
+      start: "",
+      end: "",
+      time: "",
+      attempts: "",
       description: "",
     },
   });
 
   useEffect(() => {
     if (initialData) {
+      console.log(initialData);
       reset({
         title: initialData.title || "",
-        due_at: initialData.due_at
-          ? new Date(initialData.due_at).toISOString().slice(0, 16)
+        start: initialData.start
+          ? new Date(initialData.start).toISOString().slice(0, 16)
           : "",
+        end: initialData.end
+          ? new Date(initialData.end).toISOString().slice(0, 16)
+          : "",
+        time: initialData.time || "",
+        attempts: initialData.attempts || "",
         description: initialData.description || "",
       });
     } else {
       reset({
         title: "",
-        due_at: "",
+        start: "",
+        end: "",
+        time: "",
+        attempts: "",
         description: "",
       });
     }
   }, [initialData, reset]);
 
   const onSubmit = (data) => {
-    const assignment = {
+    const test = {
       ...data,
       class: classId,
     };
-    onSave(assignment);
+    onSave(test);
     onClose();
     reset();
   };
@@ -58,7 +70,6 @@ export default function AssignmentModal({
         className="fixed inset-0 z-50 flex items-center justify-center"
         onClose={onClose}
       >
-
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-200"
@@ -71,7 +82,6 @@ export default function AssignmentModal({
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
         </Transition.Child>
 
-
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -83,20 +93,21 @@ export default function AssignmentModal({
         >
           <div className="relative bg-gradient-to-b from-white via-slate-50 to-white rounded-2xl shadow-2xl p-6 w-[480px] border border-slate-200">
             <Dialog.Title className="text-xl font-bold text-gray-800 mb-5 text-center">
-              {initialData ? "Chỉnh sửa bài tập" : "Giao bài tập mới"}
+              {initialData ? "Chỉnh sửa bài thi" : "Giao bài thi mới"}
             </Dialog.Title>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Tên bài
+                  Tiêu đề bài thi
                 </label>
                 <input
                   type="text"
                   className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
-                  placeholder="Nhập tên bài tập"
-                  {...register("title", { required: "Vui lòng nhập tên bài" })}
+                  placeholder="Nhập tiêu đề bài thi"
+                  {...register("title", {
+                    required: "Vui lòng nhập tiêu đề bài thi",
+                  })}
                 />
                 {errors.title && (
                   <p className="text-red-500 text-sm mt-1">
@@ -105,32 +116,84 @@ export default function AssignmentModal({
                 )}
               </div>
 
-
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Hạn nộp
+                  Bắt đầu
                 </label>
                 <input
                   type="datetime-local"
                   className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
-                  {...register("due_at", {
-                    required: "Vui lòng chọn hạn nộp",
+                  {...register("start", {
+                    required: "Vui lòng chọn thời gian bắt đầu",
                   })}
                 />
-                {errors.due_at && (
+                {errors.start && (
                   <p className="text-red-500 text-sm mt-1">
-                    {errors.due_at.message}
+                    {errors.start.message}
                   </p>
                 )}
               </div>
 
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Kết thúc
+                </label>
+                <input
+                  type="datetime-local"
+                  className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
+                  {...register("end", {
+                    required: "Vui lòng chọn thời gian kết thúc",
+                  })}
+                />
+                {errors.end && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.end.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Thời gian làm bài (phút)
+                </label>
+                <input
+                  type="number"
+                  className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
+                  {...register("time", {
+                    required: "Vui lòng chọn thời gian kết thúc",
+                  })}
+                />
+                {errors.time && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.time.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Số lượt làm bài
+                </label>
+                <input
+                  type="number"
+                  className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
+                  {...register("attempts", {
+                    required: "Vui lòng chọn thời gian kết thúc",
+                  })}
+                />
+                {errors.attempts && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.attempts.message}
+                  </p>
+                )}
+              </div>
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Mô tả
                 </label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none resize-none"
                   placeholder="Nhập nội dung mô tả bài tập"
                   {...register("description", {
@@ -143,7 +206,6 @@ export default function AssignmentModal({
                   </p>
                 )}
               </div>
-
 
               <div className="mt-6 flex justify-end space-x-3">
                 <Button

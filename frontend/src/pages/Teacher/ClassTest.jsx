@@ -14,9 +14,9 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import formatDateTime from "./../../utils/formatDateTime";
-import ConfirmDialog from "../../components/ConfirmDialog";
 import { testService } from "../../services/testService";
-import TestModal from "../../components/TestModal";
+import TestModal from './../../components/Modals/TestModal';
+import ConfirmDialog from "../../components/UI/ConfirmDialog";
 
 export default function ClassTest() {
   const [tests, setTests] = useState({ class: {}, tests: [] });

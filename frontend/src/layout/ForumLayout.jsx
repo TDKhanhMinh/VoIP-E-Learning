@@ -3,9 +3,9 @@ import { FaBell, FaCog } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { authService } from "../services/authService";
 import { userService } from "../services/userService";
-import { LoadingProvider } from "../context/LoadingContext";
 
-import Forum from "../components/Forum";
+import Forum from "../components/Forum/Forum";
+import { LoadingProvider } from "../context/LoadingContext";
 
 export default function TeacherLayout() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);

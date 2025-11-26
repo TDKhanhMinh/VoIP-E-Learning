@@ -17,15 +17,13 @@ import { ToastContainer } from "react-toastify";
 import { authService } from "../services/authService";
 import { userService } from "../services/userService";
 import { LoadingProvider } from "../context/LoadingContext";
-import LoaderOverlay from "../components/LoaderOverlay";
-import MessageCall from "../components/MessageCall";
-import ChatWithAdmin from "./../components/ChatWithAdmin";
+import LoaderOverlay from "../components/UI/LoaderOverlay";
 import {
   MdChecklistRtl,
   MdOutlineChatBubbleOutline,
   MdOutlineForum,
 } from "react-icons/md";
-import SupportWidget from "../components/SupportedWidget";
+import SupportWidget from "../components/Common/SupportedWidget";
 
 export default function TeacherLayout() {
   const [isCollapsed, setIsCollapsed] = useState(false);

@@ -2,16 +2,14 @@ import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { authService } from "../services/authService";
 import { SIDEBAR_DATA } from "./../assets/sidebar-data";
-import Button from "../components/Button";
+import Button from "../components/UI/Button";
 import { FaBars, FaBell, FaChevronLeft, FaCog } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { ToastContainer } from "react-toastify";
 import { userService } from "../services/userService";
 import { LoadingProvider } from "../context/LoadingContext";
-import LoaderOverlay from "../components/LoaderOverlay";
-import MessageCall from "../components/MessageCall";
-import ChatWithAdmin from "../components/ChatWithAdmin";
-import SupportWidget from "../components/SupportedWidget";
+import LoaderOverlay from "../components/UI/LoaderOverlay";
+import SupportWidget from "../components/Common/SupportedWidget";
 
 function MainLayout() {
   const navigate = useNavigate();

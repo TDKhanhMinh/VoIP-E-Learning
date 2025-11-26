@@ -1,5 +1,5 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import Button from "../components/Button";
+import Button from "../components/UI/Button";
 import { ToastContainer } from "react-toastify";
 import Tippy from "@tippyjs/react/headless";
 import "tippy.js/dist/tippy.css";
@@ -20,7 +20,7 @@ import {
 } from "react-icons/fa";
 import { authService } from "../services/authService";
 import { userService } from "../services/userService";
-import LoaderOverlay from "../components/LoaderOverlay";
+import LoaderOverlay from "../components/UI/LoaderOverlay";
 import { LoadingProvider } from "../context/LoadingContext";
 
 function HomeworkLayout() {

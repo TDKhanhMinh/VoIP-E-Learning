@@ -8,11 +8,10 @@ import {
   FaSearch,
   FaLayerGroup,
 } from "react-icons/fa";
-import Button from "./../../components/Button";
-import CourseModal from "../../components/CourseModal";
+import CourseModal from "../../components/Modals/CourseModal";
 import { courseService } from "../../services/courseService";
 import { toast } from "react-toastify";
-import Pagination from "../../components/Pagination";
+import Pagination from "../../components/UI/Pagination";
 
 export default function ManageCourses() {
   const [open, setOpen] = useState(false);

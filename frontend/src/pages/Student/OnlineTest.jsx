@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import OnlineTestCard from "../../components/OnlineTestCard";
-
+import OnlineTestCard from "../../components/Tests/OnlineTestCard";
 import { testService } from "../../services/testService";
 
 function OnlineTest() {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ConferenceRoom from "../../components/ConferenceRoom";
+import ConferenceRoom from "../../components/Voip/ConferenceRoom";
 import { roomService } from "../../services/roomService";
 const OnlineClassroom = () => {
     const { id } = useParams();

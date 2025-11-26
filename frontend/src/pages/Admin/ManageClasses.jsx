@@ -2,26 +2,20 @@ import { useEffect, useState } from "react";
 import {
   FaPlus,
   FaEdit,
-  FaTrash,
   FaBook,
   FaChalkboardTeacher,
   FaCalendarAlt,
-  FaClock,
   FaInfo,
   FaLayerGroup,
-  FaRestroom,
-  FaWindows,
-  FaWindowClose,
 } from "react-icons/fa";
-import Button from "./../../components/Button";
-import ClassModal from "../../components/ClassModal";
+import Button from "./../../components/UI/Button";
+import ClassModal from "../../components/Modals/ClassModal";
 import { courseService } from "./../../services/courseService";
 import { userService } from "./../../services/userService";
 import { semesterService } from "./../../services/semesterService";
 import { toast } from "react-toastify";
 import { classService } from "../../services/classService";
-import Pagination from "./../../components/Pagination";
-import { FaWindowMaximize } from "react-icons/fa6";
+import Pagination from "./../../components/UI/Pagination";
 
 export default function ManageClasses() {
   const [open, setOpen] = useState(false);

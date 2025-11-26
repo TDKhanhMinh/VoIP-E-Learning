@@ -3,7 +3,7 @@ import { FaBell, FaSearch, FaChalkboardTeacher } from "react-icons/fa";
 import { announcementService } from "../../services/announcementService";
 import { enrollmentService } from "./../../services/enrollmentService";
 import { classService } from "../../services/classService";
-import NotificationItem from "../../components/NotificationItem";
+import NotificationItem from "../../components/Common/NotificationItem";
 
 export default function Notification() {
   const studentId = sessionStorage.getItem("userId")?.replace(/"/g, "");

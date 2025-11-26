@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { submissionService } from "../../services/submissionService";
 import { assignmentService } from "../../services/assignmentService";
 import formatDateTime from "../../utils/formatDateTime";
-import GradeModal from "../../components/GradeModal";
+import GradeModal from "../../components/Modals/GradeModal";
 import { toast } from "react-toastify";
 import {
   FaArrowLeft,
@@ -17,7 +17,6 @@ import {
   FaStar,
   FaExclamationCircle,
   FaCalendarAlt,
-  FaUserGraduate,
 } from "react-icons/fa";
 
 export default function ManageSubmissions() {

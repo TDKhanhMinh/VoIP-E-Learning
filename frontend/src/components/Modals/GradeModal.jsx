@@ -2,7 +2,6 @@ import { Dialog } from "@headlessui/react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaClipboardList, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
-import Button from "./Button";
 
 export default function GradeModal({ isOpen, onClose, onSave, initialData }) {
     const {

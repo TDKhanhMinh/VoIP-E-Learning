@@ -24,7 +24,7 @@ import ManageSemester from "./../pages/Admin/ManageSemesters";
 import ManageUsers from "./../pages/Admin/ManageUsers";
 import ManageChats from "../pages/Admin/ManageChats";
 import ClassDetail from "../pages/Admin/ManageClassDetails";
-import Forum from "../components/Forum";
+import Forum from "../components/Forum/Forum";
 import TeacherDashboard from "../pages/Teacher/TeacherDashboard";
 import ManageAssignments from "../pages/Teacher/ManageAssignments";
 import ManageTest from "../pages/Teacher/ManageTest";
@@ -46,7 +46,7 @@ import AdminGuard from "./../pages/Admin/AdminGuard";
 import AuthGuard from "../pages/Student/AuthGuard";
 import LMS404Page from "../pages/LMS404Page";
 import TeacherGuard from "../pages/Teacher/TeacherGuard";
-import Schedule from "../pages/Schedule";
+import Schedule from "../pages/Student/Schedule";
 
 const publicRoutes = createBrowserRouter([
   {

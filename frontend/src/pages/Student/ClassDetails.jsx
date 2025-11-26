@@ -3,12 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { classService } from "../../services/classService";
 import { BsCameraVideo, BsChat } from "react-icons/bs";
 import { announcementService } from "../../services/announcementService";
-import NotificationItem from "../../components/NotificationItem";
-import CreatePostModal from "../../components/PostModal";
+import NotificationItem from "../../components/Common/NotificationItem";
+import CreatePostModal from "../../components/Modals/PostModal";
 import { postService } from "../../services/postService";
 import { io } from "socket.io-client";
-import PostItem from "../../components/PostItems";
-import ChatWithTeacher from "../../components/ChatWithTeacher";
+import PostItem from "../../components/Common/PostItems";
+import ChatWithTeacher from "../../components/Chat/ChatWithTeacher";
 import { userService } from "../../services/userService";
 export default function ClassDetails() {
   const { id } = useParams();

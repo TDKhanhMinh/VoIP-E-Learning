@@ -19,7 +19,7 @@ import { semesterService } from "../../services/semesterService";
 import { toast } from "react-toastify";
 import { enrollmentService } from "../../services/enrollmentService";
 import { useNavigate } from "react-router-dom";
-import Pagination from "../../components/Pagination";
+import Pagination from "../../components/UI/Pagination";
 export default function TeacherClassDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -342,7 +342,7 @@ export default function TeacherClassDetails() {
                         </td>
                         <td className="px-6 py-4">
                           <span className="font-mono text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded-lg">
-                            {s.student_id || "—"}
+                            {s.student?.email.split("@")[0] || "—"}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-600">
