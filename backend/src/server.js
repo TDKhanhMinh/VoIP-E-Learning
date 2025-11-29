@@ -30,7 +30,9 @@ import postRoutes from "./router/postRouter.js";
 import commentRoutes from "./router/commentRouter.js";
 import topicRoutes from "./router/topicRouter.js";
 import chatRoutes from "./router/chatRouter.js";
+import recommendRoutes from "./router/recommendRouter.js";
 import http from "http";
+import bodyParser from "body-parser";
 import livekitRouter from "./router/livekitRouter.js";
 import { Server } from "socket.io";
 import discussionSocket from "./sockets/discussionSocket.js";
@@ -58,6 +60,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(bodyParser.json({ limit: "2mb" }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -88,6 +91,7 @@ app.use("/api/voip", voipRoutes);
 app.use("/api/livekit", livekitRouter);
 app.use("/api/post", postRoutes);
 app.use("/api/comment", commentRoutes);
+app.use("/api/recommend", recommendRoutes);
 app.use("/api/topic", topicRoutes);
 app.use("/api/chat", chatRoutes);
 

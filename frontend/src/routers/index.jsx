@@ -47,6 +47,7 @@ import AuthGuard from "../pages/Student/AuthGuard";
 import LMS404Page from "../pages/LMS404Page";
 import TeacherGuard from "../pages/Teacher/TeacherGuard";
 import Schedule from "../pages/Student/Schedule";
+import Recommend from "../pages/Student/Recommend";
 
 const publicRoutes = createBrowserRouter([
   {
@@ -79,6 +80,7 @@ const publicRoutes = createBrowserRouter([
           { path: "courses", element: <ManageCourses /> },
           { path: "semesters", element: <ManageSemester /> },
           { path: "users", element: <ManageUsers /> },
+          { path: "recommend", element: <Recommend /> },
           { path: "chats", element: <ManageChats /> },
           { path: "classes/class-details/:id", element: <ClassDetail /> },
           { path: "forum", element: <Forum /> },
@@ -149,6 +151,7 @@ const publicRoutes = createBrowserRouter([
           { path: "exam/:test_id", element: <ExamScreen /> },
           { path: "schedule", element: <Schedule /> },
           { path: "forum", element: <Forum /> },
+          { path: "recommend", element: <Recommend /> },
         ],
       },
       {

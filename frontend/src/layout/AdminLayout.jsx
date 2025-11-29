@@ -5,6 +5,7 @@ import {
   FaChartPie,
   FaUsers,
   FaChevronLeft,
+  FaLightbulb,
 } from "react-icons/fa";
 import { MdOutlineChatBubbleOutline, MdOutlineForum } from "react-icons/md";
 import { MdOutlineLibraryBooks } from "react-icons/md";
@@ -37,6 +38,7 @@ function AdminLayout() {
     { path: "/admin/courses", icon: MdOutlineLibraryBooks, label: "Môn học" },
     { path: "/admin/classes", icon: SiGoogleclassroom, label: "Lớp học" },
     { path: "/admin/users", icon: FaUsers, label: "Người dùng" },
+    { path: "/admin/recommend", icon: FaLightbulb, label: "Gợi ý tài liệu" },
     { path: "/admin/chats", icon: MdOutlineChatBubbleOutline, label: "Hỗ trợ" },
     {
       path: "/admin/forum",

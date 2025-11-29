@@ -4,7 +4,7 @@ import { LuUserRoundCheck } from "react-icons/lu";
 import { IoHomeOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoChatbubblesOutline } from "react-icons/io5";
-import { FaRegComment } from "react-icons/fa";
+import { FaRegComment, FaLightbulb } from "react-icons/fa";
 export const SIDEBAR_DATA = [
   {
     title: "Trang chủ",
@@ -36,6 +36,11 @@ export const SIDEBAR_DATA = [
     title: "Thông báo",
     icon: <IoMdNotificationsOutline />,
     to: "/home/notification",
+  },
+  {
+    title: "Gợi ý tài liệu",
+    icon: <FaLightbulb />,
+    to: "/home/recommend",
   },
   {
     title: "Diễn đàn",
