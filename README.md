@@ -4,23 +4,42 @@ A modern, full-featured Learning Management System (LMS) with integrated VoIP co
 
 ![E-Learning System](https://res.cloudinary.com/dsj6sba9f/image/upload/v1745247841/c085ad076c442c8191e6b7f48ef59aad_k7izor.jpg)
 
-## Overview
+## 📋 Table of Contents
 
-VoIP E-Learning is a comprehensive educational platform that combines traditional LMS features with advanced real-time communication capabilities. The system provides seamless integration of course management, online assessments, video conferencing, VoIP calling, and collaborative learning tools.
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Installation & Setup](#installation--setup)
+- [Configuration](#configuration-details)
+- [API Documentation](#api-documentation)
+- [Socket.IO Events](#socketio-events)
+- [Database Schema](#database-schema)
+- [Usage Guide](#usage-guide)
+- [Security Features](#security-features)
+- [Deployment](#deployment)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+
+## 🎯 Overview
+
+VoIP E-Learning is a comprehensive educational platform that combines traditional LMS features with advanced real-time communication capabilities. The system provides seamless integration of course management, online assessments, video conferencing, VoIP calling, collaborative learning tools, and intelligent document search powered by AI embeddings.
 
 ### Key Highlights
 
 - **Real-time VoIP Communication**: Direct SIP-based calling between students and teachers using SIP.js
 - **Video Conferencing**: LiveKit-powered virtual classrooms with interactive whiteboard (Tldraw)
+- **AI-Powered Search**: Vector similarity search using embeddings from Gemini AI for intelligent document retrieval
 - **Online Testing**: Advanced testing system with auto-grading, multiple attempts, and scheduled activation
 - **Assignment Management**: Complete workflow from creation to submission and grading
 - **Discussion Forums**: Topic-based discussions with nested comments and real-time updates
 - **File Management**: Google Drive integration for materials and Cloudinary for images
 - **Live Chat**: Socket.IO powered real-time messaging with conversation tracking
+- **Meeting Intelligence**: AI-powered meeting transcription and summarization using Gemini 2.0 Flash
 
-## Features
+## ✨ Key Features
 
-### Educational Features
+### 📚 Educational Features
 
 #### Class & Course Management
 - **Semester-based Organization**: Classes organized by academic terms (HK1-2024/2025, HK2-2024/2025)
@@ -31,7 +50,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 
 #### Online Testing System
 - **Test Creation**: Flexible configuration with title, description, time limits, and attempt limits
-- **Question Bank**: Multiple-choice questions with import from .docx files using Mammoth
+- **Question Bank**: Multiple-choice questions with import from .docx files using Mammoth.js
 - **Auto-Grading**: Immediate results calculation with detailed feedback
 - **Test Sessions**: Individual test instances tracking student attempts and timing
 - **Scheduled Tests**: Automatic lifecycle management (not_started → ongoing → ended)
@@ -45,7 +64,14 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - **Grading System**: Numeric grades with text feedback
 - **File Validation**: Type and size restrictions for submissions
 
-### Communication Features
+#### AI-Powered Document Search
+- **Vector Embeddings**: Documents embedded using Google Generative AI (Gemini)
+- **Semantic Search**: Finds relevant documents based on meaning, not just keywords
+- **Multi-field Embeddings**: Separate embeddings for title, description, tags, and level
+- **Weighted Similarity**: Combines multiple embedding similarities for accurate results
+- **Hybrid Search**: Combines vector similarity with traditional filters (tags, level)
+
+### 💬 Communication Features
 
 #### VoIP Calling (SIP.js Integration)
 - **Direct Calling**: Student-to-teacher voice calls via WebRTC
@@ -53,7 +79,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - **Call States**: Real-time state tracking (idle, calling, in-call, terminated)
 - **Audio Streaming**: Remote audio playback through HTML5 audio elements
 - **STUN/TURN Servers**: Configured for NAT traversal
-  ```javascript
+  ```
   STUN: stun.l.google.com:19302
   TURN: webrtc.voipelearning.shop:3478 (UDP/TCP)
   TURNS: webrtc.voipelearning.shop:5349 (TLS)
@@ -66,7 +92,12 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - **Teacher Controls**: Mute all participants, toggle whiteboard, end session
 - **Participant Management**: Real-time tracking with automatic cleanup
 - **Auto-reconnect**: Resilient connection handling with token refresh
-- **Session Recording**: Optional recording capabilities (LiveKit feature)
+- **Session Recording**: Recording capabilities with AI-powered transcription and summarization
+- **Meeting Intelligence**: 
+  - Automatic transcription of recorded sessions
+  - AI-generated summaries with key points
+  - Smart title generation based on content
+  - Markdown-formatted meeting notes
 
 #### Real-time Chat (Socket.IO)
 - **Personal Chat**: Direct messaging with admin and teachers
@@ -82,40 +113,49 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - **Real-time Updates**: Live comment notifications via Socket.IO
 - **Rich Text Support**: Formatted post content with React Quill
 - **Comment Counter**: Aggregate comment counts per post
+- **Post Analytics**: Track engagement with view counts
 
-### User Roles & Permissions
+### 👥 User Roles & Permissions
 
 #### Admin
 - Complete system management dashboard
 - User CRUD operations (students, teachers, admins)
 - Course and class creation with semester assignment
-- Class enrollment management
+- Class enrollment management (bulk and individual)
 - Semester lifecycle management
+- Document library management with AI search
 - System-wide analytics and reporting
 - Chat support interface for all users
+- Topic management for discussion forums
 
 #### Teacher
-- Assigned class management
-- Assignment creation with deadlines
-- Online test design with question banks
-- Material uploads to Google Drive
-- Submission grading with feedback
+- Assigned class management with detailed overview
+- Assignment creation with Google Drive integration
+- Online test design with question bank import
+- Material uploads to shared Drive folders
+- Submission grading with detailed feedback
 - Attendance tracking per session
-- Announcements to class
-- Video conference hosting with whiteboard
+- Announcements and notifications to class
+- Video conference hosting with whiteboard and screen sharing
+- Recording management with AI summaries
 - Student chat support
+- Discussion forum moderation
+- Real-time class statistics
 
 #### Student
 - View enrolled classes per semester
-- Submit assignments before deadlines
-- Take scheduled online tests
+- Submit assignments before deadlines with file uploads
+- Take scheduled online tests with timer
 - Access course materials and resources
-- Participate in discussion forums
+- Participate in discussion forums (post, comment, vote)
 - Join video conferences when active
 - VoIP calling to assigned teachers
 - Real-time chat with admin/teachers
+- View grades and feedback
+- Download meeting recordings and transcripts
+- Search document library with AI-powered semantic search
 
-## Technology Stack
+## 🛠 Technology Stack
 
 ### Frontend
 
@@ -173,11 +213,16 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - Socket.IO 4.8.1 (bidirectional events)
 - LiveKit Server SDK 2.10.1 (video rooms)
 
+**AI & Machine Learning**
+- @google/generative-ai 0.21.0 (Gemini AI for embeddings and summarization)
+- Vector Similarity Calculations (custom implementation)
+
 **File Storage & Processing**
 - Multer 1.4.5-lts.1 (file uploads)
-- Google APIs (googleapis 144.0.0) (Drive integration)
+- googleapis 144.0.0 (Google Drive integration)
 - Cloudinary 2.6.0 (image storage)
 - Mammoth 1.8.0 (Word document parsing)
+- fs-extra 11.2.0 (enhanced file operations)
 
 **Task Scheduling**
 - node-cron 3.0.3 (scheduled jobs)
@@ -191,7 +236,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - Nodemon 3.1.9 (auto-restart)
 - ESLint (code quality)
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 VoIP E-Learning/
@@ -216,7 +261,8 @@ VoIP E-Learning/
 │   │   │   │   ├── Pagination.jsx
 │   │   │   │   ├── ConfirmDialog.jsx
 │   │   │   │   ├── TextInput.jsx
-│   │   │   │   └── LoaderOverlay.jsx
+│   │   │   │   ├── LoaderOverlay.jsx
+│   │   │   │   └── ClassNavigation.jsx
 │   │   │   └── Voip/           # VoIP & Video components
 │   │   │       ├── ConferenceRoom.jsx
 │   │   │       ├── MessageCall.jsx
@@ -234,14 +280,18 @@ VoIP E-Learning/
 │   │   │   ├── Admin/
 │   │   │   │   ├── ManageClassDetails.jsx
 │   │   │   │   ├── ManageUsers.jsx
-│   │   │   │   └── Dashboard.jsx
+│   │   │   │   ├── Dashboard.jsx
+│   │   │   │   └── DocumentLibrary.jsx
 │   │   │   ├── Teacher/
 │   │   │   │   ├── ClassDetails.jsx
-│   │   │   │   └── GradeSubmissions.jsx
+│   │   │   │   ├── GradeSubmissions.jsx
+│   │   │   │   └── Recordings.jsx
 │   │   │   ├── Student/
 │   │   │   │   ├── ClassDetails.jsx
-│   │   │   │   └── TakeTest.jsx
-│   │   │   └── Login.jsx
+│   │   │   │   ├── TakeTest.jsx
+│   │   │   │   └── SearchDocuments.jsx
+│   │   │   ├── Login.jsx
+│   │   │   └── LMS404Page.jsx
 │   │   ├── services/           # API service layer
 │   │   │   ├── authService.js
 │   │   │   ├── chatService.js
@@ -249,6 +299,7 @@ VoIP E-Learning/
 │   │   │   ├── enrollmentService.js
 │   │   │   ├── roomService.js
 │   │   │   ├── sipClientService.js
+│   │   │   ├── documentService.js
 │   │   │   └── http.js
 │   │   ├── utils/              # Helper functions
 │   │   │   └── formatTime.js
@@ -269,6 +320,8 @@ VoIP E-Learning/
     │   │   ├── classController.js
     │   │   ├── testOnlineController.js
     │   │   ├── voipController.js
+    │   │   ├── documentController.js
+    │   │   ├── postController.js
     │   │   └── [others...]
     │   ├── cron/
     │   │   ├── updateOnlineTest.js    # Test status automation
@@ -286,6 +339,9 @@ VoIP E-Learning/
     │   │   ├── TestSession.js
     │   │   ├── Conversation.js
     │   │   ├── Message.js
+    │   │   ├── Document.js           # AI-searchable documents
+    │   │   ├── Post.js
+    │   │   ├── Comment.js
     │   │   └── [others...]
     │   ├── router/
     │   │   ├── authRouter.js
@@ -294,27 +350,34 @@ VoIP E-Learning/
     │   │   ├── voipRouter.js
     │   │   ├── livekitRouter.js
     │   │   ├── testOnlineRouter.js
+    │   │   ├── documentRouter.js
+    │   │   ├── postRouter.js
     │   │   └── [others...]
     │   ├── service/
     │   │   ├── authService.js
     │   │   ├── chatService.js
     │   │   ├── driveService.js        # Google Drive API
     │   │   ├── postService.js
-    │   │   └── testService.js
+    │   │   ├── testService.js
+    │   │   ├── aiService.js           # Gemini AI integration
+    │   │   └── documentService.js
     │   ├── sockets/
     │   │   ├── chatSocket.js          # Chat namespace
     │   │   └── discussionSocket.js    # Discussion events
+    │   ├── utils/
+    │   │   └── VectorSimilarity.js    # Cosine similarity calculations
     │   └── server.js                  # Express server
+    ├── Dockerfile
     └── package.json
 ```
 
-## Installation & Setup
+## 🚀 Installation & Setup
 
 ### Prerequisites
 
 - **Node.js**: v20.x or higher
 - **MongoDB**: v6.x or higher
-- **Google Cloud Project**: For Drive API credentials
+- **Google Cloud Project**: For Drive API and Gemini AI
 - **Cloudinary Account**: For image storage
 - **LiveKit Account**: For video conferencing
 - **SIP Server**: For VoIP functionality (WebRTC-compatible)
@@ -357,19 +420,28 @@ LIVEKIT_API_KEY=your-livekit-api-key
 LIVEKIT_API_SECRET=your-livekit-api-secret
 LIVEKIT_URL=wss://your-livekit-instance.livekit.cloud
 
-# Google OAuth (optional for Google login)
+# Google AI (Gemini)
+GEMINI_API_KEY=your-gemini-api-key
+
+# Google OAuth (optional)
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
-4. **Google Drive API Setup**
+4. **Google Services Setup**
 
+**Google Drive API:**
 - Create project in [Google Cloud Console](https://console.cloud.google.com)
 - Enable Google Drive API
 - Create service account
 - Download credentials JSON
 - Place as `src/config/credentials.json`
 - Share Drive folder with service account email
+
+**Gemini AI:**
+- Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+- Create API key
+- Add to `.env` as `GEMINI_API_KEY`
 
 5. **Start server**
 ```bash
@@ -407,7 +479,7 @@ npm run dev
 
 Application runs on: `http://localhost:5173`
 
-## Configuration Details
+## ⚙️ Configuration Details
 
 ### VoIP Configuration (sipClientService.js)
 
@@ -426,12 +498,19 @@ const iceServers = [
 ];
 ```
 
-**Update these values for your SIP infrastructure:**
-- STUN server for public IP discovery
-- TURN server for NAT traversal (UDP/TCP/TLS)
-- Credentials for TURN authentication
+### AI Configuration
 
-### CORS Configuration (server.js)
+**Gemini Model**: `gemini-2.0-flash-exp`
+- Used for document embeddings (1536 dimensions)
+- Meeting transcription and summarization
+- Structured JSON output generation
+
+**Vector Similarity**:
+- Cosine similarity for document search
+- Weighted combination: 40% title, 30% description, 20% tags, 10% level
+- Threshold: 0.3 minimum similarity score
+
+### CORS Configuration
 
 ```javascript
 const allowedOrigins = [
@@ -443,23 +522,18 @@ const allowedOrigins = [
 ];
 ```
 
-Add your production domain to this list.
-
 ### Socket.IO Namespaces
 
-- **Chat Namespace**: `/chat` - JWT-authenticated real-time messaging
+- **Chat Namespace**: `/chat` - JWT-authenticated messaging
 - **Default Namespace**: `/` - Discussion forums and general events
 
-### Google Drive Parent Folder
+### Google Drive Configuration
 
-Located in `driveService.js`:
 ```javascript
 const PARENT_FOLDER_ID = "1nQTKksCVedKtt0hJqWyZQ8T57EMmjR0P";
 ```
 
-Update with your shared Drive folder ID.
-
-## API Documentation
+## 📡 API Documentation
 
 ### Authentication
 
@@ -528,6 +602,49 @@ GET    /api/submission/assignment/:id    # Get submissions
 PUT    /api/submission/:id               # Grade submission
 ```
 
+### AI Document Search
+
+```http
+GET    /api/document                     # Get all documents
+GET    /api/document/:id                 # Get document by ID
+POST   /api/document                     # Create document with embedding
+PUT    /api/document/:id                 # Update document
+DELETE /api/document/:id                 # Delete document
+POST   /api/document/search              # AI-powered semantic search
+```
+
+**Search Request Body:**
+```json
+{
+  "query": "machine learning algorithms",
+  "filters": {
+    "tags": ["AI", "Python"],
+    "level": "Advanced"
+  },
+  "limit": 10
+}
+```
+
+**Search Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "score": 0.85,
+      "data": {
+        "_id": "...",
+        "title": "Introduction to Neural Networks",
+        "description": "...",
+        "tags": ["AI", "Deep Learning"],
+        "level": "Advanced",
+        "link": "https://..."
+      }
+    }
+  ]
+}
+```
+
 ### Chat
 
 ```http
@@ -547,6 +664,32 @@ GET    /api/room/:roomId                 # Get room details
 POST   /api/room/:roomId/start           # Start conference
 POST   /api/room/:roomId/end             # End conference
 POST   /api/livekit/token                # Get LiveKit access token
+```
+
+### Meeting Intelligence
+
+```http
+POST   /api/meeting/process              # Process recorded meeting
+```
+
+**Process Request Body:**
+```json
+{
+  "fileUrl": "https://storage.url/recording.mp4",
+  "roomName": "class-123-session-1"
+}
+```
+
+**Process Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "transcript": "Full transcript...",
+    "summaryTitle": "Introduction to Data Structures",
+    "summary": "### Main Topics\n- Arrays\n- Linked Lists\n..."
+  }
+}
 ```
 
 ### File Management
@@ -573,7 +716,7 @@ GET    /api/topic                        # Get all topics
 POST   /api/topic                        # Create topic (admin)
 ```
 
-## Socket.IO Events
+## 🔌 Socket.IO Events
 
 ### Chat Namespace (`/chat`)
 
@@ -628,127 +771,22 @@ socket.on('comment_added', (comment) => {
 });
 ```
 
-## Usage Guide
-
-### For Students
-
-1. **Login** with student credentials at `/login`
-2. **Dashboard** redirects to `/home` showing enrolled classes
-3. **View Classes**: Sidebar lists all classes for current semester
-4. **Assignments**: 
-   - Navigate to class details
-   - View assignment list with deadlines
-   - Submit files via drag-and-drop
-   - Check grades and feedback
-5. **Tests**: 
-   - Take tests during scheduled periods
-   - View remaining time and attempts
-   - Auto-submit on timeout
-6. **Materials**: Download course resources from Google Drive
-7. **Communication**:
-   - **Chat**: Click support widget to message admin/teacher
-   - **VoIP Call**: Use "Call Teacher" button for voice communication
-   - **Video**: Join conference when teacher starts session
-8. **Discussions**: Post questions and reply to classmates
-
-### For Teachers
-
-1. **Login** to teacher dashboard at `/teacher`
-2. **Manage Classes**: View assigned classes in sidebar
-3. **Create Content**:
-   - **Materials**: Upload files to Google Drive
-   - **Assignments**: Set title, description, deadline
-   - **Tests**: 
-     - Create test with time limit and attempts
-     - Add questions manually or import .docx
-     - Schedule start/end times
-4. **Grade Work**: 
-   - Review submissions
-   - Assign numeric grades
-   - Provide text feedback
-5. **Attendance**: Mark students present/absent per session
-6. **Video Conferences**:
-   - Start LiveKit session from class page
-   - Toggle interactive whiteboard
-   - Share screen
-   - Mute all participants
-   - End session
-7. **Support**: Respond to student messages and calls
-
-### For Admins
-
-1. **Login** to admin panel at `/admin`
-2. **User Management**:
-   - Create students, teachers, admins
-   - Edit user profiles
-   - Delete users
-3. **Course Setup**:
-   - Create semesters (e.g., HK1-2024/2025)
-   - Define courses with credits
-   - Create classes with schedules
-4. **Class Configuration**:
-   - Assign teachers to classes
-   - Enroll students in bulk or individually
-   - Manage class schedules (day, shift)
-5. **Monitoring**: View system-wide statistics
-6. **Chat Support**: Handle student inquiries via admin chat
-
-## Security Features
-
-- **Password Hashing**: bcrypt with salt rounds
-- **JWT Authentication**: Secure token-based auth with expiration
-- **Protected Routes**: Middleware-enforced access control
-- **CORS Protection**: Whitelist-based origin validation
-- **Input Validation**: express-validator for all inputs
-- **File Type Restrictions**: Whitelist for uploads (.pdf, .docx, .jpg, etc.)
-- **File Size Limits**: Configurable max upload size
-- **XSS Protection**: Content sanitization
-- **SQL Injection Prevention**: Mongoose ODM with parameterized queries
-- **Socket Authentication**: JWT verification for Socket.IO connections
-
-## Scheduled Tasks (Cron Jobs)
-
-### Test Status Update
-**Schedule**: Every minute (`* * * * *`)
-**File**: `cron/updateOnlineTest.js`
-**Purpose**: Automatically update test status:
-- `not_started` → `ongoing` (when current time reaches start time)
-- `ongoing` → `ended` (when current time passes end time)
-
-### Auto Submit Test Sessions
-**Schedule**: Every minute (`* * * * *`)
-**File**: `cron/submitTestSession.js`
-**Purpose**: Force submit test sessions when:
-- Time limit expires
-- Test ends
-- Student hasn't submitted
-
-## UI/UX Features
-
-- **Responsive Design**: Mobile-friendly with TailwindCSS
-- **Animations**: Smooth transitions with Framer Motion
-- **Loading States**: Skeleton screens and spinners
-- **Toast Notifications**: React Toastify for user feedback
-- **Modals**: Headless UI for accessible dialogs
-- **Tooltips**: Tippy.js for contextual help
-- **Drag & Drop**: React Dropzone for file uploads
-- **Rich Text**: React Quill for formatted content
-- **Collapsible Sidebar**: Space-efficient navigation
-- **Theme Colors**: Blue primary with gradient accents
-
-## Database Schema
+## 🗄 Database Schema
 
 ### Key Collections
 
 **Users**
 ```javascript
 {
-  email: String (unique),
+  email: String (unique, indexed),
   password: String (hashed),
   full_name: String,
   role: Enum ['admin', 'teacher', 'student'],
   phone: String,
-  address: String
+  address: String,
+  avatar: String (Cloudinary URL),
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
@@ -759,7 +797,31 @@ socket.on('comment_added', (comment) => {
   course: ObjectId (ref: Course),
   teacher: ObjectId (ref: User),
   semester: ObjectId (ref: Semester),
-  schedule: [{ dayOfWeek, shift }]
+  schedule: [{
+    dayOfWeek: Number (2-7),
+    shift: Number (1-4)
+  }],
+  status: Enum ['active', 'inactive'],
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+**Documents** (AI-Searchable)
+```javascript
+{
+  title: String (indexed),
+  description: String,
+  tags: [String] (indexed),
+  level: Enum ['Beginner', 'Intermediate', 'Advanced'],
+  link: String (Google Drive URL),
+  embedding: [Number] (1536 dimensions),
+  titleEmbedding: [Number],
+  descriptionEmbedding: [Number],
+  tagsEmbedding: [Number],
+  levelEmbedding: [Number],
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
@@ -768,238 +830,408 @@ socket.on('comment_added', (comment) => {
 {
   title: String,
   description: String,
-  class: ObjectId,
+  class: ObjectId (ref: Class),
   start: Date,
   end: Date,
   time: Number (minutes),
   attempts: Number,
-  status: Enum ['not_started', 'ongoing', 'ended']
+  status: Enum ['not_started', 'ongoing', 'ended'],
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
 **TestSessions**
 ```javascript
 {
-  student: ObjectId,
-  test: ObjectId,
+  student: ObjectId (ref: User),
+  test: ObjectId (ref: OnlineTest),
   startTime: Date,
   endTime: Date,
   status: Enum ['in_progress', 'submitted', 'auto_submitted'],
   attempts: Number,
-  bestScore: Number
+  score: Number,
+  bestScore: Number,
+  answers: [{
+    question: ObjectId,
+    selectedOption: Number
+  }],
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
 **Conversations**
 ```javascript
 {
-  participants: [ObjectId],
-  lastMessage: ObjectId,
-  unreadCount: Map<String, Number>
+  participants: [ObjectId] (ref: User),
+  lastMessage: ObjectId (ref: Message),
+  unreadCount: Map<String, Number>,
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
-## Testing
+**Messages**
+```javascript
+{
+  sender: ObjectId (ref: User),
+  content: String,
+  conversationId: String,
+  readBy: [ObjectId],
+  createdAt: Date
+}
+```
 
-### Manual Testing Checklist
+**Posts** (Discussion Forum)
+```javascript
+{
+  title: String,
+  content: String (HTML),
+  author: ObjectId (ref: User),
+  topic_id: ObjectId (ref: Topic),
+  class_id: ObjectId (ref: Class),
+  views: Number,
+  isPinned: Boolean,
+  createdAt: Date,
+  updatedAt: Date
+}
+```
 
-**Authentication**
-- [ ] Register new user
-- [ ] Login with valid credentials
-- [ ] Login with invalid credentials
-- [ ] Token expiration handling
+## 📖 Usage Guide
 
-**Assignments**
-- [ ] Create assignment
-- [ ] Submit before deadline
-- [ ] Submit after deadline
-- [ ] Grade submission
-- [ ] File upload/download
+### For Students
 
-**Online Tests**
-- [ ] Create test with questions
-- [ ] Import questions from .docx
-- [ ] Take test within time limit
-- [ ] Auto-submit on timeout
-- [ ] Multiple attempts
-- [ ] View results
+1. **Login** at `/login` with student credentials
+2. **Dashboard** (`/home`) shows enrolled classes for current semester
+3. **View Classes**: Sidebar navigation with collapsible menu
+4. **Assignments**: 
+   - Navigate to class → Assignments tab
+   - View deadlines and requirements
+   - Submit via drag-and-drop interface
+   - Check grades and teacher feedback
+5. **Online Tests**: 
+   - Take tests during scheduled periods
+   - Real-time timer with auto-save
+   - Multiple attempts allowed (if configured)
+   - Immediate results after submission
+6. **Course Materials**: Download from Google Drive links
+7. **Search Documents**: 
+   - Use AI-powered search with natural language
+   - Filter by tags and difficulty level
+   - Get semantically similar documents
+8. **Communication**:
+   - **Chat**: Click support widget for admin/teacher chat
+   - **VoIP**: Direct voice call to teacher (SIP.js)
+   - **Video**: Join when teacher starts conference
+   - **Forum**: Post questions, reply to discussions
+9. **Recordings**: Access past meeting recordings with AI summaries
 
-**VoIP & Video**
-- [ ] Initiate voice call
-- [ ] Accept/reject incoming call
-- [ ] Join video conference
-- [ ] Toggle whiteboard
-- [ ] Screen sharing
+### For Teachers
 
-**Chat**
-- [ ] Send message
-- [ ] Receive message
-- [ ] Mark as read
-- [ ] Unread counter
+1. **Login** to teacher portal at `/teacher`
+2. **Dashboard**: Overview of all assigned classes
+3. **Class Management**:
+   - View student list with attendance
+   - Create and manage assignments
+   - Design online tests with question banks
+   - Upload materials to Google Drive
+   - Post announcements
+4. **Content Creation**:
+   - **Assignments**: Set deadlines, attach files, configure grading
+   - **Tests**: 
+     - Add questions manually or import from .docx
+     - Schedule activation times
+     - Set time limits and attempts
+   - **Materials**: Organize by topic with AI tagging
+5. **Grading**:
+   - Review student submissions
+   - Provide numeric scores and text feedback
+   - Track late submissions
+6. **Video Conferencing**:
+   - Start LiveKit session from class page
+   - Control whiteboard visibility
+   - Mute all participants
+   - Share screen for presentations
+   - End session with automatic cleanup
+7. **Meeting Intelligence**:
+   - Recordings auto-transcribed by Gemini AI
+   - Review AI-generated summaries
+   - Export meeting notes (Markdown)
+8. **Communication**: Respond to student chats and calls
 
-## Troubleshooting
+### For Admins
 
-### Common Issues
+1. **Admin Panel** at `/admin`
+2. **User Management**:
+   - Create students, teachers, admins
+   - Bulk import from CSV
+   - Edit profiles and passwords
+   - Deactivate accounts
+3. **Academic Setup**:
+   - Create semesters (HK1/HK2-YYYY/YYYY)
+   - Define courses with credits
+   - Create classes with teacher assignments
+   - Configure schedules (day/shift)
+4. **Enrollment**:
+   - Bulk enroll students from Excel
+   - Individual enrollment management
+   - Transfer students between classes
+5. **Document Library**:
+   - Upload documents with metadata
+   - AI generates embeddings automatically
+   - Organize by tags and levels
+   - Monitor search analytics
+6. **System Monitoring**:
+   - View platform statistics
+   - Track user activity logs
+   - Monitor server health
+7. **Chat Support**: Handle student/teacher inquiries
 
-**VoIP Call Fails**
+## 🔒 Security Features
+
+- **Password Security**: bcrypt hashing with 10 salt rounds
+- **JWT Authentication**: HS256 algorithm with 7-day expiration
+- **Route Protection**: Middleware-enforced role-based access
+- **CORS**: Whitelist-based origin validation
+- **Input Validation**: express-validator for all endpoints
+- **File Restrictions**: Type and size limits (10MB default)
+- **XSS Protection**: Content sanitization with DOMPurify
+- **SQL Injection Prevention**: Mongoose parameterized queries
+- **Socket Authentication**: JWT verification on connection
+- **Rate Limiting**: Prevents brute force attacks
+- **Secure Headers**: Helmet.js middleware
+- **Environment Variables**: Sensitive data in .env files
+
+## 🚀 Deployment
+
+### Production Environment Variables
+
+```env
+# Update for production
+NODE_ENV=production
+JWT_SECRET=<strong-random-secret>
+MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/voip-elearning
+
+# Update allowed origins
+ALLOWED_ORIGINS=https://yourdomain.com,https://api.yourdomain.com
+```
+
+### Docker Deployment
+
+1. **Backend Dockerfile** (already configured):
+```dockerfile
+FROM node:20-alpine
+WORKDIR /app/backend
+COPY package*.json ./
+RUN npm install
+COPY . .
+CMD ["npm", "start"]
+```
+
+2. **Frontend Build**:
+```bash
+cd frontend
+npm run build
+# Deploy dist/ folder to static hosting
+```
+
+3. **Docker Compose** (optional):
+```yaml
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - mongodb
+  
+  mongodb:
+    image: mongo:6
+    volumes:
+      - mongo-data:/data/db
+  
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
+```
+
+### Deployment Checklist
+
+- [ ] Set `NODE_ENV=production`
+- [ ] Use strong `JWT_SECRET` (32+ characters)
+- [ ] MongoDB Atlas for cloud database
+- [ ] Update CORS allowed origins
+- [ ] Enable HTTPS with SSL certificate
+- [ ] Configure CDN for static assets
+- [ ] Set up error logging (Sentry/LogRocket)
+- [ ] Enable database backups
+- [ ] Monitor cron jobs
+- [ ] Load test critical endpoints
+- [ ] Configure reverse proxy (Nginx)
+
+## 🐛 Troubleshooting
+
+### VoIP Call Issues
+
+**Symptom**: Calls fail to connect
 - Check browser microphone permissions
 - Verify TURN server credentials
-- Ensure firewall allows WebRTC ports
+- Test STUN/TURN with [WebRTC Troubleshooter](https://test.webrtc.org/)
+- Ensure firewall allows UDP ports 3478, 5349
+
+**Symptom**: No audio during call
+- Inspect browser console for media errors
+- Check `<audio>` element has `autoplay` attribute
+- Verify SIP.js session tracks are attached
 - Test with different browser
 
-**Video Conference Black Screen**
-- Allow camera/microphone access
-- Check LiveKit credentials in `.env`
-- Verify LiveKit URL format
-- Try refreshing page
+### Video Conference Issues
 
-**File Upload Fails**
-- Check Google Drive API quota
-- Verify service account permissions
-- Ensure file size within limits
-- Check Drive folder ID
+**Symptom**: Black screen in conference
+- Grant camera/microphone permissions
+- Verify LiveKit URL format (wss://)
+- Check API key/secret in `.env`
+- Review LiveKit Cloud dashboard for errors
 
-**Socket.IO Disconnects**
-- Verify CORS configuration
-- Check JWT token validity
-- Ensure stable network connection
-- Review server logs
+**Symptom**: Whiteboard not loading
+- Ensure Tldraw CDN is accessible
+- Check browser console for CORS errors
+- Verify React version compatibility
 
-**Test Auto-Submit Not Working**
-- Check cron job is running
-- Verify server time synchronization
-- Review `updateOnlineTest.js` logs
-- Ensure MongoDB connection
+### AI Search Not Working
 
-**MongoDB Connection Error**
+**Symptom**: No search results
+- Verify `GEMINI_API_KEY` is valid
+- Check document has `embedding` field
+- Review similarity threshold (default 0.3)
+- Ensure MongoDB indexes are created
+
+**Symptom**: Slow embedding generation
+- Gemini API rate limits may apply
+- Consider caching embeddings
+- Use batch processing for bulk uploads
+
+### Database Connection Errors
+
 ```bash
-# Check MongoDB is running
+# Check MongoDB status
 sudo systemctl status mongod
 
-# Restart if needed
+# View logs
+tail -f /var/log/mongodb/mongod.log
+
+# Restart MongoDB
 sudo systemctl restart mongod
 ```
 
-**Port Already in Use**
-```bash
-# Find process using port 5000
-lsof -ti:5000
+### Socket.IO Disconnections
 
-# Kill process
-kill -9 <PID>
-```
+- Verify JWT token hasn't expired
+- Check CORS configuration includes Socket.IO handshake
+- Ensure WebSocket upgrades are allowed
+- Review network stability
 
-## Deployment
+### File Upload Failures
 
-### Backend Deployment (Render)
+**Google Drive**:
+- Check service account has `Editor` role on folder
+- Verify folder ID matches `PARENT_FOLDER_ID`
+- Review quota limits in Google Cloud Console
 
-1. **Environment Variables**: Set all `.env` variables in hosting platform
-2. **MongoDB**: Use MongoDB Atlas for cloud database
-3. **Build Command**: `npm install`
-4. **Start Command**: `npm start`
-5. **Port**: Use `process.env.PORT`
+**Cloudinary**:
+- Confirm API credentials are correct
+- Check upload preset allows unsigned uploads
+- Review file size limits
 
-### Frontend Deployment (Render)
+## 📊 Performance Optimization
 
-1. **Build Command**: `npm run build`
-2. **Output Directory**: `dist`
-3. **Environment Variables**: Set `VITE_*` variables
-4. **Redirects**: Configure for SPA routing
-5. **CORS**: Update backend allowedOrigins
+- **Pagination**: 10 items per page default
+- **Image Optimization**: Cloudinary automatic transformations
+- **Database Indexes**: On email, title, tags, dates
+- **Code Splitting**: React.lazy() for route components
+- **API Caching**: Redis for frequently accessed data (optional)
+- **Socket.IO Rooms**: Efficient event targeting
+- **File Streaming**: Multer chunked uploads
+- **Lazy Loading**: Images load on scroll
+- **Vector Search**: In-memory cache for embeddings
+- **Compression**: gzip middleware enabled
 
-### Production Checklist
+## 🌐 Browser Support
 
-- [ ] Update `NODE_ENV=production`
-- [ ] Set strong `JWT_SECRET`
-- [ ] Configure production MongoDB URI
-- [ ] Update CORS allowed origins
-- [ ] Enable HTTPS
-- [ ] Configure CDN for static assets
-- [ ] Set up error logging (Sentry)
-- [ ] Configure backup strategy
-- [ ] Monitor cron jobs
-- [ ] Test all features end-to-end
+- ✅ Chrome 90+ (recommended for WebRTC)
+- ✅ Firefox 88+
+- ✅ Safari 14+ (limited WebRTC support)
+- ✅ Edge 90+
+- ❌ IE 11 (not supported)
 
-## Performance Optimization
+## 📄 License
 
-- **Pagination**: All list views support pagination (10 items/page)
-- **Image Optimization**: Cloudinary automatic optimization
-- **Database Indexing**: Indexes on frequently queried fields
-- **Code Splitting**: React lazy loading for routes
-- **API Caching**: Conditional requests with ETags
-- **Socket.IO Rooms**: Efficient event broadcasting
-- **File Streaming**: Chunked uploads for large files
-- **Lazy Loading**: Images and components load on demand
+MIT License - See [LICENSE](LICENSE) file
 
-## Browser Support
+## 🤝 Contributing
 
-- Chrome 90+ (recommended)
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-- IE 11 (not supported)
-
-**WebRTC Requirements**: Modern browser with WebRTC support
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file for details
-
-## Contributing
-
-1. Fork repository
+1. Fork the repository
 2. Create feature branch: `git checkout -b feature/AmazingFeature`
 3. Commit changes: `git commit -m 'Add AmazingFeature'`
 4. Push to branch: `git push origin feature/AmazingFeature`
 5. Open Pull Request
 
-### Code Style
+### Code Style Guidelines
 
 - Follow ESLint configuration
 - Use Prettier for formatting
-- Write meaningful commit messages
-- Add comments for complex logic
-- Update documentation for new features
+- Write descriptive commit messages
+- Add JSDoc comments for functions
+- Update README for new features
+- Write tests for critical paths
 
-## Educational Context
+## 🎓 Educational Context
 
-Built for **Ton Duc Thang University** to modernize online education with:
-- Seamless voice/video communication
+**Built for**: Ton Duc Thang University  
+**Purpose**: Modernize distance education with:
+- Real-time communication infrastructure
+- AI-powered learning assistance
 - Automated assessment workflows
-- Real-time collaboration tools
-- Comprehensive learning analytics
+- Comprehensive analytics
 
-## Team & Credits
+## 👥 Team & Support
 
 - **University**: Ton Duc Thang University
-- **Technologies**: React, Node.js, MongoDB, LiveKit, SIP.js
-- **Icons**: Ton Duc Thang University logo
-- **Infrastructure**: Google Drive, Cloudinary, LiveKit Cloud
-
-## Support
-
 - **Email**: support@voipelearning.shop
-- **Issues**: GitHub Issues
-- **Documentation**: This README
+- **Documentation**: This README + inline code comments
+- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
 
 ## 🔮 Future Enhancements
 
 - [ ] Mobile app (React Native)
-- [ ] AI-powered grading assistance
-- [ ] Plagiarism detection
+- [ ] AI grading for subjective answers
+- [ ] Plagiarism detection for submissions
 - [ ] Advanced analytics dashboard
 - [ ] Multi-language support (i18n)
-- [ ] SSO integration (OAuth2)
-- [ ] Calendar integration
-- [ ] Push notifications
-- [ ] Dark mode
+- [ ] SSO integration (LDAP/SAML)
+- [ ] Calendar integration (Google/Outlook)
+- [ ] Push notifications (FCM)
+- [ ] Dark mode UI
 - [ ] Export reports (PDF/Excel)
-- [ ] Gamification (badges, leaderboards)
+- [ ] Gamification (badges, points)
 - [ ] Parent portal
-- [ ] Integration with external LMS (Moodle, Canvas)
+- [ ] Integration with Moodle/Canvas
+- [ ] Voice commands (speech-to-text)
+- [ ] Automated meeting scheduling
 
 ---
 
-**Built with for modern education**
+**🎯 Built with ❤️ for modern education**
 
 © 2025 VoIP E-Learning System | Ton Duc Thang University
