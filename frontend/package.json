@@ -30,6 +30,7 @@
     "chart.js": "^4.5.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "date-fns": "^4.1.0",
+    "html-docx-js-typescript": "^0.1.5",
     "livekit-client": "^2.15.14",
     "lucide-react": "^0.552.0",
     "motion": "^12.23.22",

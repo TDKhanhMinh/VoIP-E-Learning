@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   LiveKitRoom,
   VideoConference,
-  useRoomContext, 
+  useRoomContext,
 } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { roomService } from "../../services/roomService";
@@ -11,7 +11,7 @@ import WhiteboardTldraw from "./WhiteboardTldraw";
 import TeacherControls from "./TeacherControls";
 
 const RoomEventsHandler = ({ setShowWhiteboard }) => {
-  const room = useRoomContext(); 
+  const room = useRoomContext();
 
   useEffect(() => {
     if (!room) return;
@@ -30,7 +30,7 @@ const RoomEventsHandler = ({ setShowWhiteboard }) => {
     };
   }, [room, setShowWhiteboard]);
 
-  return null; 
+  return null;
 };
 
 const ConferenceRoom = ({
@@ -42,6 +42,7 @@ const ConferenceRoom = ({
   classId,
 }) => {
   const [token, setToken] = useState(null);
+  const [roomName, setRoomName] = useState(null);
   const [url, setUrl] = useState(null);
   const [showWhiteboard, setShowWhiteboard] = useState(false);
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ const ConferenceRoom = ({
         );
         setToken(data.token);
         setUrl(data.livekitUrl);
+        setRoomName(data.roomName);
       } catch (e) {
         console.error(e);
       }
@@ -112,6 +114,8 @@ const ConferenceRoom = ({
           <TeacherControls
             showWhiteboard={showWhiteboard}
             setShowWhiteboard={setShowWhiteboard}
+            roomName={roomName}
+            classId={classId}
           />
         )}
       </LiveKitRoom>

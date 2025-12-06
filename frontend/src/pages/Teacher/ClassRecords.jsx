@@ -2,95 +2,75 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   FaBell,
-  FaPlus,
   FaEdit,
-  FaTrash,
   FaArrowLeft,
   FaClock,
   FaUser,
-  FaExclamationCircle,
   FaCheckCircle,
   FaInfoCircle,
-  FaDownload,
 } from "react-icons/fa";
+import {
+  MdPublic,
+  MdPublicOff,
+  MdCheckCircleOutline,
+  MdOutlineRecordVoiceOver,
+} from "react-icons/md";
+import { BsFillSendCheckFill } from "react-icons/bs";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 import { toast } from "react-toastify";
 import { classService } from "../../services/classService";
-import { announcementService } from "./../../services/announcementService";
-import NotificationModal from "./../../components/Modals/NotificationModal";
+import { recordingService } from "./../../services/recordingService";
+import SummaryEditModal from "./../../components/Modals/SummaryEditModal";
 import ConfirmDialog from "./../../components/UI/ConfirmDialog";
+import { convertHtmlToWord } from "../../utils/convertToWord";
+import { uploadService } from "../../services/uploadService";
+import { announcementService } from "./../../services/announcementService";
 
-export default function ClassNotification() {
-  const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");
-  const [notifications, setNotifications] = useState([]);
-  const [selectedNotification, setSelectedNotification] = useState(null);
+export default function ClassRecords() {
+  const [records, setRecords] = useState([]);
+  const [selectedRecord, setSelectedRecord] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   const [classInfo, setClassInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [filterType, setFilterType] = useState("all");
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const fetchClassAndNotifications = async () => {
+  const fetchClassAndRecords = async () => {
     setIsLoading(true);
     try {
-      const [classData, notificationsData] = await Promise.all([
+      const [classData, recordsData] = await Promise.all([
         classService.getClassById(id),
-        announcementService.getAnnouncementByClassId(id),
+        recordingService.getListRecordings(id),
       ]);
       setClassInfo(classData);
-      setNotifications(notificationsData);
-      console.log("Notifications:", notificationsData);
+      setRecords(recordsData);
+      console.log("records:", recordsData);
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu:", error);
-      toast.error("Không thể tải thông báo");
+      toast.error("Không thể tải dữ liệu. Vui lòng thử lại sau.");
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchClassAndNotifications();
+    fetchClassAndRecords();
   }, [id]);
 
-  const handleDelete = async (notificationId) => {
+  const handlerUpdateSummary = async (summaryData) => {
     try {
-      await announcementService.deleteAnnouncement(notificationId);
-      toast.success("Đã xóa thông báo");
-      fetchClassAndNotifications();
-    } catch {
-      toast.error("Lỗi khi xóa thông báo");
-    }
-  };
-
-  const handlerAddNotification = async (notificationData) => {
-    try {
-      const payload = {
-        class: id,
-        created_by: teacherId,
-        ...notificationData,
-      };
-      await announcementService.createAnnouncement(payload);
-      toast.success("Tạo thông báo thành công");
-      setIsOpen(false);
-      fetchClassAndNotifications();
-    } catch (error) {
-      toast.error("Lỗi khi tạo thông báo");
-      console.log(error);
-    }
-  };
-
-  const handlerUpdateNotification = async (notificationData) => {
-    try {
-      await announcementService.updateAnnouncement(
-        selectedNotification._id,
-        notificationData
+      await recordingService.updateAISummaryByRecordId(
+        selectedRecord._id,
+        summaryData
       );
-      toast.success("Cập nhật thông báo thành công");
+      toast.success("Cập nhật tóm tắt thành công");
       setIsOpen(false);
-      fetchClassAndNotifications();
+      setSelectedRecord(null);
+      fetchClassAndRecords();
     } catch (error) {
-      toast.error("Lỗi khi cập nhật thông báo");
+      toast.error("Lỗi khi cập nhật tóm tắt");
       console.log(error);
     }
   };
@@ -100,7 +80,7 @@ export default function ClassNotification() {
     return daysDiff <= 7;
   };
 
-  const filteredNotifications = notifications?.filter((n) => {
+  const filteredRecords = records?.filter((n) => {
     if (filterType === "all") return true;
     if (filterType === "recent") return isRecent(n.createdAt);
     if (filterType === "older") return !isRecent(n.createdAt);
@@ -130,9 +110,46 @@ export default function ClassNotification() {
   };
 
   const stats = {
-    total: notifications?.length || 0,
-    recent: notifications?.filter((n) => isRecent(n.createdAt)).length || 0,
-    older: notifications?.filter((n) => !isRecent(n.createdAt)).length || 0,
+    total: records?.length || 0,
+    recent: records?.filter((n) => isRecent(n.createdAt)).length || 0,
+    older: records?.filter((n) => !isRecent(n.createdAt)).length || 0,
+  };
+  const handlePublishRecord = async () => {
+    setIsLoading(true);
+    try {
+      const wordResult = await convertHtmlToWord(
+        selectedRecord.aiSummary,
+        selectedRecord.summaryTitle
+      );
+      console.log("Word Blob:", wordResult);
+      const publishData = await uploadService.uploadFile(
+        wordResult,
+        (progress) => {
+          console.log(`Upload progress: ${progress}%`);
+        }
+      );
+      console.log("Published Data:", publishData);
+      await announcementService.createAnnouncement({
+        file_url: publishData.url,
+        file_name: publishData.file_name,
+        class: id,
+        created_by: selectedRecord.createdBy,
+        title: `Bản ghi tóm tắt bài học`,
+        content: `Giảng viên đã công bố bản ghi tóm tắt cho buổi học. Vui lòng tải về để xem chi tiết.`,
+      });
+      await recordingService.publishRecordingById(selectedRecord._id);
+      toast.success("Bản ghi đã được công bố thành công");
+      setIsOpenConfirmModal(false);
+      setSelectedRecord(null);
+      fetchClassAndRecords();
+    } catch (error) {
+      setIsLoading(false);
+      setIsOpenConfirmModal(false);
+      toast.error("Lỗi khi công bố bản ghi");
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) {
@@ -160,11 +177,11 @@ export default function ClassNotification() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="p-4 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow-lg">
-                  <FaBell className="text-white text-3xl" />
+                  <MdOutlineRecordVoiceOver className="text-white text-3xl" />
                 </div>
                 <div>
                   <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">
-                    Thông báo lớp học
+                    Quản lí tóm tắt bài giảng online
                   </h1>
                   <p className="text-gray-600 flex items-center gap-2">
                     <FaInfoCircle className="text-blue-600" />
@@ -172,15 +189,6 @@ export default function ClassNotification() {
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => {
-                  setSelectedNotification(null);
-                  setIsOpen(true);
-                }}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
-              >
-                <FaPlus /> Tạo thông báo mới
-              </button>
             </div>
           </div>
         </div>
@@ -190,7 +198,7 @@ export default function ClassNotification() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm font-medium">
-                  Tổng thông báo
+                  Tổng bản ghi
                 </p>
                 <p className="text-3xl font-bold text-gray-800 mt-2">
                   {stats.total}
@@ -269,25 +277,25 @@ export default function ClassNotification() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-          {filteredNotifications?.length === 0 ? (
+          {filteredRecords?.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 px-4">
               <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mb-4">
-                <FaBell className="text-blue-600 text-4xl" />
+                <MdOutlineRecordVoiceOver className="text-blue-600 text-4xl" />
               </div>
               <p className="text-gray-600 font-medium text-lg">
                 {filterType === "all"
-                  ? "Chưa có thông báo nào"
-                  : "Không có thông báo nào"}
+                  ? "Chưa có bản ghi nào"
+                  : "Không có bản ghi nào"}
               </p>
               <p className="text-gray-400 text-sm mt-2">
                 {filterType === "all"
-                  ? "Nhấn 'Tạo thông báo mới' để bắt đầu"
-                  : "Thử thay đổi bộ lọc để xem thông báo khác"}
+                  ? "Chưa có bản ghi nào được tạo trong lớp học này"
+                  : "Thử thay đổi bộ lọc để xem bản ghi khác"}
               </p>
             </div>
           ) : (
             <div className="divide-y divide-gray-100">
-              {filteredNotifications.map((n) => {
+              {filteredRecords.map((n) => {
                 const recent = isRecent(n.createdAt);
 
                 return (
@@ -312,7 +320,7 @@ export default function ClassNotification() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
                               <h3 className="text-lg font-bold text-gray-800 truncate">
-                                {n.title}
+                                {n.roomName}
                               </h3>
                               {recent && (
                                 <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
@@ -320,20 +328,9 @@ export default function ClassNotification() {
                                 </span>
                               )}
                             </div>
-                            <p className="text-gray-600 leading-relaxed line-clamp-2">
-                              {n.content}
-                            </p>
-                            {n.file_url && (
-                              <a
-                                href={n.file_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:underline flex items-center gap-2 mt-2 inline-block font-medium group"
-                              >
-                                <FaDownload className="group-hover:animate-bounce" />
-                                {n.file_name.split(".")[0] || "Tệp đính kèm"}
-                              </a>
-                            )}
+                            <h4 className="ttext-lg font-bold text-gray-800 truncate mb-1">
+                              {n.summaryTitle || "Chưa có tiêu đề AI"}
+                            </h4>
                           </div>
                         </div>
 
@@ -342,19 +339,45 @@ export default function ClassNotification() {
                             <FaClock className="text-gray-400" />
                             <span>{formatDate(n.createdAt)}</span>
                           </div>
-                          {n.created_by?.full_name && (
+                          {n.createdBy && (
                             <div className="flex items-center gap-2">
                               <FaUser className="text-gray-400" />
-                              <span>{n.created_by.full_name}</span>
+                              <span>{n.createdBy || "Trần Đỗ Khánh Minh"}</span>
                             </div>
                           )}
+                          {
+                            <div className="flex items-center gap-2">
+                              {!n.isReviewed ? (
+                                <IoMdCloseCircleOutline className="text-gray-400" />
+                              ) : (
+                                <MdCheckCircleOutline className="text-green-400" />
+                              )}
+                              <span>
+                                {!n.isReviewed
+                                  ? "Chưa đánh giá"
+                                  : "Đã đánh giá"}
+                              </span>
+                            </div>
+                          }
+                          {
+                            <div className="flex items-center gap-2">
+                              {!n.isPublished ? (
+                                <MdPublicOff className="text-gray-400" />
+                              ) : (
+                                <MdPublic className="text-green-400" />
+                              )}
+                              <span>
+                                {!n.isPublished ? "Chưa công bố" : "Đã công bố"}
+                              </span>
+                            </div>
+                          }
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-2 ml-4">
                         <button
                           onClick={() => {
-                            setSelectedNotification(n);
+                            setSelectedRecord(n);
                             setIsOpen(true);
                           }}
                           className="p-3 text-blue-600 hover:bg-blue-100 rounded-xl transition-all"
@@ -362,16 +385,18 @@ export default function ClassNotification() {
                         >
                           <FaEdit className="text-lg" />
                         </button>
-                        <button
-                          onClick={() => {
-                            setSelectedNotification(n);
-                            setOpenConfirmModal(true);
-                          }}
-                          className="p-3 text-red-600 hover:bg-red-100 rounded-xl transition-all"
-                          title="Xóa"
-                        >
-                          <FaTrash className="text-lg" />
-                        </button>
+                        {n.isReviewed && (
+                          <button
+                            onClick={() => {
+                              setSelectedRecord(n);
+                              setIsOpenConfirmModal(true);
+                            }}
+                            className="p-3 text-blue-600 hover:bg-blue-100 rounded-xl transition-all"
+                            title="Công bố bản ghi"
+                          >
+                            <BsFillSendCheckFill className="text-lg" />
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -383,29 +408,23 @@ export default function ClassNotification() {
       </div>
 
       {isOpen && (
-        <NotificationModal
+        <SummaryEditModal
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          initialData={selectedNotification}
-          onSubmitData={
-            selectedNotification
-              ? handlerUpdateNotification
-              : handlerAddNotification
-          }
+          initialData={selectedRecord.aiSummary}
+          onSave={handlerUpdateSummary}
         />
       )}
-      <ConfirmDialog
-        isOpen={openConfirmModal}
-        title="Xác nhận xóa thông báo"
-        message={`Bạn có chắc chắn muốn xóa thông báo "${selectedNotification?.title}" không? Hành động này không thể hoàn tác.`}
-        onCancel={() => setOpenConfirmModal(false)}
-        onConfirm={() => {
-          handleDelete(selectedNotification._id);
-          setOpenConfirmModal(false);
-        }}
-        btnDelete="Xóa"
-        btnCancel="Hủy"
-      />
+      {isOpenConfirmModal && (
+        <ConfirmDialog
+          isOpen={isOpenConfirmModal}
+          onCancel={() => setIsOpenConfirmModal(false)}
+          onConfirm={() => handlePublishRecord()}
+          btnDelete="Công bố"
+          title="Xác nhận công bố"
+          message="Bạn có chắc chắn muốn công bố bản ghi tóm tắt bài học này?"
+        />
+      )}
     </div>
   );
 }

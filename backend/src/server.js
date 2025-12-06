@@ -34,6 +34,8 @@ import recommendRoutes from "./router/recommendRouter.js";
 import http from "http";
 import bodyParser from "body-parser";
 import livekitRouter from "./router/livekitRouter.js";
+import recordingRoutes from "./router/recordingRouter.js";
+import webHookRoutes from "./router/webHookRouter.js";
 import { Server } from "socket.io";
 import discussionSocket from "./sockets/discussionSocket.js";
 import chatSocket from "./sockets/chatSocket.js";
@@ -60,8 +62,9 @@ app.use(
     credentials: true,
   })
 );
-app.use(bodyParser.json({ limit: "2mb" }));
+app.use('/api/webhook', webHookRoutes);
 
+app.use(bodyParser.json({ limit: "2mb" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
@@ -94,6 +97,7 @@ app.use("/api/comment", commentRoutes);
 app.use("/api/recommend", recommendRoutes);
 app.use("/api/topic", topicRoutes);
 app.use("/api/chat", chatRoutes);
+app.use('/api/recording', recordingRoutes);
 
 initOnlineTestCron();
 submitTestSession();

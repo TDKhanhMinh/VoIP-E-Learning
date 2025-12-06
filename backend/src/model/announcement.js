@@ -14,10 +14,11 @@ const announcementSchema = mongoose.Schema(
       ref: "User",
       required: true,
     },
+    file_url: { type: String, default: null },
+    file_name: { type: String, default: null },
   },
   { timestamps: true }
 );
 
 const Announcement = mongoose.model("Announcement", announcementSchema);
 export default Announcement;
-

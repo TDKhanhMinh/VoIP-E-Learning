@@ -126,7 +126,7 @@ export default function Forum() {
       setShowPostDetail(false);
       setSelectedPost(null);
     }
-    alert("Đã xóa bài viết!");
+    toast.success("Đã xóa bài viết!");
   };
 
   const handleApprovePost = async (postId) => {

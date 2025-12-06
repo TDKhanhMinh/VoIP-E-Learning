@@ -77,7 +77,15 @@ export const findByEmail = async (email) => {
   }
   return user;
 };
-
+export const findById = async (Id) => {
+  const user = await User.findOne({ _id: Id });
+  if (!user) {
+    const error = new Error(`User with Id ${Id} not found`);
+    error.statusCode = 404;
+    throw error;
+  }
+  return user;
+};
 const checkUsedEmail = async (email) => {
   const user = await User.findOne({ email });
   if (user) {

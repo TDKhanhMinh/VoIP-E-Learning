@@ -20,7 +20,6 @@ export default function TeacherClasses() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("all");
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -31,9 +30,6 @@ export default function TeacherClasses() {
   const fetchClasses = async () => {
     setIsLoading(true);
     try {
-      const userId = sessionStorage.getItem("userId");
-      console.log("Teacher id", userId);
-
       const [classesData, semestersData] = await Promise.all([
         classService.getUserClasses(),
         semesterService.getAllSemesters(),

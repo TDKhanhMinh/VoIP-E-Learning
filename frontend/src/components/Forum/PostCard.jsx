@@ -104,9 +104,7 @@ export default function PostCard({
       </div>
       <p className="text-gray-700 line-clamp-2">{post.content}</p>
       <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
-        <span>
-          💬 {post.commentCount || post.comments?.length || 0} bình luận
-        </span>
+        <span>{post.commentCount || post.comments?.length || 0} bình luận</span>
         {canApprove && post.status === "pending" && (
           <div className="flex gap-2 ml-auto">
             <button

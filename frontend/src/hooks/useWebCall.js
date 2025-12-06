@@ -39,7 +39,7 @@ export function useWebCall({ sipId, sipPassword, displayName }) {
 
     const startCall = async (targetSipId, label) => {
         setCallee(label || targetSipId);
-        ringback.current.play();
+        // ringback.current.play();
         setMode("calling");
         await client.call(targetSipId);
     };

@@ -1,0 +1,58 @@
+# File: VOIP E-LEARNING/docker-compose.yml
+version: "3.8"
+
+services:
+  # 1. Dịch vụ Redis (Job Queue Backend)
+  redis:
+    image: "redis:7-alpine"
+    container_name: lms-redis
+    # Mở port Redis ra ngoài (tùy chọn)
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
+
+  # 2. Dịch vụ API Server (Producer & Webhook Handler)
+  api:
+    # Build image từ thư mục backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lms-api
+    # Lệnh chạy Express Server của bạn
+    command: npm run start
+    ports:
+      - "5000:5000" # Mở cổng API
+    env_file:
+      - ./backend/.env
+    environment:
+      # QUAN TRỌNG: Cấu hình BullMQ kết nối tới tên dịch vụ 'redis'
+      REDIS_HOST: redis
+      # ... Thêm các biến môi trường khác (AWS, Secret, v.v.)
+    depends_on:
+      - redis
+    restart: always
+
+  # 3. Dịch vụ AI Worker (Consumer - Xử lý AI)
+  worker:
+    # Build image từ thư mục backend (dùng chung Dockerfile)
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lms-worker
+    # QUAN TRỌNG: Lệnh chạy Worker Service của BullMQ
+    command: node src/service/aiWorkerService.js
+    env_file:
+      - ./backend/.env
+    environment:
+      REDIS_HOST: redis # Kết nối tới Redis bằng tên dịch vụ
+      # ... Thêm các biến môi trường khác (AWS, Secret, v.v.)
+    depends_on:
+      - redis
+    restart: always
+
+volumes:
+  redis_data:
+    driver: local
+    

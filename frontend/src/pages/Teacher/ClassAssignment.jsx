@@ -89,15 +89,6 @@ export default function ClassAssignment() {
     }
   };
 
-  const getSubmissionStatus = (assignment) => {
-    const submissionRate = (assignment.submissions / assignment.total) * 100;
-    if (submissionRate >= 80)
-      return { color: "green", label: "Tốt", icon: FaCheckCircle };
-    if (submissionRate >= 50)
-      return { color: "yellow", label: "Trung bình", icon: FaClock };
-    return { color: "red", label: "Thấp", icon: FaExclamationCircle };
-  };
-
   const isOverdue = (dueDate) => {
     return new Date(dueDate) < new Date();
   };
@@ -266,9 +257,6 @@ export default function ClassAssignment() {
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Hạn nộp
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Tình trạng nộp
-                    </th>
                     <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Thao tác
                     </th>
@@ -276,8 +264,6 @@ export default function ClassAssignment() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {filteredAssignments.map((a) => {
-                    const status = getSubmissionStatus(a);
-                    const StatusIcon = status.icon;
                     const overdueStatus = isOverdue(a.due_at);
 
                     return (
@@ -328,41 +314,13 @@ export default function ClassAssignment() {
                             </span>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="text-sm font-medium text-gray-700">
-                                  {a.submissions}/{a.total}
-                                </span>
-                                <span
-                                  className={`text-xs font-semibold text-${status.color}-600`}
-                                >
-                                  {Math.round((a.submissions / a.total) * 100)}%
-                                </span>
-                              </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div
-                                  className={`bg-gradient-to-r from-${status.color}-500 to-${status.color}-600 h-2 rounded-full transition-all duration-300`}
-                                  style={{
-                                    width: `${
-                                      (a.submissions / a.total) * 100
-                                    }%`,
-                                  }}
-                                ></div>
-                              </div>
-                            </div>
-                            <StatusIcon
-                              className={`text-${status.color}-600 text-lg`}
-                            />
-                          </div>
-                        </td>
+
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() =>
                                 navigate(
-                                  `/teacher/assignments/${a._id || a.id}`
+                                  `/teacher/submissions/${a._id}`
                                 )
                               }
                               className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all"

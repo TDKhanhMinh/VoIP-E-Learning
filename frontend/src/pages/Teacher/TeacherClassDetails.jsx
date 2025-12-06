@@ -20,6 +20,8 @@ import { toast } from "react-toastify";
 import { enrollmentService } from "../../services/enrollmentService";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/UI/Pagination";
+import { formatSchedule } from "../../utils/formatSchedule";
+import ClassNavigation from "../../components/UI/ClassNavigation";
 export default function TeacherClassDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -158,9 +160,9 @@ export default function TeacherClassDetails() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 bg-orange-50 rounded-xl">
-                  <div className="p-3 bg-orange-100 rounded-lg">
-                    <FaClock className="text-orange-600 text-xl" />
+                <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-xl">
+                  <div className="p-3 bg-blue-100 rounded-lg">
+                    <FaClock className="text-blue-600 text-xl" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm text-gray-500 font-medium">
@@ -168,23 +170,7 @@ export default function TeacherClassDetails() {
                     </p>
                     <p className="text-base font-semibold text-gray-800 mt-1">
                       {Array.isArray(classData.schedule) &&
-                      classData.schedule.length > 0
-                        ? classData.schedule
-                            .map((s) => {
-                              const days = {
-                                2: "Thứ 2",
-                                3: "Thứ 3",
-                                4: "Thứ 4",
-                                5: "Thứ 5",
-                                6: "Thứ 6",
-                                7: "Thứ 7",
-                              };
-                              return `${days[s.dayOfWeek] || "?"} - Ca ${
-                                s.shift
-                              }`;
-                            })
-                            .join("; ")
-                        : "Chưa có lịch"}
+                        formatSchedule(classData.schedule)}
                     </p>
                   </div>
                 </div>
@@ -212,46 +198,7 @@ export default function TeacherClassDetails() {
           </div>
         </div>
 
-        <div className="p-4 pb-6">
-          <div className="grid grid-cols-6 gap-6">
-            <Link
-              to={`/meet-room/${id}`}
-              className="p-4 bg-white shadow rounded hover:bg-gray-100"
-            >
-              Phòng học Online
-            </Link>
-            <Link
-              to={`/teacher/class-details/${id}/assignments`}
-              className="p-4 bg-white shadow rounded hover:bg-gray-100"
-            >
-              Quản lý Bài tập
-            </Link>
-            <Link
-              to={`/teacher/class-details/${id}/attendance`}
-              className="p-4 bg-white shadow rounded hover:bg-gray-100"
-            >
-              Quản lý Điểm danh
-            </Link>
-            <Link
-              to={`/teacher/class-details/${id}/tests`}
-              className="p-4 bg-white shadow rounded hover:bg-gray-100"
-            >
-              Quản lý Bài thi
-            </Link>
-            <Link
-              to={`/teacher/class-details/${id}/submissions`}
-              className="p-4 bg-white shadow rounded hover:bg-gray-100"
-            >
-              Quản lý Bài nộp
-            </Link>
-            <Link
-              to={`/teacher/class-details/${id}/notifications`}
-              className="p-4 bg-white shadow rounded hover:bg-gray-100"
-            >
-              Quản lý Thông báo
-            </Link>
-          </div>
-        </div>
+        <ClassNavigation id={id} />
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           <div className="bg-gray-100 px-6 py-4 border-b">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

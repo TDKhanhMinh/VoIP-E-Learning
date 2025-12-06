@@ -11,6 +11,7 @@ import {
   FaCog,
   FaChevronLeft,
 } from "react-icons/fa";
+import { MdOutlineRecordVoiceOver } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { IoCalendarOutline } from "react-icons/io5";
 import { ToastContainer } from "react-toastify";
@@ -61,6 +62,11 @@ export default function TeacherLayout() {
       label: "Điểm danh",
     },
     { path: "/teacher/submissions", icon: FaFileAlt, label: "Bài nộp" },
+    {
+      path: "/teacher/recordings",
+      icon: MdOutlineRecordVoiceOver,
+      label: "Tóm tắt bài học trực tuyến",
+    },
     { path: "/teacher/notifications", icon: FaBell, label: "Thông báo" },
     { path: "/teacher/forum", icon: MdOutlineForum, label: "Diễn đàn" },
     {
@@ -170,15 +176,6 @@ export default function TeacherLayout() {
               </div>
 
               <div className="flex items-center gap-4">
-                <button className="relative p-2.5 hover:bg-gray-100 rounded-xl transition-colors group">
-                  <FaBell className="text-gray-600 text-xl group-hover:text-blue-600 transition-colors" />
-                  <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-                </button>
-
-                <button className="p-2.5 hover:bg-gray-100 rounded-xl transition-colors group">
-                  <FaCog className="text-gray-600 text-xl group-hover:text-blue-600 transition-colors" />
-                </button>
-
                 <div className="relative">
                   <button
                     onClick={() => setShowProfileMenu(!showProfileMenu)}

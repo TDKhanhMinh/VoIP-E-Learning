@@ -1,12 +1,22 @@
 import { useLocalParticipant } from "@livekit/components-react";
 import { TbChalkboard } from "react-icons/tb";
 import { TbChalkboardOff } from "react-icons/tb";
-const TeacherControls = ({ showWhiteboard, setShowWhiteboard }) => {
+import RecordButton from './RecordButton';
+const TeacherControls = ({
+  showWhiteboard,
+  setShowWhiteboard,
+  roomName,
+  classId,
+}) => {
   const { localParticipant } = useLocalParticipant();
 
   const handleToggle = async () => {
     if (!localParticipant) {
       console.error("LocalParticipant chưa sẵn sàng (đang kết nối...)");
+      return;
+    }
+    if (!roomName) {
+      alert("Lỗi: Bạn chưa kết nối vào phòng học, không thể ghi âm!");
       return;
     }
 
@@ -25,7 +35,8 @@ const TeacherControls = ({ showWhiteboard, setShowWhiteboard }) => {
   };
 
   return (
-    <div className="fixed bottom-3 left-80 transform -translate-x-1/2 z-50 flex items-center gap-2 justify-center">
+    <div className="fixed bottom-3 left-60 transform -translate-x-1/2 z-50 flex items-center gap-2 justify-center">
+      <RecordButton roomName={roomName} classId={classId} />
       <button
         onClick={handleToggle}
         className={`px-8 py-3 rounded-lg font-bold text-white ${

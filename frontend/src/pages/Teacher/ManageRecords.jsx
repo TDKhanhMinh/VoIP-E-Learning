@@ -4,15 +4,16 @@ import { semesterService } from "../../services/semesterService";
 import {
   FaCalendarAlt,
   FaClock,
-  FaClipboardList,
-  FaUserCheck,
+  FaVideo,
   FaFilter,
   FaChevronDown,
+  FaPlayCircle,
+  FaYoutube,
 } from "react-icons/fa";
 import Button from "../../components/UI/Button";
 import { formatSchedule } from './../../utils/formatSchedule';
 
-export default function ManageAttendance() {
+export default function ManageRecords() {
   const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");
   const [teacherClasses, setTeacherClasses] = useState([]);
   const [semesters, setSemesters] = useState([]);
@@ -43,7 +44,7 @@ export default function ManageAttendance() {
       ? teacherClasses
       : teacherClasses.filter((cls) => cls.semester === selectedSemester);
 
- 
+  
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-6 md:p-10 font-sans text-slate-800">
@@ -51,10 +52,11 @@ export default function ManageAttendance() {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-6">
           <div>
             <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">
-              Quản lý Điểm Danh
+              Tóm tắt Bài Giảng Online
             </h2>
             <p className="text-slate-500 mt-2 text-base max-w-xl leading-relaxed">
-              Kiểm soát sự hiện diện của sinh viên trong các buổi học.
+              Quản lý video ghi lại bài giảng và tài liệu tóm tắt cho các lớp
+              học trực tuyến.
             </p>
           </div>
 
@@ -109,7 +111,7 @@ export default function ManageAttendance() {
                   <div className="p-6 flex flex-col flex-1">
                     <div className="flex justify-between items-start mb-4">
                       <div className="p-2.5 bg-blue-50 rounded-lg text-blue-600">
-                        <FaClipboardList size={18} />
+                        <FaVideo size={18} />
                       </div>
                       <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold uppercase tracking-wider rounded-full">
                         {semesterName}
@@ -119,13 +121,12 @@ export default function ManageAttendance() {
                     <h3 className="text-lg font-bold text-slate-800 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors h-[3.5rem]">
                       {cls.name}
                     </h3>
-
                     <div className="h-px bg-gray-100 w-full my-3"></div>
 
                     <div className="mt-auto">
                       <div className="flex items-start gap-2 text-sm text-slate-500">
                         <FaClock
-                          className="mt-1 text-blue-500 shrink-0"
+                          className="mt-1 text-blue-400 shrink-0"
                           size={14}
                         />
                         <div className="flex flex-wrap">
@@ -137,10 +138,10 @@ export default function ManageAttendance() {
 
                   <div className="p-4 bg-gray-50 border-t border-gray-100">
                     <Button
-                      to={`/teacher/class-details/${cls._id}/attendance`}
-                      className="w-full py-2.5 bg-white border border-blue-200 text-blue-700 hover:bg-blue-600 hover:text-white rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"
+                      to={`/teacher/class-details/${cls._id}/recordings`}
+                      className="w-full py-2.5 bg-white border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"
                     >
-                      <span>Mở điểm danh</span>
+                      <span>Xem kho bài giảng</span>
                     </Button>
                   </div>
                 </div>
@@ -151,19 +152,19 @@ export default function ManageAttendance() {
           /* Empty State */
           <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-dashed border-gray-300">
             <div className="bg-blue-50 p-6 rounded-full mb-4">
-              <FaClipboardList className="text-4xl text-blue-300" />
+              <FaYoutube className="text-4xl text-blue-300" />
             </div>
             <h3 className="text-xl font-bold text-slate-700 mb-2">
-              Chưa có lớp học
+              Chưa có dữ liệu bài giảng
             </h3>
             <p className="text-gray-500 text-sm max-w-xs mx-auto mb-6">
-              Hiện tại không có lớp nào cần điểm danh trong học kỳ này.
+              Bạn chưa có lớp học trực tuyến nào cần quản lý trong học kỳ này.
             </p>
             <button
               onClick={() => setSelectedSemester("all")}
               className="text-blue-600 font-medium hover:underline text-sm"
             >
-              Xem tất cả các lớp
+              Xem tất cả học kỳ
             </button>
           </div>
         )}
