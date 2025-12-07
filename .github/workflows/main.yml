@@ -6,7 +6,6 @@ on:
       - master
 
 jobs:
-  # --- GIAI ĐOẠN 1: GIỮ LẠI TỪ FILE CŨ (Kiểm tra chất lượng code) ---
   test-backend:
     name: 1. Test Backend Source
     runs-on: ubuntu-latest
@@ -38,13 +37,11 @@ jobs:
       - name: Try Building Frontend
         working-directory: ./frontend
         run: npm run build
-        # Bước này chỉ để đảm bảo code React không bị lỗi cú pháp
 
-  # --- GIAI ĐOẠN 2: LẤY TỪ FILE MỚI (Build Docker & Deploy) ---
   build-push-docker:
     name: 3. Build & Push Docker Image
     runs-on: ubuntu-latest
-    needs: [test-backend] # Chỉ chạy nếu Backend Test đã OK
+    needs: [test-backend] 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -71,7 +68,6 @@ jobs:
   deploy-render:
     name: 4. Trigger Render Deploy
     runs-on: ubuntu-latest
-    # Chỉ deploy khi đã có Image mới VÀ Frontend không lỗi
     needs: [build-push-docker, test-frontend]
     steps:
       - name: Trigger Backend Deploy (Docker)
