@@ -4,10 +4,7 @@ services:
     name: lms-api
     env: docker
     plan: free
-    image:
-      registry: docker.io
-      repository: trandokhanhminh/lms-backend:latest
-      tag: latest
+    image: trandokhanhminh/lms-backend:latest
     # Đảm bảo lệnh này chạy file index.js đã import worker (như hướng dẫn trước)
     dockerCommand: npm run start
     numInstances: 1
