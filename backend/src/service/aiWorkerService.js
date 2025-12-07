@@ -6,7 +6,12 @@ import * as emailService from "../service/emailService.js";
 import * as userService from "../service/userService.js";
 import { createSummaryReadyHtml } from "../utils/emailTemplete.js";
 import { formatVietnameseDate } from "../utils/formatVietnameseDate.js";
-
+const connection = process.env.REDIS_URL
+  ? { url: process.env.REDIS_URL }
+  : {
+      host: process.env.REDIS_HOST || "127.0.0.1",
+      port: 6379,
+    };
 await connectDB();
 const worker = new Worker(
   "transcribeAndSummarize",
@@ -34,12 +39,13 @@ const worker = new Worker(
     );
     console.log("[Worker] Record save", completeRecord);
 
-    const teacher = await userService.findById(completeRecord.teacherId.toString());
+    const teacher = await userService.findById(
+      completeRecord.teacherId.toString()
+    );
     console.log("[Worker] Teacher found", teacher.email);
     const completionTime = completeRecord.updatedAt;
 
     const htmlData = {
-
       lecturerName: teacher.full_name,
       className: roomName,
       completionTime: formatVietnameseDate(completionTime),
@@ -58,10 +64,7 @@ const worker = new Worker(
     console.log("[Worker] Email sent to", teacher.email);
   },
   {
-    connection: {
-      host: process.env.REDIS_HOST || "redis",
-      port: 6379,
-    },
+    connection,
     concurrency: 5,
   }
 );
