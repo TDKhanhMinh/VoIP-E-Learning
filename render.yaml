@@ -17,5 +17,4 @@ services:
 databases:
   - name: lms-redis
     plan: free
-    redisVersion: 7
     ipAllowList: []
