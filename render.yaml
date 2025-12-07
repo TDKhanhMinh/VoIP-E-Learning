@@ -1,0 +1,79 @@
+services:
+  # ----------------------------------------------------
+  # 1. API SERVICE (Producer & Webhook Handler)
+  # Tương ứng với service 'api' trong docker-compose
+  # ----------------------------------------------------
+  - type: web
+    name: lms-api
+    env: docker
+    plan: free
+    # Đường dẫn tới Dockerfile từ thư mục gốc
+    dockerfilePath: ./backend/Dockerfile
+    # Ngữ cảnh build (giống 'context: ./backend')
+    dockerContext: ./backend
+    # Lệnh chạy (giống 'command: npm run start')
+    dockerCommand: npm run start
+    numInstances: 1
+    envVars:
+      - key: PORT
+        value: 5000
+      # Render cung cấp full link kết nối (redis://...)
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: lms-redis
+          property: connectionString
+      # Biến này để Frontend gọi vào (CORS)
+      - key: CLIENT_URL
+        fromService:
+          type: web
+          name: lms-frontend
+          property: url
+
+  # ----------------------------------------------------
+  # 2. WORKER SERVICE (Consumer - Xử lý AI)
+  # Tương ứng với service 'worker' trong docker-compose
+  # ----------------------------------------------------
+  - type: worker
+    name: lms-worker
+    env: docker
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    # QUAN TRỌNG: Lệnh chạy worker riêng biệt như bạn yêu cầu
+    dockerCommand: node src/service/aiWorkerService.js
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: lms-redis
+          property: connectionString
+
+  # ----------------------------------------------------
+  # 3. FRONTEND SERVICE (ReactJS - Static Site)
+  # (Thêm vào vì bạn đã chọn cách tách riêng Frontend)
+  # ----------------------------------------------------
+  - type: web
+    name: lms-frontend
+    env: static
+    plan: free
+    # Vào thư mục frontend -> cài lib -> build
+    buildCommand: cd frontend && npm install && npm run build
+    # Thư mục chứa file build (Vite = dist)
+    staticPublishPath: ./frontend/dist
+    envVars:
+      # Tự động lấy URL của API Service để gọi
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: lms-api
+          property: url
+
+databases:
+  # ----------------------------------------------------
+  # 4. REDIS SERVICE
+  # Tương ứng với service 'redis' trong docker-compose
+  # ----------------------------------------------------
+  - name: lms-redis
+    plan: free
+    ipAllowList: [] # Chỉ cho nội bộ (API/Worker) truy cập

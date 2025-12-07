@@ -4,10 +4,6 @@ import axios from "axios";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-/**
- * Hàm tiện ích: Tải file từ S3 về máy chủ
- */
 const downloadFile = async (url, outputPath) => {
   const writer = fs.createWriteStream(outputPath);
   const response = await axios({
