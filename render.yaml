@@ -1,41 +1,30 @@
 services:
-  # 1. API Service
+  # 1. API Service (Chạy cả Web + Worker bên trong)
   - type: web
     name: lms-api
     env: docker
     plan: free
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
+    # Đảm bảo lệnh này chạy file index.js đã import worker (như hướng dẫn trước)
     dockerCommand: npm run start
     numInstances: 1
     envVars:
       - key: PORT
         value: 5000
-      # Redis kết nối bằng connectionString => HỢP LỆ
+      # SỬA LẠI: Dùng fromService vì Redis được định nghĩa là service bên dưới
       - key: REDIS_URL
-        fromDatabase:
+        fromService:
           type: redis
           name: lms-redis
           property: connectionString
-      # (Đã xóa CLIENT_URL để tránh lỗi, sẽ thêm thủ công sau)
+      # (Nhớ thêm LIVEKIT_... và CLIENT_URL thủ công trên Dashboard)
 
-  # 2. Worker Service
-  - type: worker
-    name: lms-worker
-    env: docker
+  # 2. Redis Service (Key Value)
+  # CHUYỂN TỪ databases LÊN ĐÂY
+  - type: redis
+    name: lms-redis
     plan: free
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
-    dockerCommand: node src/service/aiWorkerService.js
-    envVars: 
-      - key: REDIS_URL
-        fromDatabase:
-          type: redis
-          name: lms-redis
-          property: connectionString
+    ipAllowList: [] # Chỉ cho phép nội bộ truy cập
 
-databases:
-  # 4. Redis Service
-  - name: lms-redis
-    plan: free
-    ipAllowList: []
+# Xóa mục databases đi vì không dùng PostgreSQL
