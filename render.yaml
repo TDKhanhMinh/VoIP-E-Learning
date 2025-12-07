@@ -1,29 +1,25 @@
 services:
-  # 1. API Service (Chạy cả Web + Worker bên trong)
-  - type: web
+  - type: image
     name: lms-api
-    env: docker
     plan: free
     image:
       url: docker.io/trandokhanhminh/lms-backend:latest
-    dockerCommand: npm run start
     numInstances: 1
     envVars:
       - key: PORT
         value: 5000
-      # SỬA LẠI: Dùng fromService vì Redis được định nghĩa là service bên dưới
       - key: REDIS_URL
-        fromService:
-          type: redis
+        fromDatabase:
           name: lms-redis
           property: connectionString
-      # (Nhớ thêm LIVEKIT_... và CLIENT_URL thủ công trên Dashboard)
+      # Các env khác bổ sung thủ công trong dashboard:
+      # LIVEKIT_URL
+      # LIVEKIT_API_KEY
+      # LIVEKIT_API_SECRET
+      # CLIENT_URL
 
-  # 2. Redis Service (Key Value)
-  # CHUYỂN TỪ databases LÊN ĐÂY
-  - type: redis
-    name: lms-redis
+databases:
+  - name: lms-redis
     plan: free
-    ipAllowList: [] # Chỉ cho phép nội bộ truy cập
-
-# Xóa mục databases đi vì không dùng PostgreSQL
+    ipAllowList: []
+    redisVersion: 7
