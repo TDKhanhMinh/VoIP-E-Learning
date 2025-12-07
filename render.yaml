@@ -13,7 +13,7 @@ services:
         value: 5000
       # Redis kết nối bằng connectionString => HỢP LỆ
       - key: REDIS_URL
-        fromService:
+        fromDatabase:
           type: redis
           name: lms-redis
           property: connectionString
@@ -29,7 +29,7 @@ services:
     dockerCommand: node src/service/aiWorkerService.js
     envVars: 
       - key: REDIS_URL
-        fromService:
+        fromDatabase:
           type: redis
           name: lms-redis
           property: connectionString
