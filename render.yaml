@@ -4,8 +4,8 @@ services:
     name: lms-api
     env: docker
     plan: free
-    image: "docker.io/trandokhanhminh/lms-backend:latest"
-    # Đảm bảo lệnh này chạy file index.js đã import worker (như hướng dẫn trước)
+    image:
+      url: docker.io/trandokhanhminh/lms-backend:latest
     dockerCommand: npm run start
     numInstances: 1
     envVars:
