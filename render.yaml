@@ -27,21 +27,12 @@ services:
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     dockerCommand: node src/service/aiWorkerService.js
-    envVars:
+    envVars: 
       - key: REDIS_URL
         fromService:
           type: redis
           name: lms-redis
           property: connectionString
-
-  # 3. Frontend Service
-  - type: web
-    name: lms-frontend
-    env: static
-    plan: free
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/dist
-    # (Đã xóa VITE_API_URL để tránh lỗi, sẽ thêm thủ công sau)
 
 databases:
   # 4. Redis Service
