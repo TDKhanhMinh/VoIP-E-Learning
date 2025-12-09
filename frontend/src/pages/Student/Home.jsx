@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { enrollmentService } from "../../services/enrollmentService";
 import { useNavigate } from "react-router-dom";
+import CourseSkeleton from "./../../components/SkeletonLoading/CourseSkeleton";
 
 function Home() {
   const [userClass, setUserClass] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -11,6 +13,7 @@ function Home() {
   }, []);
 
   const fetchCourses = async () => {
+    setIsLoading(true);
     try {
       const userId = sessionStorage
         .getItem("userId")
@@ -23,67 +26,74 @@ function Home() {
       console.log("Class enrolled", userEnrolledClasses);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
-      {userClass.map((item, index) => (
-        <div
-          onClick={() =>
-            navigate(
-              `/home/class-details/${item?.class?._id
-                .split('"')
-                .join("")
-                .toString()}`
-            )
-          }
-          key={index}
-          className="w-full cursor-pointer bg-black rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border hover:border-gray-800 duration-300"
-        >
-          <div className="bg-green-600 p-4 flex justify-between items-start text-white relative">
-            <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-semibold truncate hover:underline decoration-white">
-                {item.class?.name}
-              </h2>
+      {isLoading
+        ? Array(8)
+            .fill(0)
+            .map((_, index) => <CourseSkeleton key={index} />)
+        : userClass.map((item, index) => (
+            <div
+              onClick={() =>
+                navigate(
+                  `/home/class-details/${item?.class?._id
+                    .split('"')
+                    .join("")
+                    .toString()}`
+                )
+              }
+              key={index}
+              className="w-full cursor-pointer bg-black rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border hover:border-gray-800 duration-300"
+            >
+              <div className="bg-green-600 p-4 flex justify-between items-start text-white relative">
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg font-semibold truncate hover:underline decoration-white">
+                    {item.class?.name}
+                  </h2>
 
-              <p className="text-base my-1 text-white">
-                GV: {item.class.teacher?.full_name}
-              </p>
-              <div className="text-sm text-white">
-                {Array.isArray(item.class.schedule) &&
-                item.class.schedule.length > 0
-                  ? item.class.schedule.map((s, idx) => {
-                      const days = {
-                        2: "Thứ 2",
-                        3: "Thứ 3",
-                        4: "Thứ 4",
-                        5: "Thứ 5",
-                        6: "Thứ 6",
-                        7: "Thứ 7",
-                      };
-                      return (
-                        <div key={idx}>
-                          {days[s.dayOfWeek] || "?"} - Ca {s.shift}
-                        </div>
-                      );
-                    })
-                  : "Chưa có lịch"}
+                  <p className="text-base my-1 text-white">
+                    GV: {item.class.teacher?.full_name}
+                  </p>
+                  <div className="text-sm text-white">
+                    {Array.isArray(item.class.schedule) &&
+                    item.class.schedule.length > 0
+                      ? item.class.schedule.map((s, idx) => {
+                          const days = {
+                            2: "Thứ 2",
+                            3: "Thứ 3",
+                            4: "Thứ 4",
+                            5: "Thứ 5",
+                            6: "Thứ 6",
+                            7: "Thứ 7",
+                          };
+                          return (
+                            <div key={idx}>
+                              {days[s.dayOfWeek] || "?"} - Ca {s.shift}
+                            </div>
+                          );
+                        })
+                      : "Chưa có lịch"}
+                  </div>
+                  <p className="text-xs mt-1 text-white">
+                    Khoa công nghệ thông tin
+                  </p>
+                </div>
               </div>
-              <p className="text-xs mt-1 text-white">
-                Khoa công nghệ thông tin
-              </p>
-            </div>
-          </div>
 
-          <div className="p-3 h-20 bg-gray-50 relative">
-            <img
-              className="rounded-full absolute -top-[40%] right-5"
-              src="/logo.jpg"
-              alt="logo"
-            />
-          </div>
-        </div>
-      ))}
+              <div className="p-3 h-20 bg-gray-50 relative">
+                <img
+                  className="rounded-full absolute -top-[40%] right-5 w-16 h-16 border-4 border-white object-cover"
+                  src="/logo.jpg"
+                  alt="logo"
+                />
+              </div>
+            </div>
+          ))}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { announcementService } from "../../services/announcementService";
 import { enrollmentService } from "./../../services/enrollmentService";
 import { classService } from "../../services/classService";
 import NotificationItem from "../../components/Common/NotificationItem";
+import NotificationSkeleton from "./../../components/SkeletonLoading/NotificationSkeleton";
 
 export default function Notification() {
   const studentId = sessionStorage.getItem("userId")?.replace(/"/g, "");
@@ -12,32 +13,35 @@ export default function Notification() {
   const [selectedClass, setSelectedClass] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
-        const enrolled = await enrollmentService.getAllEnrollmentsByStudentId(
-          studentId
-        );
+        const [enrolled, allClasses, allAnnouncements] = await Promise.all([
+          enrollmentService.getAllEnrollmentsByStudentId(studentId),
+          classService.getAllClass(),
+          announcementService.getAllAnnouncement(),
+        ]);
+
         console.log("Enrolled:", enrolled);
 
-        const allClasses = await classService.getAllClass();
-
         const enrolledClassIds = enrolled.map((en) => en.class._id.toString());
+
         const filteredClasses = allClasses.filter((cls) =>
           enrolledClassIds.includes(cls._id.toString())
         );
-        console.log("Classes:", filteredClasses);
         setClasses(filteredClasses);
-
-        const allAnnouncements = await announcementService.getAllAnnouncement();
 
         const filteredAnnouncements = allAnnouncements.filter((an) =>
           enrolledClassIds.includes(an.class._id.toString())
         );
-        console.log("Announcements:", filteredAnnouncements);
         setAnnouncements(filteredAnnouncements);
       } catch (error) {
         console.error("Lỗi khi tải thông báo:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -87,14 +91,20 @@ export default function Notification() {
           </select>
         </div>
 
-        {filteredAnnouncements.length === 0 ? (
+        {isLoading ? (
+          <div className="w-full">
+            <NotificationSkeleton />
+            <NotificationSkeleton />
+            <NotificationSkeleton />
+          </div>
+        ) : filteredAnnouncements.length === 0 ? (
           <p className="text-center text-gray-500 py-10">
             Không có thông báo nào phù hợp.
           </p>
         ) : (
-          <div className="w-full">
+          <div className="w-full space-y-4">
             {filteredAnnouncements.map((ann) => (
-              <NotificationItem data={ann} />
+              <NotificationItem key={ann._id} data={ann} />
             ))}
           </div>
         )}

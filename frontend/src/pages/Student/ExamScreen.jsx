@@ -3,6 +3,8 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { testService } from "../../services/testService";
 import { testSessionService } from "../../services/testSessionService";
 import { toast } from "react-toastify";
+import ExamSkeleton from "./../../components/SkeletonLoading/ExamSkeleton";
+
 export default function ExamScreen() {
   const { test_id } = useParams();
   const location = useLocation();
@@ -13,6 +15,8 @@ export default function ExamScreen() {
   const [timeLeft, setTimeLeft] = useState(0);
   const navigate = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     setTest(null);
     setTestSession(null);
@@ -21,6 +25,7 @@ export default function ExamScreen() {
     setTimeLeft(0);
 
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         console.log("Fetching test and session...");
         const testData = await testService.getTestById(test_id);
@@ -56,10 +61,11 @@ export default function ExamScreen() {
         console.error(err);
         toast.error("Lỗi khi tải đề thi hoặc phiên làm bài.");
         navigate("/home/online-test", { state: { refreshAt: Date.now() } });
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [test_id, location.key]);
 
   const handleSelect = async (questionId, optionId) => {
@@ -92,6 +98,8 @@ export default function ExamScreen() {
   }, [testSession, navigate]);
 
   useEffect(() => {
+    if (isLoading) return;
+
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -103,7 +111,7 @@ export default function ExamScreen() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [handleSubmit]);
+  }, [handleSubmit, isLoading]);
 
   const formatTime = (sec) => {
     const m = Math.floor(sec / 60)
@@ -113,9 +121,11 @@ export default function ExamScreen() {
     return `${m}:${s}`;
   };
 
-  if (!test || !testSession) {
-    return <div className="p-6 text-center">Đang tải đề thi...</div>;
+  if (isLoading) {
+    return <ExamSkeleton />;
   }
+
+  if (!test || !testSession) return null;
 
   const currentSessionQuestion = testSession.questions[currentIndex];
   const originalQuestion = test.questions.find(
@@ -123,7 +133,7 @@ export default function ExamScreen() {
   );
 
   if (!originalQuestion) {
-    return <div className="p-6 text-center">Đang tải câu hỏi...</div>;
+    return <ExamSkeleton />;
   }
 
   return (

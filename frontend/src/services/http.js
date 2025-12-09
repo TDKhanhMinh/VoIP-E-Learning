@@ -1,6 +1,5 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { loadingController } from "../context/LoadingController";
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   timeout: 60000,
@@ -13,9 +12,7 @@ const cache = new Map();
 http.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
-  if (!config.silent) {
-    loadingController.start();
-  }
+
   if (config.method === "get" && config.cache !== false) {
     const key = config.url + JSON.stringify(config.params || {});
     const cached = cache.get(key);
@@ -28,9 +25,6 @@ http.interceptors.request.use((config) => {
 
 http.interceptors.response.use(
   (response) => {
-    if (!response.config.silent) {
-      loadingController.stop();
-    }
     const method = response.config.method.toLowerCase();
     if (["post", "put", "delete", "patch"].includes(method)) {
       cache.clear();
@@ -43,9 +37,6 @@ http.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (!error.config?.silent) {
-      loadingController.stop();
-    }
     if (error.__fromCache) return error.data;
     return Promise.reject(error);
   }

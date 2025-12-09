@@ -27,7 +27,7 @@ const generateContentWithRetry = async (model, parts, retries = 3) => {
       (error.response?.status === 429 || error.status === 429) &&
       retries > 0
     ) {
-      const waitTime = 35000;
+      const waitTime = 60000;
       console.warn(
         `[AI Service] Quota exceeded (429). Đang đợi ${
           waitTime / 1000

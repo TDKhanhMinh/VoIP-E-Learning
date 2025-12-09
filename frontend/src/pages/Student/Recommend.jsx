@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { BookOpen, TrendingUp, Plus, Loader2 } from "lucide-react";
+import { BookOpen, TrendingUp, Plus } from "lucide-react"; // Bỏ Loader2 vì dùng Skeleton
 import CreateDocumentModal from "./../../components/Modals/CreateDocumentModal";
 import DocumentCard from "./../../components/Assignments/DocumentCard";
 import SearchDocumentForm from "../../components/UI/SearchDocumentForm";
-import { recommendService } from './../../services/recommendService';
+import { recommendService } from "./../../services/recommendService";
+import DocumentSkeleton from "./../../components/SkeletonLoading/DocumentSkeleton";
 
 function Recommend() {
   const [documents, setDocuments] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [topK, setTopK] = useState(5);
-  const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
+
+  // 1. Biến isLoading cho việc tải danh sách ban đầu
+  const [isLoading, setIsLoading] = useState(true);
+  // Biến loading riêng cho nút Search
+  const [isSearching, setIsSearching] = useState(false);
+
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   const userRole = sessionStorage.getItem("role")?.replace(/"/g, "");
@@ -22,6 +27,7 @@ function Recommend() {
   }, []);
 
   const fetchDocuments = async () => {
+    setIsLoading(true); // Bắt đầu tải
     try {
       const data = await recommendService.getDocuments();
       setDocuments(data);
@@ -29,7 +35,7 @@ function Recommend() {
       console.error("Error fetching documents:", error);
       toast.error("Không thể tải danh sách tài liệu");
     } finally {
-      setInitialLoading(false);
+      setIsLoading(false); // Kết thúc tải
     }
   };
 
@@ -40,7 +46,7 @@ function Recommend() {
       return;
     }
 
-    setLoading(true);
+    setIsSearching(true);
     try {
       const results = await recommendService.recommendDocuments(
         searchQuery,
@@ -60,7 +66,7 @@ function Recommend() {
         error?.response?.data?.error || error.message || "Lỗi không xác định";
       toast.error(`Lỗi khi tìm kiếm: ${errorMsg}`);
     } finally {
-      setLoading(false);
+      setIsSearching(false);
     }
   };
 
@@ -131,17 +137,6 @@ function Recommend() {
     }
   };
 
-  if (initialLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 text-lg">Đang tải tài liệu...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
@@ -175,7 +170,7 @@ function Recommend() {
             topK={topK}
             setTopK={setTopK}
             handleSearch={handleSearch}
-            loading={loading}
+            loading={isSearching}
           />
         </div>
 
@@ -205,9 +200,16 @@ function Recommend() {
         <div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
             <BookOpen className="w-6 h-6 text-blue-600" />
-            Tất cả tài liệu ({documents.length})
+            Tất cả tài liệu {isLoading ? "..." : `(${documents.length})`}
           </h2>
-          {documents.length > 0 ? (
+
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, index) => (
+                <DocumentSkeleton key={index} />
+              ))}
+            </div>
+          ) : documents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {documents.map((doc) => (
                 <DocumentCard

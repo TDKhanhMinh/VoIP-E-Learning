@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { classService } from "../../services/classService";
-import { BsCameraVideo, BsChat } from "react-icons/bs";
+import { BsCameraVideo } from "react-icons/bs";
 import { announcementService } from "../../services/announcementService";
 import NotificationItem from "../../components/Common/NotificationItem";
 import CreatePostModal from "../../components/Modals/PostModal";
@@ -10,118 +10,146 @@ import { io } from "socket.io-client";
 import PostItem from "../../components/Common/PostItems";
 import ChatWithTeacher from "../../components/Chat/ChatWithTeacher";
 import { userService } from "../../services/userService";
+import ClassDetailSkeleton from "./../../components/SkeletonLoading/ClassDetailSkeleton";
 export default function ClassDetails() {
   const { id } = useParams();
   const [classInfo, setClassInfo] = useState(null);
   const [teacher, setTeacher] = useState(null);
   const [notifications, setNotifications] = useState([]);
-  const [openModal, setOpenModal] = useState(false);
   const [posts, setPosts] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
+
+  const navigate = useNavigate();
+  const socketRef = useRef(null);
+
   const user = {
-    author_id: sessionStorage.getItem("userId").split('"').join("").toString(),
+    author_id: sessionStorage.getItem("userId")?.split('"').join("").toString(),
     author_name: sessionStorage.getItem("name"),
     token: localStorage.getItem("token"),
   };
-  const socket = io(import.meta.env.VITE_API_URL, {
-    query: { token: user.token, room: id },
-  });
-  const navigate = useNavigate();
+
   useEffect(() => {
-    loadClassDetail();
-    const fetchPosts = async () => {
-      setPosts(await postService.getPosts(id));
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const [classDetails, notifs, postList] = await Promise.all([
+          classService.getClassById(id),
+          announcementService.getAnnouncementByClassId(id),
+          postService.getPosts(id),
+        ]);
+
+        setClassInfo(classDetails);
+        setNotifications(notifs);
+        setPosts(postList);
+
+        if (classDetails?.teacher) {
+          const teacherInfo = await userService.getUserById(
+            classDetails.teacher
+          );
+          setTeacher(teacherInfo);
+        }
+      } catch (err) {
+        console.error("Lỗi tải dữ liệu lớp học:", err);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    socket.on("new_post", (post) => {
-      setPosts((prev) => [post, ...prev]);
-    });
-    fetchPosts();
-  }, [id, socket]);
 
-  const loadClassDetail = async () => {
-    try {
-      setNotifications(await announcementService.getAnnouncementByClassId(id));
-      console.log(
-        "Notifications ",
-        await announcementService.getAnnouncementByClassId(id)
-      );
-      const classDetails = await classService.getClassById(id);
-      setClassInfo(classDetails);
-      console.log("Class info", await classService.getClassById(id));
-      console.log(
-        "teacher info",
-        await userService.getUserById(classDetails.teacher)
-      );
-      setTeacher(await userService.getUserById(classDetails.teacher));
-    } catch (err) {
-      console.log(err);
+    loadData();
+
+    if (user.token) {
+      socketRef.current = io(import.meta.env.VITE_API_URL, {
+        query: { token: user.token, room: id },
+      });
+
+      socketRef.current.on("new_post", (post) => {
+        setPosts((prev) => [post, ...prev]);
+      });
     }
-  };
 
-  if (!classInfo || !user) return <div className="p-6">Loading...</div>;
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, [id]);
+
+  if (isLoading) return <ClassDetailSkeleton />;
+  if (!classInfo || !user)
+    return (
+      <div className="p-6 text-center">Không tìm thấy thông tin lớp học.</div>
+    );
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <div className="rounded-xl bg-blue-600">
+      <div className="rounded-xl bg-blue-600 shadow-lg">
         <div className="p-8 text-white">
-          <h1 className="text-3xl font-semibold truncate">{classInfo.name}</h1>
-          <p className="text-lg mt-1 opacity-95">
-            GV: {teacher?.full_name} –{" "}
+          <h1 className="text-3xl font-bold truncate">{classInfo.name}</h1>
+          <p className="text-lg mt-2 opacity-95">
+            GV: {teacher?.full_name} <span className="mx-2">•</span>{" "}
             {classInfo.schedule
-              ?.map((s) => `Thứ ${s.dayOfWeek}, Ca ${s.shift}`)
-              .join("; ")}{" "}
-            – phòng {classInfo.room}
+              ?.map((s) => `Thứ ${s.dayOfWeek} (Ca ${s.shift})`)
+              .join(", ")}{" "}
+            <span className="mx-2">•</span> Phòng {classInfo.room}
           </p>
         </div>
       </div>
-      <div className="grid grid-cols-[20%_80%] gap-6 p-4">
-        <div className="">
-          <div className="bg-white border rounded-xl border-gray-500 px-4 shadow-sm  gap-4 w-full sm:w-auto">
-            <div className="font-medium w-full flex items-center gap-4 my-4">
-              <BsCameraVideo /> Phòng học Online
+
+      <div className="grid grid-cols-1 md:grid-cols-[25%_75%] gap-6 p-4 mt-2">
+        <div>
+          <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 shadow-sm mb-6">
+            <div className="font-semibold text-gray-700 flex items-center gap-2 mb-3">
+              <BsCameraVideo className="text-red-500 text-lg" /> Phòng học
+              Online
             </div>
             <button
               onClick={() => navigate(`/meet-room/${id}`)}
-              className="w-full mt-1 px-5 py-1.5 mb-4 border border-gray-500 rounded-full hover:bg-gray-300 transition"
+              className="w-full bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 font-medium py-2 rounded-lg transition-colors"
             >
-              Vào phòng
+              Vào lớp ngay
             </button>
           </div>
+
           <ChatWithTeacher TEACHER_ID={teacher?._id} />
         </div>
 
-        <div className="mt-6">
+        <div>
           <button
             onClick={() => setOpenModal(true)}
-            className="bg-blue-600 hover:bg-blue-900 px-4 py-2 rounded-full text-white transition"
+            className="bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-full text-white font-medium shadow-md transition-all hover:shadow-lg mb-6"
           >
-            Tạo thảo luận
+            + Tạo thảo luận mới
           </button>
+
           {notifications.length > 0 || posts.length > 0 ? (
             <>
-              <div className="mb-3">
+              <div className="space-y-4 mb-8">
                 {notifications.map((a) => (
-                  <NotificationItem data={a} />
+                  <NotificationItem key={a._id} data={a} />
                 ))}
               </div>
 
-              <div className="mt-6">
+              <div className="space-y-6">
                 {posts.map((post) => (
                   <PostItem key={post._id} post={post} user={user} />
                 ))}
               </div>
             </>
           ) : (
-            <div className="mt-6 border rounded-xl p-6 shadow-sm bg-white">
-              <p className="text-xl font-semibold">
-                Bạn có thể trao đổi thông tin với mọi người tại đây.
+            <div className="border border-dashed border-gray-300 rounded-xl p-8 text-center bg-gray-50">
+              <p className="text-xl font-semibold text-gray-700">
+                Lớp học chưa có bài đăng nào
               </p>
-              <p className="text-gray-600 mt-1">
-                Hiện tại chưa có thông báo nào
+              <p className="text-gray-500 mt-2">
+                Hãy là người đầu tiên bắt đầu cuộc thảo luận!
               </p>
             </div>
           )}
         </div>
       </div>
+
       <CreatePostModal
         open={openModal}
         onClose={() => setOpenModal(false)}

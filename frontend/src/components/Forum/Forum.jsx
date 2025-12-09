@@ -7,6 +7,8 @@ import PostList from "./PostList";
 import TopicModal from "./TopicModal";
 import PostModal from "./PostModal";
 import PostDetailModal from "./PostDetailModal";
+import TopicSidebarSkeleton from "./../SkeletonLoading/TopicSidebarSkeleton";
+import PostListSkeleton from "./../SkeletonLoading/PostListSkeleton";
 
 export default function Forum() {
   const user = {
@@ -33,16 +35,26 @@ export default function Forum() {
   const [editingTopic, setEditingTopic] = useState(null);
   const [editingPost, setEditingPost] = useState(null);
 
+  // 1. Thêm biến isLoading
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true); // Bắt đầu load
       try {
-        const topicsRes = await forumService.getAllTopics();
+        // Tối ưu: Gọi song song 2 API
+        const [topicsRes, postsRes] = await Promise.all([
+          forumService.getAllTopics(),
+          forumService.getAllPosts(),
+        ]);
+
         setTopics(topicsRes);
-        const postsRes = await forumService.getAllPosts();
         setPosts(postsRes);
         console.log(postsRes);
       } catch (error) {
         console.error("Failed to fetch topics or posts:", error);
+      } finally {
+        setIsLoading(false); // Kết thúc load
       }
     };
 
@@ -278,7 +290,7 @@ export default function Forum() {
   });
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 via-blue-50 p-6">
+    <div className="bg-gradient-to-br from-gray-50 via-blue-50 p-6 min-h-screen">
       <div className="max-w-7xl mx-auto ">
         <div className="flex justify-end mb-3">
           <div className="flex gap-3">
@@ -308,28 +320,38 @@ export default function Forum() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <TopicSidebar
-            topics={topics}
-            selectedTopic={selectedTopic}
-            onTopicSelect={setSelectedTopic}
-            onEditTopic={openEditTopic}
-            canCreateTopic={canCreateTopic}
-            canApprove={canApprove}
-            filter={filter}
-            onFilterChange={setFilter}
-          />
+          {isLoading ? (
+            <div className="lg:col-span-1">
+              <TopicSidebarSkeleton />
+            </div>
+          ) : (
+            <TopicSidebar
+              topics={topics}
+              selectedTopic={selectedTopic}
+              onTopicSelect={setSelectedTopic}
+              onEditTopic={openEditTopic}
+              canCreateTopic={canCreateTopic}
+              canApprove={canApprove}
+              filter={filter}
+              onFilterChange={setFilter}
+            />
+          )}
 
           <div className="lg:col-span-3">
-            <PostList
-              posts={filteredPosts}
-              user={user}
-              canApprove={canApprove}
-              onPostClick={openPostDetail}
-              onEditPost={openEditPost}
-              onDeletePost={handleDeletePost}
-              onApprovePost={handleApprovePost}
-              onRejectPost={handleRejectPost}
-            />
+            {isLoading ? (
+              <PostListSkeleton />
+            ) : (
+              <PostList
+                posts={filteredPosts}
+                user={user}
+                canApprove={canApprove}
+                onPostClick={openPostDetail}
+                onEditPost={openEditPost}
+                onDeletePost={handleDeletePost}
+                onApprovePost={handleApprovePost}
+                onRejectPost={handleRejectPost}
+              />
+            )}
           </div>
         </div>
       </div>
