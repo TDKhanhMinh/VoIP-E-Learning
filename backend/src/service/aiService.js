@@ -17,7 +17,30 @@ const downloadFile = async (url, outputPath) => {
     writer.on("error", reject);
   });
 };
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const generateContentWithRetry = async (model, parts, retries = 3) => {
+  try {
+    return await model.generateContent(parts);
+  } catch (error) {
+    if (
+      (error.response?.status === 429 || error.status === 429) &&
+      retries > 0
+    ) {
+      const waitTime = 35000;
+      console.warn(
+        `[AI Service] Quota exceeded (429). Đang đợi ${
+          waitTime / 1000
+        }s để thử lại... (Còn ${retries} lần)`
+      );
+
+      await sleep(waitTime);
+
+      return generateContentWithRetry(model, parts, retries - 1);
+    }
+    throw error;
+  }
+};
 export const processMeetingData = async (fileUrl, roomName) => {
   const tempFilePath = path.join("/tmp", `${roomName}-${Date.now()}.mp4`);
 
@@ -72,7 +95,7 @@ export const processMeetingData = async (fileUrl, roomName) => {
   }
 `;
 
-    const result = await model.generateContent([
+    const result = await generateContentWithRetry(model, [
       {
         inlineData: {
           mimeType: "audio/mp4",
@@ -81,6 +104,15 @@ export const processMeetingData = async (fileUrl, roomName) => {
       },
       { text: prompt },
     ]);
+    // await model.generateContent([
+    //   {
+    //     inlineData: {
+    //       mimeType: "audio/mp4",
+    //       data: base64Data,
+    //     },
+    //   },
+    //   { text: prompt },
+    // ]);
 
     console.log("[AI Service] Gemini đã trả về kết quả.");
 
