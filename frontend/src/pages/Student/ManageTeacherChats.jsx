@@ -6,6 +6,8 @@ import { Send, MessageCircle, User, Circle } from "lucide-react";
 import clsx from "clsx";
 import { formatTime } from "../../utils/formatTime";
 import ConversationHeaderDetails from "../../components/Chat/ConversationHeaderDetails";
+import ConversationSkeleton from "./../../components/SkeletonLoading/ConversationSkeleton";
+import MessageSkeleton from "./../../components/SkeletonLoading/MessageSkeleton";
 
 const ManageTeacherChats = () => {
   const userID = sessionStorage
@@ -117,7 +119,7 @@ const ManageTeacherChats = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isTyping]); // Scroll khi có tin nhắn hoặc typing
+  }, [messages, isTyping]);
 
   useEffect(() => {
     loadConversations();
@@ -349,36 +351,6 @@ const ManageTeacherChats = () => {
   const getOtherParticipantId = (conversation) => {
     return conversation.participants.find((p) => p !== userID);
   };
-
-  const ConversationSkeleton = () => (
-    <div className="p-4 border-b border-gray-100 animate-pulse flex items-start space-x-3">
-      <div className="w-12 h-12 bg-gray-200 rounded-full flex-shrink-0"></div>
-      <div className="flex-1 space-y-2 py-1">
-        <div className="flex justify-between">
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          <div className="h-3 bg-gray-200 rounded w-1/4"></div>
-        </div>
-        <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-      </div>
-    </div>
-  );
-
-  const MessageSkeleton = () => (
-    <div className="space-y-6 p-4 animate-pulse">
-      <div className="flex justify-start">
-        <div className="h-10 bg-gray-200 rounded-2xl w-1/3"></div>
-      </div>
-      <div className="flex justify-end">
-        <div className="h-10 bg-gray-200 rounded-2xl w-1/4"></div>
-      </div>
-      <div className="flex justify-start">
-        <div className="h-16 bg-gray-200 rounded-2xl w-1/2"></div>
-      </div>
-      <div className="flex justify-end">
-        <div className="h-8 bg-gray-200 rounded-2xl w-1/5"></div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="mt-4">

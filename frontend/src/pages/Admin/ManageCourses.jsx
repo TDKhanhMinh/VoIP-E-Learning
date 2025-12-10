@@ -12,6 +12,8 @@ import CourseModal from "../../components/Modals/CourseModal";
 import { courseService } from "../../services/courseService";
 import { toast } from "react-toastify";
 import Pagination from "../../components/UI/Pagination";
+import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
+import CourseSkeleton from "./../../components/SkeletonLoading/CourseSkeleton";
 
 export default function ManageCourses() {
   const [open, setOpen] = useState(false);
@@ -20,6 +22,9 @@ export default function ManageCourses() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // 1. Thêm biến isLoading
+  const [isLoading, setIsLoading] = useState(true);
 
   const itemsPerPage = 6;
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -36,9 +41,17 @@ export default function ManageCourses() {
   }, [searchQuery, courses]);
 
   const fetchCourses = async () => {
-    const data = await courseService.getCourses();
-    setCourses(data);
-    setFilteredCourses(data);
+    setIsLoading(true);
+    try {
+      const data = await courseService.getCourses();
+      setCourses(data);
+      setFilteredCourses(data);
+    } catch (error) {
+      console.error("Failed to fetch courses:", error);
+      toast.error("Không thể tải danh sách khóa học");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const filterCourses = () => {
@@ -114,74 +127,86 @@ export default function ManageCourses() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                  <FaLayerGroup className="text-indigo-600 text-xl" />
+          {isLoading ? (
+            <StatsSkeleton />
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                      <FaLayerGroup className="text-indigo-600 text-xl" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-600">Total Courses</div>
+                      <div className="text-3xl font-bold text-gray-800">
+                        {courses.length}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-sm text-gray-600">Total Courses</div>
-                  <div className="text-3xl font-bold text-gray-800">
-                    {courses.length}
+
+                <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                      <FaBook className="text-white text-xl" />
+                    </div>
+                    <div>
+                      <div className="text-sm opacity-90">Active Courses</div>
+                      <div className="text-3xl font-bold">{courses.length}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-blue-500 rounded-2xl p-5 shadow-lg text-white">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                      <FaCode className="text-white text-xl" />
+                    </div>
+                    <div>
+                      <div className="text-sm opacity-90">Course Codes</div>
+                      <div className="text-3xl font-bold">{courses.length}</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <FaBook className="text-white text-xl" />
-                </div>
-                <div>
-                  <div className="text-sm opacity-90">Active Courses</div>
-                  <div className="text-3xl font-bold">{courses.length}</div>
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 my-4">
+                <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+                  <div className="relative flex-1 max-w-md w-full">
+                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search by code, title, or description..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setSelectedCourse(null);
+                      setOpen(true);
+                    }}
+                    className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap"
+                  >
+                    <FaPlus />
+                    <span>Thêm môn học</span>
+                  </button>
                 </div>
               </div>
-            </div>
-
-            <div className="bg-blue-500 rounded-2xl p-5 shadow-lg text-white">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <FaCode className="text-white text-xl" />
-                </div>
-                <div>
-                  <div className="text-sm opacity-90">Course Codes</div>
-                  <div className="text-3xl font-bold">{courses.length}</div>
-                </div>
-              </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="relative flex-1 max-w-md w-full">
-              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by code, title, or description..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-              />
-            </div>
-
-            <button
-              onClick={() => {
-                setSelectedCourse(null);
-                setOpen(true);
-              }}
-              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap"
-            >
-              <FaPlus />
-              <span>Thêm môn học</span>
-            </button>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            {[...Array(6)].map((_, i) => (
+              <CourseSkeleton key={i} />
+            ))}
           </div>
-        </div>
-
-        {currentCourses.length > 0 ? (
+        ) : currentCourses.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
             {currentCourses.map((course, index) => (
               <div

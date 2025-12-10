@@ -21,6 +21,7 @@ import AddStudentsModal from "../../components/Modals/AddStudentModal";
 import { useParams, useNavigate } from "react-router-dom";
 import ConfirmDialog from "../../components/UI/ConfirmDialog";
 import Pagination from "../../components/UI/Pagination";
+import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
 
 export default function ClassDetail() {
   const { id } = useParams();
@@ -31,11 +32,13 @@ export default function ClassDetail() {
   const [teacher, setTeacher] = useState("");
   const [semester, setSemester] = useState("");
   const [classData, setClassData] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(true);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -60,21 +63,27 @@ export default function ClassDetail() {
     setIsLoading(true);
     try {
       const classInfo = await classService.getClassById(id);
-      console.info("fetching class details:", classInfo);
-      setTeacher(await userService.getUserById(classInfo.teacher));
-      setCourse(await courseService.getCourseById(classInfo.course));
-      setSemester(await semesterService.getSemesterById(classInfo.semester));
-      setAllStudents(
-        await userService
-          .getAllUsers()
-          .then((users) => users.filter((u) => u.role === "student"))
-      );
-      console.log(
-        "Student of class:",
-        await enrollmentService.getAllEnrollments(id)
-      );
-      setStudents(await enrollmentService.getAllEnrollments(id));
       setClassData(classInfo);
+
+      const [
+        teacherData,
+        courseData,
+        semesterData,
+        allUsersData,
+        enrollmentsData,
+      ] = await Promise.all([
+        userService.getUserById(classInfo.teacher),
+        courseService.getCourseById(classInfo.course),
+        semesterService.getSemesterById(classInfo.semester),
+        userService.getAllUsers(),
+        enrollmentService.getAllEnrollments(id),
+      ]);
+
+      setTeacher(teacherData);
+      setCourse(courseData);
+      setSemester(semesterData);
+      setAllStudents(allUsersData.filter((u) => u.role === "student"));
+      setStudents(enrollmentsData);
     } catch (error) {
       console.error("Error fetching class details:", error);
       toast.error("Không thể tải thông tin lớp học");
@@ -110,12 +119,53 @@ export default function ClassDetail() {
     }
   };
 
+  const HeaderSkeleton = () => (
+    <div className="mb-6 animate-pulse">
+      <div className="h-6 bg-gray-200 rounded w-24 mb-4"></div>
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 bg-gray-200 rounded-xl"></div>
+        <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+      </div>
+    </div>
+  );
+
+  const InfoCardSkeleton = () => (
+    <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 animate-pulse">
+      <div className="h-16 bg-gray-200 w-full"></div>
+      <div className="p-6 space-y-4">
+        <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+        <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+          <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const StatsCardSkeleton = () => (
+    <div className="bg-white rounded-2xl shadow-lg p-6 h-64 animate-pulse bg-gray-200">
+      <div className="flex justify-between mb-4">
+        <div className="h-6 bg-gray-300 rounded w-1/3"></div>
+        <div className="h-8 w-8 bg-gray-300 rounded-full"></div>
+      </div>
+      <div className="space-y-4">
+        <div className="h-20 bg-gray-300 rounded-xl w-full"></div>
+        <div className="h-20 bg-gray-300 rounded-xl w-full"></div>
+      </div>
+    </div>
+  );
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Đang tải dữ liệu...</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto">
+          <HeaderSkeleton />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <InfoCardSkeleton />
+            <StatsCardSkeleton />
+          </div>
+          <TableSkeleton />
         </div>
       </div>
     );

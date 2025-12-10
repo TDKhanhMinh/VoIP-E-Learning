@@ -1,8 +1,9 @@
+import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
+import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
 import { useEffect, useState } from "react";
 import {
   FaPlus,
   FaEdit,
-  FaTrash,
   FaUsers,
   FaSearch,
   FaFilter,
@@ -29,6 +30,8 @@ export default function ManageUsers() {
   const [previewData, setPreviewData] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -42,13 +45,20 @@ export default function ManageUsers() {
 
   useEffect(() => {
     filterUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roleFilter, searchQuery, users]);
 
   const fetchUsers = async () => {
-    const data = await userService.getAllUsers();
-    setUsers(data);
-    setFilteredUsers(data);
+    setIsLoading(true);
+    try {
+      const data = await userService.getAllUsers();
+      setUsers(data);
+      setFilteredUsers(data);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+      toast.error("Không thể tải danh sách người dùng");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const filterUsers = () => {
@@ -274,32 +284,36 @@ export default function ManageUsers() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
-            <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
-              <div className="text-sm text-gray-600 mb-1">Total Users</div>
-              <div className="text-3xl font-bold text-gray-800">
-                {users.length}
+          {isLoading ? (
+            <StatsSkeleton />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+              <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                <div className="text-sm text-gray-600 mb-1">Total Users</div>
+                <div className="text-3xl font-bold text-gray-800">
+                  {users.length}
+                </div>
+              </div>
+              <div className="bg-blue-500 rounded-2xl p-5 shadow-lg text-white">
+                <div className="text-sm opacity-90 mb-1">Admins</div>
+                <div className="text-3xl font-bold">
+                  {users.filter((u) => u.role === "admin").length}
+                </div>
+              </div>
+              <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
+                <div className="text-sm opacity-90 mb-1">Teachers</div>
+                <div className="text-3xl font-bold">
+                  {users.filter((u) => u.role === "teacher").length}
+                </div>
+              </div>
+              <div className="bg-green-600 rounded-2xl p-5 shadow-lg text-white">
+                <div className="text-sm opacity-90 mb-1">Students</div>
+                <div className="text-3xl font-bold">
+                  {users.filter((u) => u.role === "student").length}
+                </div>
               </div>
             </div>
-            <div className="bg-blue-500 rounded-2xl p-5 shadow-lg text-white">
-              <div className="text-sm opacity-90 mb-1">Admins</div>
-              <div className="text-3xl font-bold">
-                {users.filter((u) => u.role === "admin").length}
-              </div>
-            </div>
-            <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
-              <div className="text-sm opacity-90 mb-1">Teachers</div>
-              <div className="text-3xl font-bold">
-                {users.filter((u) => u.role === "teacher").length}
-              </div>
-            </div>
-            <div className="bg-green-600 rounded-2xl p-5 shadow-lg text-white">
-              <div className="text-sm opacity-90 mb-1">Students</div>
-              <div className="text-3xl font-bold">
-                {users.filter((u) => u.role === "student").length}
-              </div>
-            </div>
-          </div>
+          )}
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6">
@@ -370,114 +384,120 @@ export default function ManageUsers() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gray-100 border-b-2 border-gray-200">
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
-                    Tên đầy đủ
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
-                    Email
-                  </th>
-                  <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">
-                    Vai trò
-                  </th>
-                  <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">
-                    Trạng thái
-                  </th>
-                  <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">
-                    Hành động
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentUsers.length > 0 ? (
-                  currentUsers.map((user, index) => (
-                    <tr
-                      key={user.id || index}
-                      className="border-b border-gray-100 hover:bg-blue-50/50 transition-colors"
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shadow-md">
-                            {user.full_name?.charAt(0).toUpperCase()}
+          {isLoading ? (
+            <TableSkeleton />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-100 border-b-2 border-gray-200">
+                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
+                      Tên đầy đủ
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
+                      Email
+                    </th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">
+                      Vai trò
+                    </th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">
+                      Trạng thái
+                    </th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">
+                      Hành động
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentUsers.length > 0 ? (
+                    currentUsers.map((user, index) => (
+                      <tr
+                        key={user.id || index}
+                        className="border-b border-gray-100 hover:bg-blue-50/50 transition-colors"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shadow-md">
+                              {user.full_name?.charAt(0).toUpperCase()}
+                            </div>
+                            <span className="font-semibold text-gray-800">
+                              {user.full_name}
+                            </span>
                           </div>
-                          <span className="font-semibold text-gray-800">
-                            {user.full_name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-gray-600">{user.email}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center">
-                          <span
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase border-2 ${getRoleBadgeColor(
-                              user.role
-                            )}`}
-                          >
-                            {user.role}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center">
-                          {user.available ? (
-                            <span className="px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold border-2 border-green-200">
-                              Active
+                        </td>
+                        <td className="px-6 py-4 text-gray-600">
+                          {user.email}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex justify-center">
+                            <span
+                              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase border-2 ${getRoleBadgeColor(
+                                user.role
+                              )}`}
+                            >
+                              {user.role}
                             </span>
-                          ) : (
-                            <span className="px-4 py-1.5 bg-red-100 text-red-700 rounded-full text-xs font-bold border-2 border-red-200">
-                              Inactive
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center gap-2">
-                          <button
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setOpenModal(true);
-                            }}
-                            className="p-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all hover:shadow-lg hover:-translate-y-0.5"
-                          >
-                            <FaEdit />
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setOpenConfirmModal(true);
-                            }}
-                            className={`p-2.5  text-white rounded-lg ${
-                              user.available
-                                ? "bg-red-500  hover:bg-red-600"
-                                : "bg-green-500  hover:bg-green-600"
-                            } transition-all hover:shadow-lg hover:-translate-y-0.5`}
-                          >
-                            {user.available ? <FaLock /> : <FaLockOpen />}
-                          </button>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex justify-center">
+                            {user.available ? (
+                              <span className="px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold border-2 border-green-200">
+                                Active
+                              </span>
+                            ) : (
+                              <span className="px-4 py-1.5 bg-red-100 text-red-700 rounded-full text-xs font-bold border-2 border-red-200">
+                                Inactive
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex justify-center gap-2">
+                            <button
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setOpenModal(true);
+                              }}
+                              className="p-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all hover:shadow-lg hover:-translate-y-0.5"
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setOpenConfirmModal(true);
+                              }}
+                              className={`p-2.5 text-white rounded-lg ${
+                                user.available
+                                  ? "bg-red-500  hover:bg-red-600"
+                                  : "bg-green-500  hover:bg-green-600"
+                              } transition-all hover:shadow-lg hover:-translate-y-0.5`}
+                            >
+                              {user.available ? <FaLock /> : <FaLockOpen />}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="px-6 py-12 text-center">
+                        <div className="flex flex-col items-center gap-3">
+                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                            <FaUsers className="text-gray-400 text-2xl" />
+                          </div>
+                          <p className="text-gray-500 font-medium">
+                            No users found
+                          </p>
                         </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                          <FaUsers className="text-gray-400 text-2xl" />
-                        </div>
-                        <p className="text-gray-500 font-medium">
-                          No users found
-                        </p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {filteredUsers.length > itemsPerPage && (

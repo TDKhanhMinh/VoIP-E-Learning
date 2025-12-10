@@ -16,6 +16,8 @@ import { semesterService } from "./../../services/semesterService";
 import { toast } from "react-toastify";
 import { classService } from "../../services/classService";
 import Pagination from "./../../components/UI/Pagination";
+import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
+import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
 
 export default function ManageClasses() {
   const [open, setOpen] = useState(false);
@@ -25,6 +27,9 @@ export default function ManageClasses() {
   const [teachers, setTeachers] = useState([]);
   const [semesters, setSemesters] = useState([]);
 
+  // 1. Loading State
+  const [isLoading, setIsLoading] = useState(true);
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -33,46 +38,60 @@ export default function ManageClasses() {
   const totalPages = Math.ceil(classes.length / itemsPerPage);
 
   useEffect(() => {
-    fetchClasses();
-    fetchCourses();
-    fetchTeachers();
-    fetchSemesters();
+    fetchAllData();
   }, []);
 
-  const fetchClasses = async () => {
-    console.log("Fetching classes ...", await classService.getAllClass());
-    setClasses(await classService.getAllClass());
+  const fetchAllData = async () => {
+    setIsLoading(true); // Bắt đầu load
+    try {
+      // Tối ưu: Gọi song song 4 API
+      const [classData, courseData, userData, semesterData] = await Promise.all(
+        [
+          classService.getAllClass(),
+          courseService.getCourses(),
+          userService.getAllUsers(),
+          semesterService.getAllSemesters(),
+        ]
+      );
+
+      setClasses(classData);
+      setCourses(courseData);
+
+      const teacherList = userData.filter((u) => u.role === "teacher");
+      setTeachers(teacherList);
+
+      setSemesters(semesterData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Lỗi khi tải dữ liệu");
+    } finally {
+      setIsLoading(false); // Kết thúc load
+    }
   };
-  const fetchCourses = async () => {
-    console.log("Fetching courses...", await courseService.getCourses());
-    setCourses(await courseService.getCourses());
-  };
-  const fetchTeachers = async () => {
-    const data = await userService.getAllUsers();
-    const teachers = data.filter((u) => u.role === "teacher");
-    console.log("Fetching Teacher ...", teachers);
-    setTeachers(teachers);
-  };
-  const fetchSemesters = async () => {
-    console.log(
-      "Fetching semester ...",
-      await semesterService.getAllSemesters()
-    );
-    setSemesters(await semesterService.getAllSemesters());
+
+  // Helper để refresh lại list class sau khi thêm/sửa (nhẹ hơn fetchAllData)
+  const refreshClasses = async () => {
+    try {
+      const data = await classService.getAllClass();
+      setClasses(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleAddClass = async (classData) => {
     try {
       console.log("Class data sending", classData);
-      const data = await classService.createClass(classData);
-      console.log("Class data added", data);
-      fetchClasses();
+      await classService.createClass(classData);
+      refreshClasses();
       toast.success("Thêm lớp học thành công");
+      setOpen(false);
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Lỗi khi lớp học");
+      toast.error(error?.response?.data?.message || "Lỗi khi thêm lớp học");
       console.log(error);
     }
   };
+
   const handleUpdateClass = async (classData) => {
     try {
       const { _id, ...payload } = classData;
@@ -83,11 +102,10 @@ export default function ManageClasses() {
       }
 
       await classService.updateClass(selectedClass._id, payload);
-
       toast.success("Cập nhật lớp học thành công");
-
       setSelectedClass(null);
-      fetchClasses();
+      refreshClasses();
+      setOpen(false);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Lỗi khi cập nhật lớp học");
       console.log(error);
@@ -108,63 +126,71 @@ export default function ManageClasses() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">Tổng số lớp</p>
-                <p className="text-2xl font-bold text-gray-800">
-                  {classes.length}
-                </p>
-              </div>
-              <div className="bg-blue-100 p-3 rounded-lg">
-                <FaBook className="text-blue-600 text-xl" />
+        {isLoading ? (
+          <StatsSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">
+                    Tổng số lớp
+                  </p>
+                  <p className="text-2xl font-bold text-gray-800">
+                    {classes.length}
+                  </p>
+                </div>
+                <div className="bg-blue-100 p-3 rounded-lg">
+                  <FaBook className="text-blue-600 text-xl" />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">Môn học</p>
-                <p className="text-2xl font-bold text-gray-800">
-                  {courses.length}
-                </p>
-              </div>
-              <div className="bg-green-100 p-3 rounded-lg">
-                <FaChalkboardTeacher className="text-green-600 text-xl" />
+            <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">Môn học</p>
+                  <p className="text-2xl font-bold text-gray-800">
+                    {courses.length}
+                  </p>
+                </div>
+                <div className="bg-green-100 p-3 rounded-lg">
+                  <FaChalkboardTeacher className="text-green-600 text-xl" />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-purple-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">Giảng viên</p>
-                <p className="text-2xl font-bold text-gray-800">
-                  {teachers.length}
-                </p>
-              </div>
-              <div className="bg-purple-100 p-3 rounded-lg">
-                <FaChalkboardTeacher className="text-purple-600 text-xl" />
+            <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-purple-500">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">
+                    Giảng viên
+                  </p>
+                  <p className="text-2xl font-bold text-gray-800">
+                    {teachers.length}
+                  </p>
+                </div>
+                <div className="bg-purple-100 p-3 rounded-lg">
+                  <FaChalkboardTeacher className="text-purple-600 text-xl" />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-orange-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">Học kỳ</p>
-                <p className="text-2xl font-bold text-gray-800">
-                  {semesters.length}
-                </p>
-              </div>
-              <div className="bg-orange-100 p-3 rounded-lg">
-                <FaCalendarAlt className="text-orange-600 text-xl" />
+            <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-orange-500">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">Học kỳ</p>
+                  <p className="text-2xl font-bold text-gray-800">
+                    {semesters.length}
+                  </p>
+                </div>
+                <div className="bg-orange-100 p-3 rounded-lg">
+                  <FaCalendarAlt className="text-orange-600 text-xl" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-100">
@@ -186,151 +212,158 @@ export default function ManageClasses() {
             </button>
           </div>
 
-          <div className="overflow-x-scroll ">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Tên lớp
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Môn học
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Giảng viên
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Học kỳ
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Lịch học
-                  </th>
-
-                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    Hành động
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {classes.length > 0 ? (
-                  currentClasses.map((c, index) => (
-                    <tr
-                      key={c.id || index}
-                      className="hover:bg-gray-50 transition-colors duration-150"
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <FaBook className="text-blue-600" />
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900 truncate">
-                              {c.name}
+          {isLoading ? (
+            <TableSkeleton />
+          ) : (
+            <div className="overflow-x-auto rounded-lg shadow border border-gray-200">
+              <table className="w-full table-fixed min-w-[900px] md:min-w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="w-[20%] px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Tên lớp
+                    </th>
+                    <th className="w-[15%] px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Môn học
+                    </th>
+                    <th className="w-[15%] px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Giảng viên
+                    </th>
+                    <th className="w-[10%] px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Học kỳ
+                    </th>
+                    <th className="w-[20%] px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Lịch học
+                    </th>
+                    <th className="w-[20%] px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Hành động
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {classes.length > 0 ? (
+                    currentClasses.map((c, index) => (
+                      <tr
+                        key={c.id || index}
+                        className="hover:bg-gray-50 transition-colors duration-150"
+                      >
+                        <td className="px-4 py-3 align-top">
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 h-9 w-9 bg-blue-100 rounded-lg flex items-center justify-center mt-1">
+                              <FaBook className="text-blue-600 text-sm" />
+                            </div>
+                            <div className="ml-3">
+                              <div
+                                className="text-sm font-medium text-gray-900 break-words line-clamp-2"
+                                title={c.name}
+                              >
+                                {c.name}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="truncate inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                          {courses.find((co) => co._id == c.course)?.title}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
-                            <FaChalkboardTeacher className="text-purple-600 text-sm" />
-                          </div>
-                          <div className="ml-3">
-                            <div className="text-sm text-gray-900 truncate">
-                              {
-                                teachers.find((t) => t._id == c.teacher)
-                                  ?.full_name
-                              }
+                        </td>
+
+                        <td className="px-4 py-3 align-top">
+                          <span className="inline-block px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 break-words w-full text-center border border-blue-100">
+                            {courses.find((co) => co._id == c.course)?.title}
+                          </span>
+                        </td>
+
+                        <td className="px-4 py-3 align-top">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-6 w-6 bg-purple-100 rounded-full flex items-center justify-center">
+                              <FaChalkboardTeacher className="text-purple-600 text-xs" />
+                            </div>
+                            <div className="ml-2">
+                              <div className="text-sm text-gray-900 break-words">
+                                {
+                                  teachers.find((t) => t._id == c.teacher)
+                                    ?.full_name
+                                }
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex truncate items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                          <FaCalendarAlt className="mr-2 text-xs" />
-                          {semesters.find((se) => se._id == c.semester)?.name}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex flex-col text-sm text-gray-700 truncate">
-                          {Array.isArray(c.schedule) &&
-                          c.schedule.length > 0 ? (
-                            c.schedule.map((s, i) => {
-                              const days = {
-                                2: "Thứ 2",
-                                3: "Thứ 3",
-                                4: "Thứ 4",
-                                5: "Thứ 5",
-                                6: "Thứ 6",
-                                7: "Thứ 7",
-                              };
+                        </td>
 
-                              return (
-                                <span
-                                  key={i}
-                                  className="inline-flex truncate items-center px-3 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800 mb-1"
-                                >
-                                  {`${days[s.dayOfWeek] || "?"} - Ca ${
-                                    s.shift
-                                  } (${
-                                    s.type === "theory" ? "LT" : "TH"
-                                  }) - Phòng ${s.room}`}
-                                </span>
-                              );
-                            })
-                          ) : (
-                            <span>Chưa có lịch</span>
-                          )}
-                        </span>
-                      </td>
+                        <td className="px-4 py-3 align-top">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            {semesters.find((se) => se._id == c.semester)?.name}
+                          </span>
+                        </td>
 
-                      <td className="px-6 py-4 text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          <Button
-                            onClick={() => {
-                              setOpen(true);
-                              setSelectedClass(c);
-                            }}
-                            className="inline-flex items-center justify-center p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 shadow-sm hover:shadow-md transition-all duration-200"
-                            title="Chỉnh sửa"
-                          >
-                            <FaEdit className="text-sm" />
-                          </Button>
-                          <Button
-                            to={`/admin/classes/class-details/${c._id}`}
-                            className="inline-flex items-center justify-center p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 shadow-sm hover:shadow-md transition-all duration-200"
-                          >
-                            <FaInfo className="text-sm" />
-                          </Button>
+                        <td className="px-4 py-3 align-top">
+                          <div className="flex flex-wrap gap-1.5">
+                            {Array.isArray(c.schedule) &&
+                            c.schedule.length > 0 ? (
+                              c.schedule.map((s, i) => {
+                                const days = {
+                                  2: "Thứ 2",
+                                  3: "Thứ 3",
+                                  4: "Thứ 4",
+                                  5: "Thứ 5",
+                                  6: "Thứ 6",
+                                  7: "Thứ 7",
+                                };
+                                return (
+                                  <span
+                                    key={i}
+                                    className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-pink-50 text-pink-700 border border-pink-100 whitespace-nowrap"
+                                  >
+                                    {`${days[s.dayOfWeek] || "?"} | Ca ${
+                                      s.shift
+                                    } (${
+                                      s.type === "theory" ? "LT" : "TH"
+                                    }) | P.${s.room}`}
+                                  </span>
+                                );
+                              })
+                            ) : (
+                              <span className="text-xs text-gray-400 italic">
+                                Chưa có lịch
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        <td className="px-2 py-3 align-middle text-center">
+                          <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+                            <Button
+                              onClick={() => {
+                                setOpen(true);
+                                setSelectedClass(c);
+                              }}
+                              className="p-1.5 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+                              title="Chỉnh sửa"
+                            >
+                              <FaEdit className="text-xs" />
+                            </Button>
+                            <Button
+                              to={`/admin/classes/class-details/${c._id}`}
+                              className="p-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                              title="Chi tiết"
+                            >
+                              <FaInfo className="text-xs" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="px-6 py-10 text-center text-gray-500"
+                      >
+                        <div className="flex flex-col items-center justify-center">
+                          <FaBook className="text-gray-300 text-3xl mb-3" />
+                          <p>Chưa có lớp học nào</p>
                         </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center justify-center">
-                        <div className="bg-gray-100 rounded-full p-6 mb-4">
-                          <FaBook className="text-gray-400 text-4xl" />
-                        </div>
-                        <p className="text-gray-500 font-medium">
-                          Chưa có lớp học nào
-                        </p>
-                        <p className="text-gray-400 text-sm mt-1">
-                          Nhấn "Thêm lớp mới" để bắt đầu
-                        </p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           {classes.length > itemsPerPage && (
             <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">

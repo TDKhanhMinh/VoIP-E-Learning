@@ -16,16 +16,24 @@ import Pagination from "../../components/UI/Pagination";
 import { classService } from "./../../services/classService";
 import { userService } from "./../../services/userService";
 import { useNavigate } from "react-router-dom";
+import ListItemSkeleton from "./../../components/SkeletonLoading/ListItemSkeleton";
+import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
 
 export default function ManageSemester() {
   const [open, setOpen] = useState(false);
   const [semesters, setSemesters] = useState([]);
   const [classes, setClasses] = useState([]);
   const [users, setUsers] = useState([]);
+
+  // 1. Thêm các biến state loading
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDetailLoading, setIsDetailLoading] = useState(false);
+
   const [openDetail, setOpenDetail] = useState(false);
   const [selectedSemester, setSelectedSemester] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+
   const itemsPerPage = 5;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -33,27 +41,46 @@ export default function ManageSemester() {
   const totalPages = Math.ceil(semesters.length / itemsPerPage);
 
   const fetchSemesters = useCallback(async () => {
+    setIsLoading(true); // Bắt đầu load
     try {
-      const data = await semesterService.getAllSemesters();
-      const usersData = await userService.getAllUsers();
+      // Tối ưu: Gọi song song API
+      const [data, usersData] = await Promise.all([
+        semesterService.getAllSemesters(),
+        userService.getAllUsers(),
+      ]);
+
       setUsers(usersData.filter((user) => user.role === "teacher"));
       setSemesters(data);
     } catch (error) {
       console.error("Error fetching semesters:", error);
+      toast.error("Lỗi khi tải dữ liệu");
+    } finally {
+      setIsLoading(false); // Kết thúc load
     }
   }, []);
+
   const handleLoadSemesterDetails = async (semesterId) => {
-    const semester = semesters.find((sem) => sem._id === semesterId);
-    console.log("Loaded semester detail:", semester);
-    const classes = await classService.getAllClass();
-    console.log(" classes:", classes);
-    const filteredClasses = classes.filter(
-      (cls) => cls.semester === semesterId
-    );
-    console.log("Filtered classes:", filteredClasses);
-    setClasses(filteredClasses);
-    setOpenDetail(true);
+    setOpenDetail(true); // Mở view chi tiết ngay
+    setIsDetailLoading(true); // Bắt đầu load chi tiết
+    try {
+      const semester = semesters.find((sem) => sem._id === semesterId);
+      console.log("Loaded semester detail:", semester);
+
+      // Lưu ý: Logic này lấy toàn bộ class rồi filter ở client sẽ chậm nếu dữ liệu lớn.
+      // Tốt hơn nên có API getClassesBySemesterId từ backend.
+      const allClasses = await classService.getAllClass();
+      const filteredClasses = allClasses.filter(
+        (cls) => cls.semester === semesterId
+      );
+      setClasses(filteredClasses);
+    } catch (error) {
+      console.error("Error loading details:", error);
+      toast.error("Không thể tải danh sách lớp học");
+    } finally {
+      setIsDetailLoading(false); // Kết thúc load chi tiết
+    }
   };
+
   const handleAddSemester = useCallback(
     async (semesterData) => {
       try {
@@ -82,18 +109,8 @@ export default function ManageSemester() {
           return;
         }
         const { _id, ...payload } = semesterData;
-        console.log(
-          "Updating semester with ID:",
-          selectedSemester._id,
-          "Payload:",
-          payload
-        );
 
-        const data = await semesterService.updateSemester(
-          selectedSemester._id,
-          payload
-        );
-        console.log("Semester update:", data);
+        await semesterService.updateSemester(selectedSemester._id, payload);
         setSelectedSemester(null);
         await fetchSemesters();
         setCurrentPage(1);
@@ -108,6 +125,7 @@ export default function ManageSemester() {
     },
     [fetchSemesters, selectedSemester?._id]
   );
+
   const getActiveSemesters = () => {
     const now = new Date();
     return semesters.filter((sem) => {
@@ -144,9 +162,11 @@ export default function ManageSemester() {
       };
     }
   };
+
   useEffect(() => {
     fetchSemesters();
   }, [fetchSemesters]);
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -174,52 +194,56 @@ export default function ManageSemester() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <FaCalendarAlt className="text-purple-600 text-xl" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-600">Total Semesters</div>
-                  <div className="text-3xl font-bold text-gray-800">
-                    {semesters.length}
+          {isLoading ? (
+            <StatsSkeleton />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+              <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <FaCalendarAlt className="text-purple-600 text-xl" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-600">Total Semesters</div>
+                    <div className="text-3xl font-bold text-gray-800">
+                      {semesters.length}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-green-600 rounded-2xl p-5 shadow-lg text-white">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <FaClock className="text-white text-xl" />
-                </div>
-                <div>
-                  <div className="text-sm opacity-90">Active Now</div>
-                  <div className="text-3xl font-bold">
-                    {getActiveSemesters()}
+              <div className="bg-green-600 rounded-2xl p-5 shadow-lg text-white">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <FaClock className="text-white text-xl" />
+                  </div>
+                  <div>
+                    <div className="text-sm opacity-90">Active Now</div>
+                    <div className="text-3xl font-bold">
+                      {getActiveSemesters()}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <FaCalendarAlt className="text-white text-xl" />
-                </div>
-                <div>
-                  <div className="text-sm opacity-90">Upcoming</div>
-                  <div className="text-3xl font-bold">
-                    {getUpcomingSemesters()}
+              <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <FaCalendarAlt className="text-white text-xl" />
+                  </div>
+                  <div>
+                    <div className="text-sm opacity-90">Upcoming</div>
+                    <div className="text-3xl font-bold">
+                      {getUpcomingSemesters()}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
-        {openDetail === false && (
+        {openDetail === false && !isLoading && (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6">
             <div className="flex justify-between items-center">
               <div>
@@ -245,155 +269,175 @@ export default function ManageSemester() {
           </div>
         )}
 
-        {currentSemesters.length > 0 && openDetail === false ? (
+        {isLoading ? (
           <div className="grid grid-cols-1 gap-4 mb-6">
-            {currentSemesters.map((sem) => {
-              const status = getSemesterStatus(sem.start_date, sem.end_date);
-              return (
-                <div
-                  key={sem._id}
-                  className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all"
-                >
-                  <div
-                    onClick={() => {
-                      setOpenDetail(true);
-                      handleLoadSemesterDetails(sem._id);
-                    }}
-                    className="flex flex-col md:flex-row md:items-center justify-between gap-4 "
-                  >
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
-                        <FaGraduationCap className="text-white text-2xl" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-xl font-bold text-gray-800">
-                            {sem.name}
-                          </h3>
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-bold border-2 ${status.color}`}
-                          >
-                            {status.label}
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                          <div className="flex items-center gap-2">
-                            <FaCalendarAlt className="text-purple-500" />
-                            <span>
-                              Start:{" "}
-                              <span className="font-semibold">
-                                {formatDate(sem.start_date)}
-                              </span>
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <FaCalendarAlt className="text-pink-500" />
-                            <span>
-                              End:{" "}
-                              <span className="font-semibold">
-                                {formatDate(sem.end_date)}
-                              </span>
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => {
-                          setOpen(true);
-                          setSelectedSemester(sem);
-                        }}
-                        className="p-3 bg-yellow-500 text-white rounded-xl hover:bg-yellow-600 transition-all hover:shadow-lg hover:-translate-y-0.5"
+            {[...Array(5)].map((_, i) => (
+              <ListItemSkeleton key={i} />
+            ))}
+          </div>
+        ) : openDetail === false ? (
+          <>
+            {currentSemesters.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4 mb-6">
+                {currentSemesters.map((sem) => {
+                  const status = getSemesterStatus(
+                    sem.start_date,
+                    sem.end_date
+                  );
+                  return (
+                    <div
+                      key={sem._id}
+                      className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all"
+                    >
+                      <div
+                        onClick={() => handleLoadSemesterDetails(sem._id)}
+                        className="flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
                       >
-                        <FaEdit />
-                      </button>
+                        <div className="flex items-center gap-4 flex-1">
+                          <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                            <FaGraduationCap className="text-white text-2xl" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="text-xl font-bold text-gray-800">
+                                {sem.name}
+                              </h3>
+                              <span
+                                className={`px-3 py-1 rounded-full text-xs font-bold border-2 ${status.color}`}
+                              >
+                                {status.label}
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                              <div className="flex items-center gap-2">
+                                <FaCalendarAlt className="text-purple-500" />
+                                <span>
+                                  Start:{" "}
+                                  <span className="font-semibold">
+                                    {formatDate(sem.start_date)}
+                                  </span>
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <FaCalendarAlt className="text-pink-500" />
+                                <span>
+                                  End:{" "}
+                                  <span className="font-semibold">
+                                    {formatDate(sem.end_date)}
+                                  </span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div
+                          className="flex gap-2"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            onClick={() => {
+                              setOpen(true);
+                              setSelectedSemester(sem);
+                            }}
+                            className="p-3 bg-yellow-500 text-white rounded-xl hover:bg-yellow-600 transition-all hover:shadow-lg hover:-translate-y-0.5"
+                          >
+                            <FaEdit />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : openDetail === true && currentSemesters.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
-                <FaGraduationCap className="text-gray-400 text-3xl" />
+                  );
+                })}
               </div>
-              <p className="text-gray-500 font-medium text-lg">
-                Không tìm thấy học kì nào
-              </p>
-              <button
-                onClick={() => {
-                  setSelectedSemester(null);
-                  setOpen(true);
-                }}
-                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold"
-              >
-                <FaPlus />
-                <span>Thêm học kì mới cho năm học</span>
-              </button>
-            </div>
-          </div>
+            ) : (
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
+                <p className="text-gray-500 font-medium text-lg">
+                  Chưa có học kỳ nào.
+                </p>
+              </div>
+            )}
+
+            {semesters.length > itemsPerPage && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            )}
+          </>
         ) : (
           <>
-            <div className="border-b border-gray-200 pb-3 mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">
-                Các lớp học có trong học kì này
-              </h2>
-            </div>
+            {isDetailLoading ? (
+              <div className="grid grid-cols-1 gap-4">
+                {[...Array(3)].map((_, i) => (
+                  <ListItemSkeleton key={i} />
+                ))}
+              </div>
+            ) : classes.length === 0 ? (
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
+                    <FaGraduationCap className="text-gray-400 text-3xl" />
+                  </div>
+                  <p className="text-gray-500 font-medium text-lg">
+                    Không tìm thấy lớp học nào trong học kì này
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="border-b border-gray-200 pb-3 mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    Các lớp học có trong học kì này
+                  </h2>
+                </div>
 
-            {classes.map((cls) => {
-              return (
-                <div
-                  key={cls._id}
-                  className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all my-2"
-                >
-                  <div
-                    onClick={() => {
-                      navigate(`/admin/classes/class-details/${cls._id}`);
-                    }}
-                    className="flex flex-col md:flex-row md:items-center justify-between gap-4  "
-                  >
-                    <div className="flex items-center gap-4 flex-1 ">
-                      <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
-                        <FaGraduationCap className="text-white text-2xl" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-xl font-bold text-gray-800">
-                            {cls.name}
-                          </h3>
-                        </div>
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                          <div className="flex items-center gap-2">
-                            <FaUser className="text-purple-500" />
-                            <span>
-                              {
-                                users.find((u) => u._id === cls.teacher)
-                                  ?.full_name
-                              }
-                            </span>
+                {classes.map((cls) => {
+                  return (
+                    <div
+                      key={cls._id}
+                      className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all my-2"
+                    >
+                      <div
+                        onClick={() => {
+                          navigate(`/admin/classes/class-details/${cls._id}`);
+                        }}
+                        className="flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
+                      >
+                        <div className="flex items-center gap-4 flex-1 ">
+                          <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                            <FaGraduationCap className="text-white text-2xl" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="text-xl font-bold text-gray-800">
+                                {cls.name}
+                              </h3>
+                            </div>
+                            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                              <div className="flex items-center gap-2">
+                                <FaUser className="text-purple-500" />
+                                <span>
+                                  {
+                                    users.find((u) => u._id === cls.teacher)
+                                      ?.full_name
+                                  }
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </>
+            )}
           </>
         )}
-
-        {semesters.length > itemsPerPage && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        )}
       </div>
+
       <SemesterModal
         isOpen={open}
         onClose={() => {
