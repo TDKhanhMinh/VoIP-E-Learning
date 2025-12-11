@@ -60,7 +60,7 @@ export const getTeachingScheduleById = async (id) => {
         error.statusCode = 404;
         throw error;
     }
-
+    console.log("Retrieved schedule:", schedule);
     return schedule;
 };
 const shiftTimes = {

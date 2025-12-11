@@ -17,6 +17,8 @@ import { toast } from "react-toastify";
 import { assignmentService } from "../../services/assignmentService";
 import formatDateTime from "./../../utils/formatDateTime";
 import ConfirmDialog from "../../components/UI/ConfirmDialog";
+import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
+import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
 
 export default function ClassAssignment() {
   const [assignments, setAssignments] = useState([]);
@@ -108,10 +110,11 @@ export default function ClassAssignment() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Đang tải dữ liệu...</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <div className="mb-6 h-10 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+          <StatsSkeleton />
+          <TableSkeleton />
         </div>
       </div>
     );
@@ -319,9 +322,7 @@ export default function ClassAssignment() {
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() =>
-                                navigate(
-                                  `/teacher/submissions/${a._id}`
-                                )
+                                navigate(`/teacher/submissions/${a._id}`)
                               }
                               className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                               title="Xem chi tiết"

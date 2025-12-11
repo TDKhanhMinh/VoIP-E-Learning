@@ -3,6 +3,8 @@ import Button from "../../components/UI/Button";
 import Pagination from "../../components/UI/Pagination";
 import { classService } from "./../../services/classService";
 import { semesterService } from "./../../services/semesterService";
+import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
+import ClassListSkeleton from "./../../components/SkeletonLoading/ClassListSkeleton";
 import {
   FaChalkboardTeacher,
   FaUsers,
@@ -48,7 +50,14 @@ export default function TeacherClasses() {
   const filteredClasses = classes.filter((cls) => {
     const matchesSemester =
       selectedSemester === "all" || cls.semester === selectedSemester;
-    return matchesSemester;
+    const matchesSearch =
+      cls.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (cls.schedule &&
+        JSON.stringify(cls.schedule)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()));
+
+    return matchesSemester && matchesSearch;
   });
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -59,17 +68,6 @@ export default function TeacherClasses() {
   const getSemesterName = (semesterId) => {
     return semesters.find((se) => se._id === semesterId)?.name || "—";
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Đang tải dữ liệu...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -86,51 +84,62 @@ export default function TeacherClasses() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">Tổng số lớp</p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">
-                  {classes.length}
-                </p>
-              </div>
-              <div className="p-4 bg-blue-100 rounded-xl">
-                <FaChalkboardTeacher className="text-blue-600 text-3xl" />
+        {isLoading ? (
+          <StatsSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">
+                    Tổng số lớp
+                  </p>
+                  <p className="text-3xl font-bold text-gray-800 mt-2">
+                    {classes.length}
+                  </p>
+                </div>
+                <div className="p-4 bg-blue-100 rounded-xl">
+                  <FaChalkboardTeacher className="text-blue-600 text-3xl" />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">
-                  Tổng sinh viên
-                </p>
-                <p className="text-3xl font-bold text-green-600 mt-2"></p>
-              </div>
-              <div className="p-4 bg-green-100 rounded-xl">
-                <FaUsers className="text-green-600 text-3xl" />
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">
+                    Tổng sinh viên
+                  </p>
+                  <p className="text-3xl font-bold text-green-600 mt-2">
+                    {classes.reduce(
+                      (acc, curr) => acc + (curr.studentCount || 0),
+                      0
+                    )}
+                  </p>
+                </div>
+                <div className="p-4 bg-green-100 rounded-xl">
+                  <FaUsers className="text-green-600 text-3xl" />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm font-medium">
-                  Học kỳ hiện tại
-                </p>
-                <p className="text-lg font-bold text-purple-600 mt-2">
-                  {semesters[0]?.name || "—"}
-                </p>
-              </div>
-              <div className="p-4 bg-purple-100 rounded-xl">
-                <FaCalendarAlt className="text-purple-600 text-3xl" />
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-500 text-sm font-medium">
+                    Học kỳ hiện tại
+                  </p>
+                  <p className="text-lg font-bold text-purple-600 mt-2">
+                    {semesters[0]?.name || "—"}
+                  </p>
+                </div>
+                <div className="p-4 bg-purple-100 rounded-xl">
+                  <FaCalendarAlt className="text-purple-600 text-3xl" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
           <div className="flex flex-col md:flex-row gap-4">
@@ -179,7 +188,9 @@ export default function TeacherClasses() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-          {currentClasses.length === 0 ? (
+          {isLoading ? (
+            <ClassListSkeleton />
+          ) : currentClasses.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 px-4">
               <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-4">
                 <FaChalkboardTeacher className="text-blue-600 text-4xl" />

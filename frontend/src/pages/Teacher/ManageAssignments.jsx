@@ -2,16 +2,15 @@ import { useEffect, useState } from "react";
 import { classService } from "../../services/classService";
 import { semesterService } from "../../services/semesterService";
 import {
-  FaCalendarAlt,
-  FaBookOpen,
   FaClock,
+  FaBookOpen,
   FaTasks,
   FaFilter,
   FaChevronDown,
-  FaFolderOpen,
 } from "react-icons/fa";
 import Button from "../../components/UI/Button";
 import { formatSchedule } from "./../../utils/formatSchedule";
+import SkeletonCard from "./../../components/SkeletonLoading/SkeletonCard";
 
 export default function ManageAssignments() {
   const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");
@@ -80,17 +79,9 @@ export default function ManageAssignments() {
         </div>
 
         {isLoading ? (
-          /* Skeleton Loader */
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-72 animate-pulse flex flex-col"
-              >
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                <div className="mt-auto h-10 bg-gray-200 rounded-xl w-full"></div>
-              </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <SkeletonCard key={i} />
             ))}
           </div>
         ) : filteredClasses.length > 0 ? (
@@ -103,7 +94,7 @@ export default function ManageAssignments() {
               return (
                 <div
                   key={cls._id || index}
-                  className="group bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 relative"
+                  className="group bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 relative h-full"
                 >
                   <div className="p-6 flex flex-col flex-1">
                     <div className="flex justify-between items-start mb-4">
@@ -115,7 +106,7 @@ export default function ManageAssignments() {
                       </span>
                     </div>
 
-                    <h3 className="text-lg font-bold text-slate-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors h-[3.5rem]">
+                    <h3 className="text-lg font-bold text-slate-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors min-h-[3.5rem]">
                       {cls.name}
                     </h3>
 
@@ -138,20 +129,20 @@ export default function ManageAssignments() {
                       </div>
                     </div>
 
-                    <div className="mt-auto">
+                    <div className="mt-auto pt-4 border-t border-slate-50">
                       <div className="flex items-start gap-2 text-sm text-slate-500">
                         <FaClock
                           className="mt-1 text-indigo-400 shrink-0"
                           size={14}
                         />
-                        <div className="flex flex-wrap">
+                        <div className="flex flex-wrap line-clamp-2">
                           {formatSchedule(cls.schedule)}
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-gray-50 border-t border-gray-100">
+                  <div className="p-4 bg-gray-50 border-t border-gray-100 mt-auto">
                     <Button
                       to={`/teacher/class-details/${cls._id}/assignments`}
                       className="w-full py-2.5 bg-white border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"
@@ -164,7 +155,6 @@ export default function ManageAssignments() {
             })}
           </div>
         ) : (
-          /* Empty State */
           <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-dashed border-gray-300">
             <div className="bg-blue-50 p-6 rounded-full mb-4">
               <FaTasks className="text-4xl text-blue-300" />

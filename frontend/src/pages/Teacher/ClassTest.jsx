@@ -15,8 +15,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import formatDateTime from "./../../utils/formatDateTime";
 import { testService } from "../../services/testService";
-import TestModal from './../../components/Modals/TestModal';
+import TestModal from "./../../components/Modals/TestModal";
 import ConfirmDialog from "../../components/UI/ConfirmDialog";
+import HeaderSkeleton from "./../../components/SkeletonLoading/HeaderSkeleton";
+import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
+import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
 
 export default function ClassTest() {
   const [tests, setTests] = useState({ class: {}, tests: [] });
@@ -118,10 +121,11 @@ export default function ClassTest() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Đang tải dữ liệu...</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <HeaderSkeleton />
+          <StatsSkeleton />
+          <TableSkeleton />
         </div>
       </div>
     );
@@ -262,7 +266,7 @@ export default function ClassTest() {
                 <thead className="bg-gradient-to-r from-gray-50 to-blue-50 border-b-2 border-gray-200">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Tên bài tập
+                      Tên bài thi
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Hạn làm
@@ -282,7 +286,7 @@ export default function ClassTest() {
                   {filteredTests.map((a) => {
                     const status = getSubmissionStatus(a);
                     const StatusIcon = status.icon;
-                    const overdueStatus = isOverdue(a.due_at);
+                    const overdueStatus = isOverdue(a.end);
 
                     return (
                       <tr
@@ -333,45 +337,39 @@ export default function ClassTest() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="text-sm font-medium text-gray-700">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <FaUsers className="text-gray-400" />
+                                <span className="text-sm font-semibold text-gray-700">
                                   {a.attemptCount}/{tests.class.studentCount}{" "}
                                   nộp
                                 </span>
-                                <span
-                                  className={`text-xs font-semibold text-${status.color}-600`}
-                                >
-                                  {Math.round(
-                                    (a.attemptCount /
-                                      tests.class.studentCount) *
-                                      100
-                                  )}
-                                  %
-                                </span>
                               </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div
-                                  className={`bg-gradient-to-r from-${status.color}-500 to-${status.color}-600 h-2 rounded-full transition-all duration-300`}
-                                  style={{
-                                    width: `${
-                                      (a.attemptCount / a.class.studentCount) *
-                                      100
-                                    }%`,
-                                  }}
-                                ></div>
-                              </div>
+                              <span
+                                className={`text-sm font-bold text-${status.color}-600`}
+                              >
+                                {Math.round(
+                                  (a.attemptCount / tests.class.studentCount) *
+                                    100
+                                )}
+                                %
+                              </span>
                             </div>
-                            <StatusIcon
-                              onClick={() =>
-                                navigate(`/teacher/test-results/${a._id}`)
-                              }
-                              className={`text-${status.color}-600 text-lg`}
-                            />
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div
+                                className={`bg-gradient-to-r from-${status.color}-500 to-${status.color}-600 h-2 rounded-full transition-all duration-300`}
+                                style={{
+                                  width: `${
+                                    (a.attemptCount / a.class.studentCount) *
+                                    100
+                                  }%`,
+                                }}
+                              ></div>
+                            </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 text-center">
                           {a.available ? (
                             <span className="inline-block px-3 py-1 rounded-full bg-green-100 text-green-600 text-sm font-medium">
                               Đang mở
@@ -386,11 +384,7 @@ export default function ClassTest() {
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() =>
-                                navigate(
-                                  `/teacher/class-details/${id}/tests/${
-                                    a._id || a.id
-                                  }`
-                                )
+                                navigate(`/teacher/test-results/${a._id}`)
                               }
                               className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                               title="Xem chi tiết"

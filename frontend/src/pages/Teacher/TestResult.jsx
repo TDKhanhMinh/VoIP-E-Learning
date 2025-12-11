@@ -9,9 +9,11 @@ const TestResult = () => {
   const [attempts, setAttempts] = useState([]);
   const [classStudents, setClassStudents] = useState([]);
   const [openRow, setOpenRow] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTestResult = async () => {
+      setIsLoading(true);
       try {
         const data = await attemptService.getAttemptsByTest(testId);
         setClassStudents(data.classStudent);
@@ -19,6 +21,8 @@ const TestResult = () => {
       } catch (error) {
         console.error("Error fetching test results:", error);
         toast.error("Failed to fetch test results.");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchTestResult();
@@ -41,6 +45,32 @@ const TestResult = () => {
     };
   });
 
+  const ResultTableSkeleton = () => (
+    <div className="w-full mt-6 px-4 md:px-8 animate-pulse">
+      <div className="h-8 bg-gray-200 rounded w-64 mb-6"></div>
+      <div className="rounded-xl shadow-lg border border-gray-200 bg-white overflow-hidden">
+        <div className="bg-gray-100 h-12 w-full border-b border-gray-200"></div>
+        <div className="p-0">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between p-4 border-b border-gray-50"
+            >
+              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+              <div className="h-6 bg-gray-200 rounded w-10"></div>
+              <div className="h-4 bg-gray-200 rounded w-16"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  if (isLoading) {
+    return <ResultTableSkeleton />;
+  }
+
   return (
     <div className="w-full mt-6 px-4 md:px-8">
       <h2 className="text-3xl font-bold mb-6 text-gray-800">
@@ -61,90 +91,105 @@ const TestResult = () => {
           </thead>
 
           <tbody className="text-gray-700">
-            {formatted.map(({ student, attempts, maxScore }) => (
-              <React.Fragment key={student._id}>
-                <tr className="border-b hover:bg-gray-50 transition-all">
-                  <td className="p-4 font-semibold text-gray-800">
-                    {student.full_name}
-                  </td>
+            {formatted.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="4"
+                  className="p-8 text-center text-gray-500 italic"
+                >
+                  Chưa có dữ liệu kết quả nào.
+                </td>
+              </tr>
+            ) : (
+              formatted.map(({ student, attempts, maxScore }) => (
+                <React.Fragment key={student._id}>
+                  <tr className="border-b hover:bg-gray-50 transition-all">
+                    <td className="p-4 font-semibold text-gray-800">
+                      {student.full_name}
+                    </td>
 
-                  <td className="p-4">{student.email}</td>
+                    <td className="p-4">{student.email}</td>
 
-                  <td className="p-4 text-center">
-                    {maxScore !== null ? (
-                      <span
-                        className={`px-3 py-1 text-sm font-semibold rounded-full 
-                          ${
-                            maxScore >= 8
-                              ? "bg-green-100 text-green-700"
-                              : maxScore >= 5
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
+                    <td className="p-4 text-center">
+                      {maxScore !== null ? (
+                        <span
+                          className={`px-3 py-1 text-sm font-semibold rounded-full 
+                            ${
+                              maxScore >= 8
+                                ? "bg-green-100 text-green-700"
+                                : maxScore >= 5
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-red-100 text-red-700"
+                            }
+                            `}
+                        >
+                          {maxScore}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 italic">
+                          Chưa làm bài
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="p-4 text-center">
+                      {attempts.length > 0 ? (
+                        <button
+                          className="mx-auto flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition"
+                          onClick={() =>
+                            setOpenRow(
+                              openRow === student._id ? null : student._id
+                            )
                           }
-                        `}
-                      >
-                        {maxScore}
-                      </span>
-                    ) : (
-                      <span className="text-gray-400 italic">Chưa làm bài</span>
-                    )}
-                  </td>
-
-                  <td className="p-4 text-center">
-                    {attempts.length > 0 ? (
-                      <button
-                        className="mx-auto flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition"
-                        onClick={() =>
-                          setOpenRow(
-                            openRow === student._id ? null : student._id
-                          )
-                        }
-                      >
-                        Chi tiết
-                        {openRow === student._id ? (
-                          <FiChevronUp size={18} />
-                        ) : (
-                          <FiChevronDown size={18} />
-                        )}
-                      </button>
-                    ) : (
-                      <span className="text-gray-400">—</span>
-                    )}
-                  </td>
-                </tr>
-
-                {openRow === student._id && (
-                  <tr className="bg-gray-50 animate-fadeIn">
-                    <td colSpan="4" className="p-6">
-                      <div className="border border-gray-200 rounded-lg bg-white shadow-sm p-4">
-                        <h4 className="font-semibold text-gray-800 mb-3">
-                          Các lần làm bài
-                        </h4>
-
-                        <ul className="space-y-2">
-                          {attempts.map((a) => (
-                            <li
-                              key={a._id}
-                              className="p-3 border rounded-lg bg-gray-50 hover:bg-gray-100 transition"
-                            >
-                              <div className="flex justify-between">
-                                <span className="font-medium text-gray-700">
-                                  Điểm:
-                                </span>
-                                <span className="font-semibold">{a.score}</span>
-                              </div>
-                              <div className="text-sm text-gray-500 mt-1">
-                                {new Date(a.createdAt).toLocaleString()}
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                        >
+                          Chi tiết
+                          {openRow === student._id ? (
+                            <FiChevronUp size={18} />
+                          ) : (
+                            <FiChevronDown size={18} />
+                          )}
+                        </button>
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
                     </td>
                   </tr>
-                )}
-              </React.Fragment>
-            ))}
+
+                  {openRow === student._id && (
+                    <tr className="bg-gray-50 animate-fadeIn">
+                      <td colSpan="4" className="p-6">
+                        <div className="border border-gray-200 rounded-lg bg-white shadow-sm p-4">
+                          <h4 className="font-semibold text-gray-800 mb-3">
+                            Các lần làm bài
+                          </h4>
+
+                          <ul className="space-y-2">
+                            {attempts.map((a) => (
+                              <li
+                                key={a._id}
+                                className="p-3 border rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                              >
+                                <div className="flex justify-between">
+                                  <span className="font-medium text-gray-700">
+                                    Điểm:
+                                  </span>
+                                  <span className="font-semibold">
+                                    {a.score}
+                                  </span>
+                                </div>
+                                <div className="text-sm text-gray-500 mt-1">
+                                  {new Date(a.createdAt).toLocaleString()}
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))
+            )}
           </tbody>
         </table>
       </div>

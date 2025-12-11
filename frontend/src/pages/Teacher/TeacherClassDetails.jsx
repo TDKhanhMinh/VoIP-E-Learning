@@ -22,6 +22,9 @@ import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/UI/Pagination";
 import { formatSchedule } from "../../utils/formatSchedule";
 import ClassNavigation from "../../components/UI/ClassNavigation";
+import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
+import HeaderSkeleton from "./../../components/SkeletonLoading/HeaderSkeleton";
+
 export default function TeacherClassDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -56,16 +59,20 @@ export default function TeacherClassDetails() {
     setIsLoading(true);
     try {
       const classInfo = await classService.getClassById(id);
-      console.info("fetching class details:", classInfo);
-      setTeacher(await userService.getUserById(classInfo.teacher));
-      setCourse(await courseService.getCourseById(classInfo.course));
-      setSemester(await semesterService.getSemesterById(classInfo.semester));
-      console.log(
-        "Student of class:",
-        await enrollmentService.getAllEnrollments(id)
-      );
-      setStudents(await enrollmentService.getAllEnrollments(id));
       setClassData(classInfo);
+
+      const [teacherData, courseData, semesterData, enrollmentsData] =
+        await Promise.all([
+          userService.getUserById(classInfo.teacher),
+          courseService.getCourseById(classInfo.course),
+          semesterService.getSemesterById(classInfo.semester),
+          enrollmentService.getAllEnrollments(id),
+        ]);
+
+      setTeacher(teacherData);
+      setCourse(courseData);
+      setSemester(semesterData);
+      setStudents(enrollmentsData);
     } catch (error) {
       console.error("Error fetching class details:", error);
       toast.error("Không thể tải thông tin lớp học");
@@ -74,12 +81,43 @@ export default function TeacherClassDetails() {
     }
   };
 
+  const InfoCardSkeleton = () => (
+    <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 animate-pulse">
+      <div className="h-16 bg-gray-200 w-full"></div>
+      <div className="p-6 space-y-4">
+        <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+        <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+          <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const StatsCardSkeleton = () => (
+    <div className=" rounded-2xl shadow-lg p-6 h-64 animate-pulse bg-gray-200">
+      <div className="flex justify-between mb-4">
+        <div className="h-6 bg-gray-300 rounded w-1/3"></div>
+        <div className="h-8 w-8 bg-gray-300 rounded-full"></div>
+      </div>
+      <div className="space-y-4">
+        <div className="h-20 bg-gray-300 rounded-xl w-full"></div>
+        <div className="h-20 bg-gray-300 rounded-xl w-full"></div>
+      </div>
+    </div>
+  );
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Đang tải dữ liệu...</p>
+      <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto">
+          <HeaderSkeleton />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <InfoCardSkeleton />
+            <StatsCardSkeleton />
+          </div>
+          <TableSkeleton />
         </div>
       </div>
     );
@@ -199,6 +237,7 @@ export default function TeacherClassDetails() {
         </div>
 
         <ClassNavigation id={id} />
+
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           <div className="bg-gray-100 px-6 py-4 border-b">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

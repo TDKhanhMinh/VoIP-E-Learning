@@ -11,13 +11,14 @@ import {
 } from "react-icons/fa";
 import Button from "../../components/UI/Button";
 import { formatSchedule } from "./../../utils/formatSchedule";
+import SkeletonCard from './../../components/SkeletonLoading/SkeletonCard';
 
 export default function ManageNotifications() {
   const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");
   const [teacherClasses, setTeacherClasses] = useState([]);
   const [semesters, setSemesters] = useState([]);
   const [selectedSemester, setSelectedSemester] = useState("all");
-  const [isLoading, setIsLoading] = useState(true); // Thêm state loading
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchAllClasses = async () => {
@@ -80,20 +81,9 @@ export default function ManageNotifications() {
         </div>
 
         {isLoading ? (
-          /* Skeleton Loader Implementation */
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-64 animate-pulse flex flex-col justify-between"
-              >
-                <div>
-                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-                </div>
-                <div className="h-10 bg-gray-200 rounded-xl w-full"></div>
-              </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <SkeletonCard key={item} />
             ))}
           </div>
         ) : filteredClasses.length > 0 ? (

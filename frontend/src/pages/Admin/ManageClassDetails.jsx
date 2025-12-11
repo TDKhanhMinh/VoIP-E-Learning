@@ -22,6 +22,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import ConfirmDialog from "../../components/UI/ConfirmDialog";
 import Pagination from "../../components/UI/Pagination";
 import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
+import HeaderSkeleton from './../../components/SkeletonLoading/HeaderSkeleton';
 
 export default function ClassDetail() {
   const { id } = useParams();
@@ -119,15 +120,7 @@ export default function ClassDetail() {
     }
   };
 
-  const HeaderSkeleton = () => (
-    <div className="mb-6 animate-pulse">
-      <div className="h-6 bg-gray-200 rounded w-24 mb-4"></div>
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 bg-gray-200 rounded-xl"></div>
-        <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-      </div>
-    </div>
-  );
+
 
   const InfoCardSkeleton = () => (
     <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 animate-pulse">

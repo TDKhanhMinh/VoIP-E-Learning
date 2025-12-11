@@ -53,6 +53,7 @@ export default function Schedule() {
 
   const fetchSemesters = async () => {
     try {
+      setIsLoading(true);
       const data = await semesterService.getAllSemesters();
       setSemesters(data);
       if (data.length > 0) {
@@ -61,6 +62,8 @@ export default function Schedule() {
     } catch (err) {
       console.error(err);
       toast.error("Lỗi tải danh sách học kỳ");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -70,6 +73,7 @@ export default function Schedule() {
       const classes = await scheduleService.getScheduleBySemester(
         selectedSemester
       );
+      console.log("Schedule ", classes);
 
       if (!classes || classes.length === 0) {
         setEvents([]);
@@ -77,10 +81,11 @@ export default function Schedule() {
       }
 
       let allEvents = [];
-      classes.forEach((cls) => {
-        const eventsForClass = generateScheduleWithMidTerm(cls);
+      for (const cls of classes) {
+        const eventsForClass = await generateScheduleWithMidTerm(cls);
         allEvents.push(...eventsForClass);
-      });
+      }
+      console.log("event", allEvents);
 
       setEvents(allEvents);
     } catch (err) {
@@ -171,28 +176,28 @@ export default function Schedule() {
             events={events}
             eventClick={handleEventClick}
             eventContent={(arg) => {
-              const isAbsent = arg.event.extendedProps.isAbsent;
-              const isTheory = arg.event.extendedProps.type === "theory";
+              const props = arg.event.extendedProps || {};
+              const isAbsent = props.isAbsent || false;
+              const isTheory = props.type === "theory";
+
               const bgColor = isTheory ? "bg-blue-50" : "bg-purple-50";
               const textColor = isTheory ? "text-blue-700" : "text-purple-700";
 
               return {
-                html: `<div class="${bgColor} ${textColor} w-full h-full p-1 flex flex-col justify-center text-center overflow-hidden">
-                  ${
-                    isAbsent
-                      ? '<div class="bg-red-500 text-white text-[10px] font-bold px-1 rounded mb-1 inline-block mx-auto">GV Báo Vắng</div>'
-                      : ""
-                  }
-                  <div class="font-bold text-xs truncate leading-tight">${
-                    arg.event.title
-                  }</div>
-                  <div class="text-[10px] opacity-80 mt-1">${
-                    arg.event.extendedProps.className
-                  }</div>
-                  <div class="text-[10px] font-semibold">${
-                    arg.event.extendedProps.room
-                  }</div>
-                </div>`,
+                html: `
+      <div class="${bgColor} ${textColor} w-full h-full p-1 flex flex-col justify-center text-center overflow-hidden">
+        ${
+          isAbsent
+            ? '<div class="bg-red-500 text-white text-[10px] font-bold px-1 rounded mb-1 inline-block mx-auto">GV Báo Vắng</div>'
+            : ""
+        }
+        <div class="font-bold text-xs truncate leading-tight">${
+          arg.event.title
+        }</div>
+        <div class="text-[10px] opacity-80 mt-1">${props.className || ""}</div>
+        <div class="text-[10px] font-semibold">Phòng ${props.room || ""}</div>
+      </div>
+    `,
               };
             }}
             firstDay={1}

@@ -141,7 +141,7 @@ export default function Login() {
               >
                 {isLoading ? (
                   <>
-                    <FaSpinner className="animate-spin" /> Processing...
+                    <FaSpinner className="animate-spin" /> Logging in...
                   </>
                 ) : (
                   "Sign In"

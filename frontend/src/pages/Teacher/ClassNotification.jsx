@@ -8,7 +8,6 @@ import {
   FaArrowLeft,
   FaClock,
   FaUser,
-  FaExclamationCircle,
   FaCheckCircle,
   FaInfoCircle,
   FaDownload,
@@ -18,6 +17,8 @@ import { classService } from "../../services/classService";
 import { announcementService } from "./../../services/announcementService";
 import NotificationModal from "./../../components/Modals/NotificationModal";
 import ConfirmDialog from "./../../components/UI/ConfirmDialog";
+import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
+import HeaderSkeleton from './../../components/SkeletonLoading/HeaderSkeleton';
 
 export default function ClassNotification() {
   const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");
@@ -135,12 +136,39 @@ export default function ClassNotification() {
     older: notifications?.filter((n) => !isRecent(n.createdAt)).length || 0,
   };
 
+
+
+  const ListSkeleton = () => (
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden animate-pulse">
+      <div className="p-4 border-b border-gray-100 flex gap-2">
+        <div className="h-8 bg-gray-200 rounded w-24"></div>
+        <div className="h-8 bg-gray-200 rounded w-24"></div>
+        <div className="h-8 bg-gray-200 rounded w-24"></div>
+      </div>
+      <div className="divide-y divide-gray-100">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="p-6">
+            <div className="flex gap-4">
+              <div className="w-12 h-12 bg-gray-200 rounded-xl"></div>
+              <div className="flex-1 space-y-3">
+                <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-full"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Đang tải dữ liệu...</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <HeaderSkeleton />
+          <StatsSkeleton />
+          <ListSkeleton />
         </div>
       </div>
     );

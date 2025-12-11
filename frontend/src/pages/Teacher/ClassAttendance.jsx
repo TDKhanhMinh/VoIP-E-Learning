@@ -5,7 +5,9 @@ import formatDate from "./../../utils/formatDate";
 import { enrollmentService } from "./../../services/enrollmentService";
 import { toast } from "react-toastify";
 import { attendanceService } from "../../services/attendanceService";
-import formatDateTime from './../../utils/formatDateTime';
+import formatDateTime from "./../../utils/formatDateTime";
+import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
+import HeaderSkeleton from "./../../components/SkeletonLoading/HeaderSkeleton";
 
 export default function ClassAttendance() {
   const navigate = useNavigate();
@@ -14,9 +16,11 @@ export default function ClassAttendance() {
   const [showSaved, setShowSaved] = useState(false);
   const [savedAttendances, setSavedAttendances] = useState([]);
   const [filteredAttendances, setFilteredAttendances] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchStudents = async () => {
+      setIsLoading(true);
       try {
         const result = await enrollmentService.getAllEnrollments(id);
         const formatted = result.map((item) => ({
@@ -26,6 +30,9 @@ export default function ClassAttendance() {
         setStudents(formatted);
       } catch (error) {
         console.log("Fetching students error", error);
+        toast.error("Không thể tải danh sách sinh viên");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchStudents();
@@ -33,9 +40,7 @@ export default function ClassAttendance() {
 
   const handleStatusChange = (id, newStatus) => {
     setStudents((prev) =>
-      prev.map((s) =>
-        s.student._id === id ? { ...s, status: newStatus } : s
-      )
+      prev.map((s) => (s.student._id === id ? { ...s, status: newStatus } : s))
     );
   };
 
@@ -71,16 +76,24 @@ export default function ClassAttendance() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="h-6 w-24 bg-gray-200 rounded animate-pulse mb-4"></div>
+        <HeaderSkeleton />
+        <TableSkeleton />
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 space-y-6">
-
       <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
       >
         <FaArrowLeft /> Quay lại
       </button>
-
 
       <div className="flex justify-between items-center">
         <div>
@@ -103,20 +116,18 @@ export default function ClassAttendance() {
             <FaListUl /> Xem điểm danh đã lưu
           </button>
 
-          {
-            savedAttendances.length == 0 &&
+          {savedAttendances.length === 0 && (
             <button
               onClick={handleSaveAttendance}
               className="bg-green-600 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 shadow-md transition-all duration-200"
             >
               Lưu điểm danh
             </button>
-          }
+          )}
         </div>
       </div>
 
-
-      {savedAttendances.length === 0 &&
+      {savedAttendances.length === 0 && (
         <div className="bg-white shadow-lg rounded-xl p-5 border border-gray-100 overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
@@ -179,8 +190,8 @@ export default function ClassAttendance() {
               ))}
             </tbody>
           </table>
-        </div>}
-
+        </div>
+      )}
 
       {showSaved && (
         <div className="bg-white shadow-xl rounded-xl p-6 border border-gray-200 mt-6">
@@ -218,11 +229,13 @@ export default function ClassAttendance() {
               className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
               <option value="all">Tất cả</option>
-              {[...new Set(savedAttendances.map((a) => a.lesson))].map((lesson) => (
-                <option key={lesson} value={lesson}>
-                  Buổi {lesson}
-                </option>
-              ))}
+              {[...new Set(savedAttendances.map((a) => a.lesson))].map(
+                (lesson) => (
+                  <option key={lesson} value={lesson}>
+                    Buổi {lesson}
+                  </option>
+                )
+              )}
             </select>
           </div>
 
@@ -241,18 +254,19 @@ export default function ClassAttendance() {
                   <td className="p-3 text-gray-700">Buổi {a.lesson}</td>
                   <td className="p-3">{a.student?.full_name}</td>
                   <td
-                    className={`p-3 font-medium ${a.status === "present"
-                      ? "text-green-600"
-                      : a.status === "late"
+                    className={`p-3 font-medium ${
+                      a.status === "present"
+                        ? "text-green-600"
+                        : a.status === "late"
                         ? "text-yellow-600"
                         : "text-red-600"
-                      }`}
+                    }`}
                   >
                     {a.status === "present"
                       ? "Có mặt"
                       : a.status === "late"
-                        ? "Trễ"
-                        : "Vắng"}
+                      ? "Trễ"
+                      : "Vắng"}
                   </td>
                   <td className="p-3 text-gray-500">
                     {a.attend_at ? formatDateTime(new Date(a.attend_at)) : "—"}

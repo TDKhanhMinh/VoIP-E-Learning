@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { testService } from "../../services/testService";
 import { toast } from "react-toastify";
 import QuestionCard from "../../components/Tests/QuestionCard";
-import AddQuestionModal from './../../components/Modals/AddQuestionModal';
+import AddQuestionModal from "./../../components/Modals/AddQuestionModal";
 
 const TestQuestion = () => {
   const [test, setTest] = useState(null);
@@ -149,6 +149,7 @@ const TestQuestion = () => {
 
   useEffect(() => {
     const fetchTest = async () => {
+      setLoading(true); 
       try {
         const data = await testService.getTestById(testId);
         setTest(data);
@@ -162,40 +163,72 @@ const TestQuestion = () => {
     fetchTest();
   }, [testId]);
 
+  const QuestionSkeleton = () => (
+    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 animate-pulse relative">
+      <div className="flex justify-between items-center mb-4">
+        <div className="h-6 bg-gray-200 rounded w-32"></div>
+        <div className="h-8 w-8 bg-gray-200 rounded"></div>
+      </div>
+
+      <div className="h-24 bg-gray-100 rounded-lg w-full mb-6 border border-gray-200"></div>
+
+      <div className="space-y-3">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="flex items-center gap-3">
+            <div className="h-5 w-5 bg-gray-200 rounded-full flex-shrink-0"></div>
+            <div className="h-10 bg-gray-50 rounded-lg w-full border border-gray-100"></div>
+            <div className="h-8 w-8 bg-gray-200 rounded flex-shrink-0"></div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 h-8 w-32 bg-gray-200 rounded"></div>
+    </div>
+  );
+
   return (
-    <div className="max-h-[calc(100vh-100px)] overflow-y-auto p-10">
+    <div className="max-h-[calc(100vh-100px)] overflow-y-auto p-10 bg-gray-50/50">
+      <AddQuestionModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onImport={handleFileUpload}
+      />
+
+      <div className="w-full flex flex-row justify-end space-x-3 mb-6 sticky top-0 z-10 py-2">
+        <button
+          onClick={() => setShowModal(true)}
+          disabled={loading}
+          className="px-4 py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Import file
+        </button>
+        <button
+          onClick={handleAddQuestion}
+          disabled={loading}
+          className="px-4 py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Thêm câu hỏi
+        </button>
+
+        <button
+          onClick={handleSave}
+          disabled={loading}
+          className="px-6 py-2.5 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Lưu thay đổi
+        </button>
+      </div>
+
       {loading ? (
-        <p>Loading...</p>
+        <div className="space-y-6">
+          <QuestionSkeleton />
+          <QuestionSkeleton />
+          <QuestionSkeleton />
+        </div>
       ) : (
         <>
-          <AddQuestionModal
-            isOpen={showModal}
-            onClose={() => setShowModal(false)}
-            onImport={handleFileUpload}
-          />
-          <div className="w-full flex flex-row justify-end space-x-3">
-            <button
-              onClick={() => setShowModal(true)}
-              className="p-3 rounded-md bg-blue-400 text-white font-bold hover:bg-blue-500 transition-all mb-5"
-            >
-              Import file
-            </button>
-            <button
-              onClick={handleAddQuestion}
-              className="p-3 rounded-md bg-blue-400 text-white font-bold hover:bg-blue-500 transition-all mb-5"
-            >
-              Thêm câu hỏi
-            </button>
-
-            <button
-              onClick={handleSave}
-              className="py-3 px-5 rounded-md bg-green-500 text-white font-bold hover:bg-green-600 transition-all mb-5"
-            >
-              Lưu
-            </button>
-          </div>
           {test && test.questions.length > 0 ? (
-            <div className="space-y-5">
+            <div className="space-y-6">
               {test.questions.map((q) => (
                 <QuestionCard
                   key={getQuestionId(q)}
@@ -210,11 +243,11 @@ const TestQuestion = () => {
               ))}
             </div>
           ) : (
-            <div className="w-full flex flex-col justify-center items-center p-12 rounded-2xl border border-dashed border-gray-300 bg-white hover:border-blue-400 transition-all">
-              <div className="bg-blue-50 p-4 rounded-full mb-4">
+            <div className="w-full flex flex-col justify-center items-center p-16 rounded-2xl border-2 border-dashed border-gray-300 bg-white hover:border-blue-400 transition-all">
+              <div className="bg-blue-50 p-6 rounded-full mb-6">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-10 w-10 text-blue-500"
+                  className="h-12 w-12 text-blue-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -232,16 +265,16 @@ const TestQuestion = () => {
                 Bạn chưa thêm câu hỏi nào
               </h3>
 
-              <p className="text-gray-500 max-w-md text-center">
+              <p className="text-gray-500 max-w-md text-center mb-6">
                 Tạo câu hỏi đầu tiên để xây dựng bài test. Bạn có thể nhập thủ
                 công hoặc sử dụng chức năng đọc file Word.
               </p>
 
               <button
                 onClick={handleAddQuestion}
-                className="mt-6 px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-all shadow-md"
+                className="px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
               >
-                Thêm câu hỏi
+                Thêm câu hỏi ngay
               </button>
             </div>
           )}

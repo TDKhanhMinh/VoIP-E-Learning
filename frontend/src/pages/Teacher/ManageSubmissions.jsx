@@ -5,6 +5,9 @@ import { assignmentService } from "../../services/assignmentService";
 import formatDateTime from "../../utils/formatDateTime";
 import GradeModal from "../../components/Modals/GradeModal";
 import { toast } from "react-toastify";
+import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
+import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
+import HeaderSkeleton from './../../components/SkeletonLoading/HeaderSkeleton';
 import {
   FaArrowLeft,
   FaFileAlt,
@@ -37,13 +40,9 @@ export default function ManageSubmissions() {
   const handleSaveGrade = async (data) => {
     try {
       console.log("Dữ liệu chấm điểm:", data);
-      const grade = await submissionService.updateSubmission(
-        selected._id,
-        data
-      );
+      await submissionService.updateSubmission(selected._id, data);
       fetchSubmission();
       toast.success("Chấm điểm thành công");
-      console.log("grade", grade);
       setIsOpen(false);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Lỗi khi chấm điểm");
@@ -64,8 +63,6 @@ export default function ManageSubmissions() {
 
       setSubmissions(submissionsData);
       setAssignment(assignmentData);
-      console.log("Submissions", submissionsData);
-      console.log("Assignment", assignmentData);
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Không thể tải dữ liệu bài nộp");
@@ -108,10 +105,11 @@ export default function ManageSubmissions() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Đang tải dữ liệu...</p>
+      <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <HeaderSkeleton />
+          <StatsSkeleton />
+          <TableSkeleton />
         </div>
       </div>
     );

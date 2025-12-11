@@ -32,7 +32,7 @@ function formatDateLocal(date) {
   return format(date, "yyyy-MM-dd");
 }
 
-export function generateScheduleWithMidTerm(classData) {
+export async function generateScheduleWithMidTerm(classData) {
   const { schedule, semester, theoryWeeks, practiceWeeks, absent } = classData;
   const { start_date, end_date, mid_term } = semester;
 

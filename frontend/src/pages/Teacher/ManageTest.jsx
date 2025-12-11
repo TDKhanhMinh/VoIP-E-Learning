@@ -9,7 +9,8 @@ import {
   FaPenNib,
 } from "react-icons/fa";
 import Button from "../../components/UI/Button";
-import { formatSchedule } from './../../utils/formatSchedule';
+import { formatSchedule } from "./../../utils/formatSchedule";
+import SkeletonCard from "./../../components/SkeletonLoading/SkeletonCard";
 
 export default function ManageTests() {
   const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");
@@ -78,17 +79,9 @@ export default function ManageTests() {
         </div>
 
         {isLoading ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-64 animate-pulse flex flex-col"
-              >
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/3 mb-auto"></div>
-                <div className="h-10 bg-gray-200 rounded-xl w-full"></div>
-              </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <SkeletonCard key={item} />
             ))}
           </div>
         ) : filteredClasses.length > 0 ? (
@@ -161,7 +154,6 @@ export default function ManageTests() {
             })}
           </div>
         ) : (
-          /* Empty State */
           <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-dashed border-gray-300">
             <div className="bg-blue-50 p-6 rounded-full mb-4">
               <FaFileSignature className="text-4xl text-blue-300" />
