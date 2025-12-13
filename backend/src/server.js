@@ -48,6 +48,7 @@ const allowedOrigins = [
   "https://voip-e-learning-1.onrender.com",
   "https://meet.livekit.io",
   "http://localhost:5000",
+  "https://lms-api-ajf4.onrender.com",
 ];
 
 app.use(
@@ -63,7 +64,7 @@ app.use(
     credentials: true,
   })
 );
-app.use('/api/webhook', webHookRoutes);
+app.use("/api/webhook", webHookRoutes);
 
 app.use(bodyParser.json({ limit: "2mb" }));
 app.use(express.json());
@@ -98,7 +99,7 @@ app.use("/api/comment", commentRoutes);
 app.use("/api/recommend", recommendRoutes);
 app.use("/api/topic", topicRoutes);
 app.use("/api/chat", chatRoutes);
-app.use('/api/recording', recordingRoutes);
+app.use("/api/recording", recordingRoutes);
 
 initOnlineTestCron();
 submitTestSession();
