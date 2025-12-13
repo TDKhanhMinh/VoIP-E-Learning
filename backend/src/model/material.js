@@ -18,5 +18,7 @@ const materialSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
-const Material = mongoose.model("Meterial", materialSchema);
+materialSchema.index({ class: 1, createdAt: -1 });
+
+const Material = mongoose.model("Material", materialSchema);
 export default Material;

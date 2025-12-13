@@ -18,10 +18,8 @@ import ExamScreen from "../pages/Student/ExamScreen";
 import Assignment from "../pages/Student/Assignment";
 import ManageTeacherChats from "../pages/Student/ManageTeacherChats";
 import AdminDashboard from "../pages/Admin/AdminDashboard";
-import ManageClasses from "./../pages/Admin/ManageClasses";
 import ManageCourses from "./../pages/Admin/ManageCourses";
 import ManageSemester from "./../pages/Admin/ManageSemesters";
-import ManageUsers from "./../pages/Admin/ManageUsers";
 import ManageChats from "../pages/Admin/ManageChats";
 import ClassDetail from "../pages/Admin/ManageClassDetails";
 import Forum from "../components/Forum/Forum";
@@ -50,6 +48,10 @@ import Schedule from "../pages/Student/Schedule";
 import Recommend from "../pages/Student/Recommend";
 import ManageRecords from "./../pages/Teacher/ManageRecords";
 import ClassRecords from "./../pages/Teacher/ClassRecords";
+import { lazy } from "react";
+
+const ManageClasses = lazy(() => import("./../pages/Admin/ManageClasses"));
+const ManageUsers = lazy(() => import("./../pages/Admin/ManageUsers"));
 
 const publicRoutes = createBrowserRouter([
   {

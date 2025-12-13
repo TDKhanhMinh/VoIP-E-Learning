@@ -21,5 +21,7 @@ const postSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+postSchema.index({ class_id: 1, topic_id: 1 });
+postSchema.index({ topic_id: 1, createdAt: -1 });
+postSchema.index({ created_by: 1 });
 export default mongoose.model("Post", postSchema);

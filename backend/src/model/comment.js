@@ -6,5 +6,6 @@ const commentSchema = new mongoose.Schema({
     author_name: String,
     content: String,
 }, { timestamps: true });
+commentSchema.index({ post_id: 1, createdAt: -1 });
 
 export default mongoose.model("Comment", commentSchema);

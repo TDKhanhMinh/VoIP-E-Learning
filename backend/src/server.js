@@ -1,4 +1,4 @@
-// import './service/aiWorkerService.js';
+import compression from "compression";
 import express from "express";
 import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler.js";
@@ -70,7 +70,17 @@ app.use(bodyParser.json({ limit: "2mb" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
-
+app.use(
+  compression({
+    filter: (req, res) => {
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      return compression.filter(req, res);
+    },
+    level: 6,
+  })
+);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/semester", semesterRoutes);
@@ -113,6 +123,14 @@ export const io = new Server(server, {
     origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
+  },
+  maxHttpBufferSize: 1e6,
+  pingTimeout: 60000,
+  pingInterval: 25000,
+  transports: ["websocket", "polling"],
+  allowUpgrades: true,
+  perMessageDeflate: {
+    threshold: 1024,
   },
 });
 

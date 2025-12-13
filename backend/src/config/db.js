@@ -6,7 +6,14 @@ dotenv.config();
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI, {
+      maxPoolSize: 10,
+      minPoolSize: 5,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      family: 4,
+      autoIndex: process.env.NODE_ENV !== "production",
+    });
     await initAdmin();
     console.log("MongoDB connected...", mongoose.connection.name);
   } catch (err) {
