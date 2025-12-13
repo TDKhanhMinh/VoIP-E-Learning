@@ -10,7 +10,7 @@ export const getAll = async () => {
 export const findById = async (id) => {
   const material = await Material.findById(id);
   if (!material) {
-    const error = new Error("Announcement with id ${id} not found");
+    const error = new Error(`Announcement with id ${id} not found`);
     error.statusCode = 404;
     throw error;
   }
@@ -36,7 +36,6 @@ export const createMaterial = async (data) => {
     const error = new Error("Invalid class or user id");
     error.statusCode = 404;
     throw error;
-    q;
   }
 
   const material = await Material.create({ ...data });

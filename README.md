@@ -20,6 +20,7 @@ A modern, full-featured Learning Management System (LMS) with integrated VoIP co
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
+- [Testing](#testing)
 
 ## 🎯 Overview
 
@@ -42,6 +43,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 ### 📚 Educational Features
 
 #### Class & Course Management
+
 - **Semester-based Organization**: Classes organized by academic terms (HK1-2024/2025, HK2-2024/2025)
 - **Multi-class Enrollment**: Students can enroll in multiple classes per semester
 - **Course Materials Library**: Google Drive integration for uploading and sharing resources
@@ -49,6 +51,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - **Attendance Tracking**: Digital check-in system with session-based attendance
 
 #### Online Testing System
+
 - **Test Creation**: Flexible configuration with title, description, time limits, and attempt limits
 - **Question Bank**: Multiple-choice questions with import from .docx files using Mammoth.js
 - **Auto-Grading**: Immediate results calculation with detailed feedback
@@ -58,6 +61,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - **Multiple Attempts**: Configure maximum attempts per student with best score tracking
 
 #### Assignment Management
+
 - **Create Assignments**: With deadlines, descriptions, and file attachments
 - **File Upload**: Via Google Drive API with automatic permission management
 - **Submission Tracking**: Monitor submission status with late detection
@@ -65,6 +69,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - **File Validation**: Type and size restrictions for submissions
 
 #### AI-Powered Document Search
+
 - **Vector Embeddings**: Documents embedded using Google Generative AI (Gemini)
 - **Semantic Search**: Finds relevant documents based on meaning, not just keywords
 - **Multi-field Embeddings**: Separate embeddings for title, description, tags, and level
@@ -74,6 +79,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 ### 💬 Communication Features
 
 #### VoIP Calling (SIP.js Integration)
+
 - **Direct Calling**: Student-to-teacher voice calls via WebRTC
 - **Session Management**: Proper handling of incoming, outgoing, and active calls
 - **Call States**: Real-time state tracking (idle, calling, in-call, terminated)
@@ -86,6 +92,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
   ```
 
 #### Video Conferencing (LiveKit)
+
 - **Virtual Classrooms**: Teacher-initiated live sessions with unique room IDs
 - **Screen Sharing**: Built-in presentation capabilities
 - **Interactive Whiteboard**: Tldraw-based collaborative drawing tool
@@ -93,13 +100,14 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - **Participant Management**: Real-time tracking with automatic cleanup
 - **Auto-reconnect**: Resilient connection handling with token refresh
 - **Session Recording**: Recording capabilities with AI-powered transcription and summarization
-- **Meeting Intelligence**: 
+- **Meeting Intelligence**:
   - Automatic transcription of recorded sessions
   - AI-generated summaries with key points
   - Smart title generation based on content
   - Markdown-formatted meeting notes
 
 #### Real-time Chat (Socket.IO)
+
 - **Personal Chat**: Direct messaging with admin and teachers
 - **Conversation Management**: Persistent chat history with MongoDB
 - **Socket.IO Authentication**: JWT-based secure connections on `/chat` namespace
@@ -108,6 +116,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - **Message Delivery**: Optimistic updates with server confirmation
 
 #### Discussion Forums
+
 - **Topic-based Discussions**: Organize conversations by subject areas
 - **Nested Comments**: Reply to posts and create threaded discussions
 - **Real-time Updates**: Live comment notifications via Socket.IO
@@ -118,6 +127,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 ### 👥 User Roles & Permissions
 
 #### Admin
+
 - Complete system management dashboard
 - User CRUD operations (students, teachers, admins)
 - Course and class creation with semester assignment
@@ -129,6 +139,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - Topic management for discussion forums
 
 #### Teacher
+
 - Assigned class management with detailed overview
 - Assignment creation with Google Drive integration
 - Online test design with question bank import
@@ -143,6 +154,7 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - Real-time class statistics
 
 #### Student
+
 - View enrolled classes per semester
 - Submit assignments before deadlines with file uploads
 - Take scheduled online tests with timer
@@ -160,10 +172,12 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 ### Frontend
 
 **Core Framework**
+
 - React 18.3.1 with Vite 5.4.2
 - React Router DOM 6.28.0
 
 **UI & Styling**
+
 - TailwindCSS 3.4.17 (utility-first CSS)
 - Framer Motion 11.15.0 (animations)
 - Headless UI 2.2.0 (accessible components)
@@ -171,53 +185,64 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - Lucide React 0.469.0
 
 **Communication & Real-time**
+
 - Socket.IO Client 4.8.1 (chat & discussions)
 - SIP.js 0.21.2 (VoIP calling)
 - @livekit/components-react 2.7.3 (video conferencing)
 - @livekit/components-styles 1.1.4
 
 **Forms & Validation**
+
 - React Hook Form 7.54.2
 - Zod 3.24.1 (schema validation)
 
 **Media & Files**
+
 - React Dropzone 14.3.5 (drag-and-drop uploads)
 - React Quill 2.0.0 (rich text editor)
 - Axios 1.7.9 (HTTP client)
 
 **UI Components**
+
 - React Toastify 11.0.3 (notifications)
 - Tippy.js 6.3.7 (tooltips)
 - Clsx 2.1.1 (conditional classes)
 
 **Whiteboard**
+
 - @tldraw/tldraw 2.4.0 (collaborative drawing)
 
 ### Backend
 
 **Runtime & Framework**
+
 - Node.js 20.x
 - Express 4.21.2
 
 **Database**
+
 - MongoDB 6.12.0
 - Mongoose 8.9.3 (ODM)
 
 **Authentication & Security**
+
 - jsonwebtoken 9.0.2 (JWT auth)
 - bcrypt 5.1.1 (password hashing)
 - express-validator 7.2.1 (input validation)
 - CORS 2.8.5 (cross-origin requests)
 
 **Real-time Communication**
+
 - Socket.IO 4.8.1 (bidirectional events)
 - LiveKit Server SDK 2.10.1 (video rooms)
 
 **AI & Machine Learning**
+
 - @google/generative-ai 0.21.0 (Gemini AI for embeddings and summarization)
 - Vector Similarity Calculations (custom implementation)
 
 **File Storage & Processing**
+
 - Multer 1.4.5-lts.1 (file uploads)
 - googleapis 144.0.0 (Google Drive integration)
 - Cloudinary 2.6.0 (image storage)
@@ -225,14 +250,17 @@ VoIP E-Learning is a comprehensive educational platform that combines traditiona
 - fs-extra 11.2.0 (enhanced file operations)
 
 **Task Scheduling**
+
 - node-cron 3.0.3 (scheduled jobs)
 
 **Utilities**
+
 - Moment.js 2.30.1 (date/time)
 - Moment-timezone 0.5.46 (timezone handling)
 - Crypto (native, UUID generation)
 
 **Development**
+
 - Nodemon 3.1.9 (auto-restart)
 - ESLint (code quality)
 
@@ -360,12 +388,51 @@ VoIP E-Learning/
     │   │   ├── postService.js
     │   │   ├── testService.js
     │   │   ├── aiService.js           # Gemini AI integration
-    │   │   └── documentService.js
+    │   │   ├── documentService.js
+    │   │   ├── emailService.js        # Nodemailer email sending
+    │   │   ├── teachingScheduleService.js  # Schedule management with notifications
+    │   │   ├── scheduleService.js     # Semester-based schedule retrieval
+    │   │   ├── jobQueueService.js     # BullMQ queue configuration
+    │   │   ├── aiWorkerService.js     # Background AI processing worker
+    │   │   └── __tests__/             # Service unit tests
+    │   │       ├── userService.test.js
+    │   │       ├── testSessionService.test.js
+    │   │       ├── testAttemptService.test.js
+    │   │       ├── courseService.test.js
+    │   │       ├── commentService.test.js
+    │   │       ├── assignmentService.test.js
+    │   │       ├── driveService.test.js
+    │   │       ├── submissionService.test.js
+    │   │       ├── materialService.test.js
+    │   │       ├── classService.test.js
+    │   │       ├── attendanceService.test.js
+    │   │       ├── announcementService.test.js
+    │   │       ├── postService.test.js
+    │   │       ├── semesterService.test.js
+    │   │       ├── topicService.test.js
+    │   │       ├── documentService.test.js
+    │   │       ├── classStudentService.test.js
+    │   │       ├── testQuestionService.test.js
+    │   │       ├── roomService.test.js
+    │   │       ├── onlineTestService.test.js
+    │   │       ├── chatService.test.js
+    │   │       ├── EmbeddingService.test.js
+    │   │       ├── aiService.test.js
+    │   │       ├── emailService.test.js
+    │   │       ├── scheduleService.test.js
+    │   │       ├── teachingScheduleService.test.js
+    │   │       └── jobQueueService.test.js
     │   ├── sockets/
     │   │   ├── chatSocket.js          # Chat namespace
     │   │   └── discussionSocket.js    # Discussion events
     │   ├── utils/
-    │   │   └── VectorSimilarity.js    # Cosine similarity calculations
+    │   │   ├── VectorSimilarity.js    # Cosine similarity calculations
+    │   │   ├── token.js               # JWT utilities
+    │   │   ├── emailTemplete.js       # Email template generation
+    │   │   └── __tests__/             # Utils unit tests
+    │   │       ├── VectorSimilarity.test.js
+    │   │       ├── token.test.js
+    │   │       └── emailTemplete.test.js
     │   └── server.js                  # Express server
     ├── Dockerfile
     └── package.json
@@ -385,12 +452,14 @@ VoIP E-Learning/
 ### Backend Setup
 
 1. **Clone and navigate**
+
 ```bash
 git clone <repository-url>
 cd VoIP-E-Learning/backend
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
@@ -398,6 +467,7 @@ npm install
 3. **Environment Configuration**
 
 Create `.env` file:
+
 ```env
 # Server
 PORT=5000
@@ -431,6 +501,7 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 4. **Google Services Setup**
 
 **Google Drive API:**
+
 - Create project in [Google Cloud Console](https://console.cloud.google.com)
 - Enable Google Drive API
 - Create service account
@@ -439,11 +510,13 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 - Share Drive folder with service account email
 
 **Gemini AI:**
+
 - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
 - Create API key
 - Add to `.env` as `GEMINI_API_KEY`
 
 5. **Start server**
+
 ```bash
 npm run dev    # Development with nodemon
 npm start      # Production
@@ -454,11 +527,13 @@ Server runs on: `http://localhost:5000`
 ### Frontend Setup
 
 1. **Navigate to frontend**
+
 ```bash
 cd ../frontend
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
@@ -466,6 +541,7 @@ npm install
 3. **Environment Configuration**
 
 Create `.env` file:
+
 ```env
 VITE_API_URL=http://localhost:5000/api
 VITE_WEBSOCKET_URL=ws://localhost:5000
@@ -473,6 +549,7 @@ VITE_DOMAIN=voipelearning.shop
 ```
 
 4. **Start development server**
+
 ```bash
 npm run dev
 ```
@@ -485,27 +562,30 @@ Application runs on: `http://localhost:5173`
 
 ```javascript
 const iceServers = [
-    { urls: "stun:stun.l.google.com:19302" },
-    {
-        urls: [
-            "turn:webrtc.voipelearning.shop:3478?transport=udp",
-            "turn:webrtc.voipelearning.shop:3478?transport=tcp",
-            "turns:webrtc.voipelearning.shop:5349"
-        ],
-        username: "any",
-        credential: "31a2313d897a7ca91b21486dac0c3184f7e3a673cacbe465b57687668fd8af43"
-    }
+  { urls: "stun:stun.l.google.com:19302" },
+  {
+    urls: [
+      "turn:webrtc.voipelearning.shop:3478?transport=udp",
+      "turn:webrtc.voipelearning.shop:3478?transport=tcp",
+      "turns:webrtc.voipelearning.shop:5349",
+    ],
+    username: "any",
+    credential:
+      "31a2313d897a7ca91b21486dac0c3184f7e3a673cacbe465b57687668fd8af43",
+  },
 ];
 ```
 
 ### AI Configuration
 
 **Gemini Model**: `gemini-2.0-flash-exp`
+
 - Used for document embeddings (1536 dimensions)
 - Meeting transcription and summarization
 - Structured JSON output generation
 
 **Vector Similarity**:
+
 - Cosine similarity for document search
 - Weighted combination: 40% title, 30% description, 20% tags, 10% level
 - Threshold: 0.3 minimum similarity score
@@ -614,6 +694,7 @@ POST   /api/document/search              # AI-powered semantic search
 ```
 
 **Search Request Body:**
+
 ```json
 {
   "query": "machine learning algorithms",
@@ -626,6 +707,7 @@ POST   /api/document/search              # AI-powered semantic search
 ```
 
 **Search Response:**
+
 ```json
 {
   "success": true,
@@ -673,6 +755,7 @@ POST   /api/meeting/process              # Process recorded meeting
 ```
 
 **Process Request Body:**
+
 ```json
 {
   "fileUrl": "https://storage.url/recording.mp4",
@@ -681,6 +764,7 @@ POST   /api/meeting/process              # Process recorded meeting
 ```
 
 **Process Response:**
+
 ```json
 {
   "success": true,
@@ -721,29 +805,31 @@ POST   /api/topic                        # Create topic (admin)
 ### Chat Namespace (`/chat`)
 
 **Client → Server**
+
 ```javascript
 // Send message
-socket.emit('send_message', {
+socket.emit("send_message", {
   content: string,
   conversationId: string,
-  receiverId: string
+  receiverId: string,
 });
 ```
 
 **Server → Client**
+
 ```javascript
 // Receive incoming message
-socket.on('receive_message', (message) => {
+socket.on("receive_message", (message) => {
   // message: { _id, sender, content, conversationId, createdAt }
 });
 
 // Confirmation of sent message
-socket.on('message_sent', (finalMessage) => {
+socket.on("message_sent", (finalMessage) => {
   // finalMessage: complete message object from DB
 });
 
 // Error handling
-socket.on('error', (error) => {
+socket.on("error", (error) => {
   // error: { message: string }
 });
 ```
@@ -751,22 +837,24 @@ socket.on('error', (error) => {
 ### Discussion Namespace (default `/`)
 
 **Client → Server**
+
 ```javascript
 // Join discussion room
 socket.emit('join_discussion', { postId: string });
 
 // Post new comment
-socket.emit('new_comment', { 
-  postId: string, 
-  content: string, 
-  parentCommentId?: string 
+socket.emit('new_comment', {
+  postId: string,
+  content: string,
+  parentCommentId?: string
 });
 ```
 
 **Server → Client**
+
 ```javascript
 // New comment notification
-socket.on('comment_added', (comment) => {
+socket.on("comment_added", (comment) => {
   // comment: full comment object
 });
 ```
@@ -776,6 +864,7 @@ socket.on('comment_added', (comment) => {
 ### Key Collections
 
 **Users**
+
 ```javascript
 {
   email: String (unique, indexed),
@@ -791,6 +880,7 @@ socket.on('comment_added', (comment) => {
 ```
 
 **Classes**
+
 ```javascript
 {
   name: String,
@@ -808,6 +898,7 @@ socket.on('comment_added', (comment) => {
 ```
 
 **Documents** (AI-Searchable)
+
 ```javascript
 {
   title: String (indexed),
@@ -826,6 +917,7 @@ socket.on('comment_added', (comment) => {
 ```
 
 **OnlineTests**
+
 ```javascript
 {
   title: String,
@@ -842,6 +934,7 @@ socket.on('comment_added', (comment) => {
 ```
 
 **TestSessions**
+
 ```javascript
 {
   student: ObjectId (ref: User),
@@ -862,6 +955,7 @@ socket.on('comment_added', (comment) => {
 ```
 
 **Conversations**
+
 ```javascript
 {
   participants: [ObjectId] (ref: User),
@@ -873,6 +967,7 @@ socket.on('comment_added', (comment) => {
 ```
 
 **Messages**
+
 ```javascript
 {
   sender: ObjectId (ref: User),
@@ -884,6 +979,7 @@ socket.on('comment_added', (comment) => {
 ```
 
 **Posts** (Discussion Forum)
+
 ```javascript
 {
   title: String,
@@ -905,18 +1001,18 @@ socket.on('comment_added', (comment) => {
 1. **Login** at `/login` with student credentials
 2. **Dashboard** (`/home`) shows enrolled classes for current semester
 3. **View Classes**: Sidebar navigation with collapsible menu
-4. **Assignments**: 
+4. **Assignments**:
    - Navigate to class → Assignments tab
    - View deadlines and requirements
    - Submit via drag-and-drop interface
    - Check grades and teacher feedback
-5. **Online Tests**: 
+5. **Online Tests**:
    - Take tests during scheduled periods
    - Real-time timer with auto-save
    - Multiple attempts allowed (if configured)
    - Immediate results after submission
 6. **Course Materials**: Download from Google Drive links
-7. **Search Documents**: 
+7. **Search Documents**:
    - Use AI-powered search with natural language
    - Filter by tags and difficulty level
    - Get semantically similar documents
@@ -939,7 +1035,7 @@ socket.on('comment_added', (comment) => {
    - Post announcements
 4. **Content Creation**:
    - **Assignments**: Set deadlines, attach files, configure grading
-   - **Tests**: 
+   - **Tests**:
      - Add questions manually or import from .docx
      - Schedule activation times
      - Set time limits and attempts
@@ -1020,6 +1116,7 @@ ALLOWED_ORIGINS=https://yourdomain.com,https://api.yourdomain.com
 ### Docker Deployment
 
 1. **Backend Dockerfile** (already configured):
+
 ```dockerfile
 FROM node:20-alpine
 WORKDIR /app/backend
@@ -1030,6 +1127,7 @@ CMD ["npm", "start"]
 ```
 
 2. **Frontend Build**:
+
 ```bash
 cd frontend
 npm run build
@@ -1037,8 +1135,9 @@ npm run build
 ```
 
 3. **Docker Compose** (optional):
+
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   backend:
     build: ./backend
@@ -1049,12 +1148,12 @@ services:
       - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - mongodb
-  
+
   mongodb:
     image: mongo:6
     volumes:
       - mongo-data:/data/db
-  
+
   frontend:
     build: ./frontend
     ports:
@@ -1085,12 +1184,14 @@ volumes:
 ### VoIP Call Issues
 
 **Symptom**: Calls fail to connect
+
 - Check browser microphone permissions
 - Verify TURN server credentials
 - Test STUN/TURN with [WebRTC Troubleshooter](https://test.webrtc.org/)
 - Ensure firewall allows UDP ports 3478, 5349
 
 **Symptom**: No audio during call
+
 - Inspect browser console for media errors
 - Check `<audio>` element has `autoplay` attribute
 - Verify SIP.js session tracks are attached
@@ -1099,12 +1200,14 @@ volumes:
 ### Video Conference Issues
 
 **Symptom**: Black screen in conference
+
 - Grant camera/microphone permissions
 - Verify LiveKit URL format (wss://)
 - Check API key/secret in `.env`
 - Review LiveKit Cloud dashboard for errors
 
 **Symptom**: Whiteboard not loading
+
 - Ensure Tldraw CDN is accessible
 - Check browser console for CORS errors
 - Verify React version compatibility
@@ -1112,12 +1215,14 @@ volumes:
 ### AI Search Not Working
 
 **Symptom**: No search results
+
 - Verify `GEMINI_API_KEY` is valid
 - Check document has `embedding` field
 - Review similarity threshold (default 0.3)
 - Ensure MongoDB indexes are created
 
 **Symptom**: Slow embedding generation
+
 - Gemini API rate limits may apply
 - Consider caching embeddings
 - Use batch processing for bulk uploads
@@ -1145,21 +1250,81 @@ sudo systemctl restart mongod
 ### File Upload Failures
 
 **Google Drive**:
+
 - Check service account has `Editor` role on folder
 - Verify folder ID matches `PARENT_FOLDER_ID`
 - Review quota limits in Google Cloud Console
 
 **Cloudinary**:
+
 - Confirm API credentials are correct
 - Check upload preset allows unsigned uploads
 - Review file size limits
 
+## 🧪 Testing
+
+### Run All Tests
+
+```bash
+cd backend
+npm test
+```
+
+### Test Coverage
+
+```bash
+npm run test:coverage
+```
+
+### Watch Mode (Development)
+
+```bash
+npm run test:watch
+```
+
+### Test Categories
+
+```bash
+npm run test:unit          # Unit tests
+npm run test:integration   # Integration tests
+npm run test:services      # Service layer
+npm run test:controllers   # Controllers
+npm run test:middlewares   # Middlewares
+npm run test:models        # Database models
+```
+
+### Coverage Report
+
+After running `npm run test:coverage`, open:
+
+- **HTML Report**: `backend/coverage/lcov-report/index.html`
+- **Terminal Summary**: Displayed automatically
+
+### Test Structure
+
+```
+backend/
+├── __tests__/
+│   ├── integration/routes/  # API endpoint tests
+│   ├── fixtures/            # Test data
+│   └── setup.js             # Test utilities
+└── src/
+    ├── controller/__tests__/
+    ├── middlewares/__tests__/
+    ├── model/__tests__/
+    ├── service/__tests__/     ✅ 20+ tests
+    ├── utils/__tests__/       ✅ 3 tests
+    └── validation/__tests__/
+```
+
+**📖 Full Testing Guide**: See [TESTING.md](TESTING.md)
+
 ## 📊 Performance Optimization
 
 - **Pagination**: 10 items per page default
-- **Image Optimization**: Cloudinary automatic transformations
 - **Database Indexes**: On email, title, tags, dates
 - **Code Splitting**: React.lazy() for route components
+- **Test Performance**: `--runInBand` flag for sequential execution
 - **API Caching**: Redis for frequently accessed data (optional)
 - **Socket.IO Rooms**: Efficient event targeting
 - **File Streaming**: Multer chunked uploads
@@ -1200,6 +1365,7 @@ MIT License - See [LICENSE](LICENSE) file
 
 **Built for**: Ton Duc Thang University  
 **Purpose**: Modernize distance education with:
+
 - Real-time communication infrastructure
 - AI-powered learning assistance
 - Automated assessment workflows

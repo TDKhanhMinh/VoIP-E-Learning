@@ -9,7 +9,7 @@ export const getAll = async () => {
 export const findById = async (id) => {
   const assignment = await Assignment.findById(id);
   if (!assignment) {
-    const error = new Error("Announcement with id ${id} not found");
+    const error = new Error(`Assignment with id ${id} not found`);
     error.statusCode = 404;
     throw error;
   }
@@ -45,7 +45,7 @@ export const updateAssignment = async (id, data) => {
     updates[key] == null && delete updates[key];
   });
 
-  const assignment = Assignment.findByIdAndUpdate(
+  const assignment = await Assignment.findByIdAndUpdate(
     id,
     { $set: updates },
     { new: true }
