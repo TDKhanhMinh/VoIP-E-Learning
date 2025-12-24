@@ -1,7 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-// 1. MOCK MODELS
-// Mock Assignment model
 vi.mock("../../../src/model/assignment.js", () => ({
   default: {
     find: vi.fn(),
@@ -12,14 +10,12 @@ vi.mock("../../../src/model/assignment.js", () => ({
   },
 }));
 
-// Mock Class model
 vi.mock("../../../src/model/class.js", () => ({
   default: {
     findById: vi.fn(),
   },
 }));
 
-// 2. IMPORT SERVICE & MODELS (Sau khi mock)
 const assignmentService = await import(
   "../../../src/service/assignmentService.js"
 );
@@ -27,14 +23,11 @@ const Assignment = (await import("../../../src/model/assignment.js")).default;
 const Class = (await import("../../../src/model/class.js")).default;
 
 describe("Assignment Service", () => {
-  // Clear mock sau mỗi test case để tránh dữ liệu rác
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  // =======================
-  // getAll
-  // =======================
+
   describe("getAll", () => {
     it("should return all assignments sorted by createdAt descending", async () => {
       const mockAssignments = [
@@ -42,7 +35,6 @@ describe("Assignment Service", () => {
         { _id: "2", title: "A2" },
       ];
 
-      // Mock chain: find() -> sort()
       const mockSort = vi.fn().mockResolvedValue(mockAssignments);
       Assignment.find.mockReturnValue({ sort: mockSort });
 
@@ -54,9 +46,7 @@ describe("Assignment Service", () => {
     });
   });
 
-  // =======================
-  // findById
-  // =======================
+
   describe("findById", () => {
     it("should return assignment if found", async () => {
       const mockAssignment = { _id: "123", title: "Test" };
@@ -78,15 +68,12 @@ describe("Assignment Service", () => {
     });
   });
 
-  // =======================
-  // getAssignmentByClassId
-  // =======================
+
   describe("getAssignmentByClassId", () => {
     it("should return assignments with populate class and sorted", async () => {
       const classId = "class123";
       const mockResult = [{ _id: "a1", class: { name: "Math" } }];
 
-      // Mock chain: find -> populate -> sort
       const mockSort = vi.fn().mockResolvedValue(mockResult);
       const mockPopulate = vi.fn().mockReturnValue({ sort: mockSort });
       Assignment.find.mockReturnValue({ populate: mockPopulate });
@@ -109,16 +96,12 @@ describe("Assignment Service", () => {
     });
   });
 
-  // =======================
-  // createAssignment
-  // =======================
+
   describe("createAssignment", () => {
     it("should create assignment if class exists", async () => {
       const data = { title: "New Assignment", class: "class123" };
 
-      // Class tồn tại
       Class.findById.mockResolvedValue({ _id: "class123" });
-      // Create thành công
       Assignment.create.mockResolvedValue({ _id: "newId", ...data });
 
       const result = await assignmentService.createAssignment(data);
@@ -138,14 +121,11 @@ describe("Assignment Service", () => {
         expect(error.statusCode).toBe(404);
       }
 
-      // Đảm bảo không gọi create nếu check class thất bại
       expect(Assignment.create).not.toHaveBeenCalled();
     });
   });
 
-  // =======================
-  // updateAssignment
-  // =======================
+
   describe("updateAssignment", () => {
     it("should update assignment and filter out null values", async () => {
       const id = "123";
@@ -155,7 +135,6 @@ describe("Assignment Service", () => {
         dueDate: "2024",
       };
 
-      // Mock trả về kết quả sau update
       Assignment.findByIdAndUpdate.mockResolvedValue({
         _id: id,
         title: "Updated",
@@ -163,8 +142,6 @@ describe("Assignment Service", () => {
 
       const result = await assignmentService.updateAssignment(id, updateData);
 
-      // QUAN TRỌNG: Kiểm tra xem logic xóa field null có hoạt động không
-      // Expected: description bị xóa khỏi object updates
       const expectedUpdates = { title: "Updated", dueDate: "2024" };
 
       expect(Assignment.findByIdAndUpdate).toHaveBeenCalledWith(

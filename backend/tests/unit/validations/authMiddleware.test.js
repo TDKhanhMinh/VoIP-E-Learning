@@ -7,20 +7,16 @@ describe("Auth Middleware", () => {
   let mockUser;
 
   beforeAll(async () => {
-    // Create mock functions
     mockVerify = jest.fn();
     mockUser = {
       findById: jest.fn(),
     };
 
-    // Mock modules using dynamic import and module replacement
     const originalJwt = await import("jsonwebtoken");
     const originalUser = await import("../../../src/model/user.js");
 
-    // Override the verify function
     mockVerify = jest.fn();
 
-    // Import the middleware
     const middleware = await import(
       "../../../src/middlewares/authMiddleware.js"
     );
@@ -60,10 +56,8 @@ describe("Auth Middleware", () => {
     it("should handle authorization header correctly", async () => {
       req.headers.authorization = "Bearer valid-token";
 
-      // This will fail with actual JWT verification, but tests the structure
       await protect(req, res, next);
 
-      // Either it succeeds or fails with 401, but shouldn't crash
       expect(res.status).toHaveBeenCalled();
     });
   });

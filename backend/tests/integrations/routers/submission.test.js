@@ -1,7 +1,6 @@
 import request from "supertest";
-// 1. IMPORT APP THẬT (Thay vì tự tạo express app)
 import app from "../../../src/server.js";
-import mongoose from "mongoose"; // Cần import để tạo ID giả hợp lệ
+import mongoose from "mongoose";
 import {
   connectTestDB,
   closeTestDB,
@@ -101,12 +100,11 @@ describe("Submission Routes", () => {
       const Submission = (await import("../../../src/model/submission.js"))
         .default;
 
-      // 3. SỬA LỖI TẠO DỮ LIỆU GIẢ (Khớp với Schema)
       const submission = await Submission.create({
-        assignment: mockAssignmentId, // assignment
-        student: studentUser._id, // student
-        file_url: "http://example.com/file.pdf", // file_url
-        file_name: "file.pdf", // file_name
+        assignment: mockAssignmentId,
+        student: studentUser._id,
+        file_url: "http://example.com/file.pdf",
+        file_name: "file.pdf",
       });
 
       const res = await request(app)

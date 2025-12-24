@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import mongoose from "mongoose";
 
-// 1. MOCK MODELS
 vi.mock("../../../src/model/class.js", () => ({
   default: {
     findById: vi.fn(),
@@ -24,7 +23,6 @@ vi.mock("../../../src/model/class_student.js", () => ({
   },
 }));
 
-// 2. IMPORT SERVICE & MODELS
 const classStudentService = await import(
   "../../../src/service/classStudentService.js"
 );
@@ -38,9 +36,6 @@ describe("Class Student Service", () => {
     vi.clearAllMocks();
   });
 
-  // ==========================
-  // getClassStudents (Aggregation)
-  // ==========================
   describe("getClassStudents", () => {
     it("should return aggregated student list", async () => {
       const classId = new mongoose.Types.ObjectId().toString();
@@ -56,20 +51,15 @@ describe("Class Student Service", () => {
       const result = await classStudentService.getClassStudents(classId);
 
       expect(ClassStudent.aggregate).toHaveBeenCalled();
-      // Kiểm tra tham số đầu tiên của pipeline có match classId không
       const pipeline = ClassStudent.aggregate.mock.calls[0][0];
       expect(pipeline[0].$match.class).toBeInstanceOf(mongoose.Types.ObjectId);
       expect(result).toEqual(mockResult);
     });
   });
 
-  // ==========================
-  // getAllEnrollments
-  // ==========================
   describe("getAllEnrollments", () => {
     it("should return all enrollments sorted by createdAt", async () => {
       const mockData = [{ _id: new mongoose.Types.ObjectId().toString() }];
-      // Mock chain: find -> sort
       const mockSort = vi.fn().mockResolvedValue(mockData);
       ClassStudent.find.mockReturnValue({ sort: mockSort });
 
@@ -81,15 +71,11 @@ describe("Class Student Service", () => {
     });
   });
 
-  // ==========================
-  // findByStudentId
-  // ==========================
   describe("findByStudentId", () => {
     it("should return enrollments with deep population", async () => {
       const studentId = new mongoose.Types.ObjectId().toString();
       const mockData = [{ _id: new mongoose.Types.ObjectId().toString() }];
 
-      // Mock chain: find -> populate -> populate -> sort
       const mockSort = vi.fn().mockResolvedValue(mockData);
       const mockPopulate2 = vi.fn().mockReturnValue({ sort: mockSort });
       const mockPopulate1 = vi
@@ -101,7 +87,6 @@ describe("Class Student Service", () => {
       const result = await classStudentService.findByStudentId(studentId);
 
       expect(ClassStudent.find).toHaveBeenCalledWith({ student: studentId });
-      // Kiểm tra xem có gọi populate đúng cấu trúc object không
       expect(mockPopulate1).toHaveBeenCalledWith(
         expect.objectContaining({ path: "class" })
       );
@@ -110,9 +95,6 @@ describe("Class Student Service", () => {
     });
   });
 
-  // ==========================
-  // findById
-  // ==========================
   describe("findById", () => {
     it("should return class student record if found", async () => {
       const mockData = { _id: new mongoose.Types.ObjectId().toString() };
@@ -134,9 +116,6 @@ describe("Class Student Service", () => {
     });
   });
 
-  // ==========================
-  // createClassStudent (Complex Logic)
-  // ==========================
   describe("createClassStudent", () => {
     const classId = new mongoose.Types.ObjectId().toString();
     const studentIds = [
@@ -177,7 +156,6 @@ describe("Class Student Service", () => {
       ];
       User.find.mockResolvedValue(validUsers);
 
-      // Mock ClassStudent.find trả về danh sách đã tồn tại trùng khớp
       ClassStudent.find.mockResolvedValue([
         { student: validUsers[0]._id },
         { student: validUsers[1]._id },
@@ -194,16 +172,13 @@ describe("Class Student Service", () => {
     it("should add new students and filter out existing ones", async () => {
       Class.findById.mockResolvedValue({ _id: classId });
 
-      // Input 2 students: s1 (new), s2 (existing)
       const validUsers = [
         { _id: new mongoose.Types.ObjectId().toString() },
         { _id: new mongoose.Types.ObjectId().toString() },
       ];
       User.find.mockResolvedValue(validUsers);
 
-      // Existing returns only s2
       ClassStudent.find.mockResolvedValue([{ student: validUsers[1]._id }]);
-      // Mock insertMany returning the created document (only s1)
       ClassStudent.insertMany.mockResolvedValue([
         { student: validUsers[0]._id, class: classId },
       ]);
@@ -215,7 +190,6 @@ describe("Class Student Service", () => {
         available: true,
       });
 
-      // Kiểm tra insertMany chỉ được gọi với student1 (student2 bị lọc)
       const insertCallArgs = ClassStudent.insertMany.mock.calls[0][0];
       expect(insertCallArgs).toHaveLength(1);
       expect(insertCallArgs[0].student).toBe(validUsers[0]._id);
@@ -229,9 +203,6 @@ describe("Class Student Service", () => {
     });
   });
 
-  // ==========================
-  // deleteClassStudent
-  // ==========================
   describe("deleteClassStudent", () => {
     it("should delete enrollment if found", async () => {
       const mockData = { _id: new mongoose.Types.ObjectId().toString() };

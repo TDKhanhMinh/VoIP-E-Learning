@@ -13,7 +13,6 @@ describe("Test Question Routes", () => {
   afterAll(async () => await closeTestDB());
   afterEach(async () => await clearTestDB());
 
-  // Tạo một ID giả hợp lệ để dùng chung
   const mockTestId = new mongoose.Types.ObjectId();
 
   describe("GET /api/test-question", () => {
@@ -26,7 +25,6 @@ describe("Test Question Routes", () => {
 
   describe("GET /api/test-question/test/:testId", () => {
     it("should get questions by test id", async () => {
-      // SỬA: Dùng ID hợp lệ thay vì 'test123'
       const res = await request(app).get(
         `/api/test-question/test/${mockTestId}`
       );
@@ -39,7 +37,6 @@ describe("Test Question Routes", () => {
       const questionData = {
         test: mockTestId,
         question: "What is 2+2?",
-        // SỬA Ở ĐÂY: Đổi 'text' -> 'answer'
         options: [
           { answer: "3", isCorrect: false },
           { answer: "4", isCorrect: true },
@@ -52,7 +49,6 @@ describe("Test Question Routes", () => {
         .send(questionData);
 
       expect(res.status).toBe(201);
-      // Kiểm tra dữ liệu trả về có khớp không
       expect(res.body).toHaveProperty("_id");
       expect(res.body.question).toBe("What is 2+2?");
     });
@@ -63,11 +59,9 @@ describe("Test Question Routes", () => {
       const TestQuestion = (await import("../../../src/model/testQuestion.js"))
         .default;
 
-      // SỬA: Tạo dữ liệu mẫu phải chuẩn format, nếu không lệnh create này sẽ lỗi trước khi kịp chạy test
       const question = await TestQuestion.create({
         test: mockTestId,
         question: "What is 2+2?",
-        // SỬA Ở ĐÂY: Đổi 'text' -> 'answer'
         options: [
           { answer: "3", isCorrect: false },
           { answer: "4", isCorrect: true },
@@ -79,7 +73,6 @@ describe("Test Question Routes", () => {
         .put(`/api/test-question/${question._id}`)
         .send({
           question: "What is 3+3?",
-          // SỬA Ở ĐÂY: Đổi 'text' -> 'answer'
           options: [
             { answer: "5", isCorrect: false },
             { answer: "6", isCorrect: true },

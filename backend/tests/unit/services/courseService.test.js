@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 
-// 1. MOCK MODEL
 vi.mock("../../../src/model/course.js", () => ({
   default: {
     find: vi.fn(),
@@ -12,7 +11,6 @@ vi.mock("../../../src/model/course.js", () => ({
   },
 }));
 
-// 2. IMPORT SERVICE & MOCKED MODEL
 const courseService = await import("../../../src/service/courseService.js");
 const Course = (await import("../../../src/model/course.js")).default;
 
@@ -21,14 +19,10 @@ describe("Course Service", () => {
     vi.clearAllMocks();
   });
 
-  // ==========================
-  // getAll
-  // ==========================
   describe("getAll", () => {
     it("should return all courses sorted by createdAt descending", async () => {
       const mockCourses = [{ _id: "1", title: "Course 1" }];
 
-      // Mock chain: find -> sort
       const mockSort = vi.fn().mockResolvedValue(mockCourses);
       Course.find.mockReturnValue({ sort: mockSort });
 
@@ -40,9 +34,6 @@ describe("Course Service", () => {
     });
   });
 
-  // ==========================
-  // getCourseById
-  // ==========================
   describe("getCourseById", () => {
     it("should return course if found", async () => {
       const mockCourse = { _id: "123", title: "Test Course" };
@@ -64,9 +55,6 @@ describe("Course Service", () => {
     });
   });
 
-  // ==========================
-  // getCourseByCode
-  // ==========================
   describe("getCourseByCode", () => {
     it("should return course if found by code", async () => {
       const mockCourse = { _id: "1", code: "CS101" };
@@ -90,9 +78,6 @@ describe("Course Service", () => {
     });
   });
 
-  // ==========================
-  // createCourse
-  // ==========================
   describe("createCourse", () => {
     it("should create a new course", async () => {
       const inputData = { title: "New Course", code: "NC101" };
@@ -107,13 +92,9 @@ describe("Course Service", () => {
     });
   });
 
-  // ==========================
-  // updateCourse
-  // ==========================
   describe("updateCourse", () => {
     it("should update course and filter out null values", async () => {
       const id = "123";
-      // Input có trường null -> cần bị filter
       const inputData = { title: "Updated", description: null, credit: 3 };
       const mockUpdated = { _id: id, title: "Updated", credit: 3 };
 
@@ -121,10 +102,9 @@ describe("Course Service", () => {
 
       const result = await courseService.updateCourse(id, inputData);
 
-      // Kiểm tra logic filter: 'description' phải bị xóa khỏi object update
       expect(Course.findByIdAndUpdate).toHaveBeenCalledWith(
         id,
-        { $set: { title: "Updated", credit: 3 } }, // Không có description
+        { $set: { title: "Updated", credit: 3 } },
         { new: true }
       );
       expect(result).toEqual(mockUpdated);
@@ -142,9 +122,6 @@ describe("Course Service", () => {
     });
   });
 
-  // ==========================
-  // deleteCourse
-  // ==========================
   describe("deleteCourse", () => {
     it("should delete course if found", async () => {
       const mockDeleted = { _id: "123" };

@@ -3,16 +3,12 @@ import * as postService from "../../../src/service/postService.js";
 import post from "../../../src/model/post.js";
 import mongoose from "mongoose";
 
-// --- 1. SỬ DỤNG vi.hoisted ĐỂ KHẮC PHỤC LỖI HOISTING & CONSTRUCTOR ---
 const mocks = vi.hoisted(() => {
   const mockSort = vi.fn();
   const mockFind = vi.fn(() => ({
     sort: mockSort,
   }));
 
-  // SỬA LỖI Ở ĐÂY:
-  // Phải dùng function thường (không dùng arrow function) để hỗ trợ từ khóa 'new'
-  // Trả về new String(id) để giả lập object có giá trị như string
   const mockObjectId = vi.fn(function (id) {
     return new String(id);
   });
@@ -24,9 +20,6 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-// --- 2. Setup Mocks ---
-
-// Mock Mongoose (Async để importActual hoạt động đúng)
 vi.mock("mongoose", async () => {
   const actual = await vi.importActual("mongoose");
   return {
@@ -35,18 +28,16 @@ vi.mock("mongoose", async () => {
       ...actual.default,
       Types: {
         ...actual.default.Types,
-        // Gán mock function đã sửa vào đây
         ObjectId: mocks.mockObjectId,
       },
     },
   };
 });
 
-// Mock Post Model
 vi.mock("../../../src/model/post.js", () => ({
   default: {
     create: vi.fn(),
-    find: mocks.mockFind, // Dùng biến hoisted
+    find: mocks.mockFind,
     aggregate: vi.fn(),
     findByIdAndUpdate: vi.fn(),
     findByIdAndDelete: vi.fn(),
@@ -57,12 +48,10 @@ describe("Post Service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Reset behavior mocks
     mocks.mockFind.mockReturnValue({ sort: mocks.mockSort });
     mocks.mockObjectId.mockClear();
   });
 
-  // --- Structure Verification ---
   describe("Structure Verification", () => {
     it("should export all required functions", () => {
       expect(postService.createPost).toBeDefined();
@@ -75,7 +64,6 @@ describe("Post Service", () => {
     });
   });
 
-  // --- Test: createPost ---
   describe("createPost", () => {
     it("should create a new post", async () => {
       const mockData = { title: "New Post", content: "Content" };
@@ -88,7 +76,6 @@ describe("Post Service", () => {
     });
   });
 
-  // --- Test: getPostsByClass ---
   describe("getPostsByClass", () => {
     it("should return posts for a class sorted by date", async () => {
       const classId = "class-123";
@@ -104,7 +91,6 @@ describe("Post Service", () => {
     });
   });
 
-  // --- Test: getPostsByTopic ---
   describe("getPostsByTopic", () => {
     it("should return posts for a topic sorted by date", async () => {
       const topicId = "topic-456";
@@ -120,7 +106,6 @@ describe("Post Service", () => {
     });
   });
 
-  // --- Test: getForumPosts ---
   describe("getForumPosts", () => {
     it("should return aggregated forum posts", async () => {
       const mockAggregatedPosts = [
@@ -138,7 +123,6 @@ describe("Post Service", () => {
     });
   });
 
-  // --- Test: updatePost ---
   describe("updatePost", () => {
     it("should update post and return the new version", async () => {
       const postId = "post-1";
@@ -156,7 +140,6 @@ describe("Post Service", () => {
     });
   });
 
-  // --- Test: deletePost ---
   describe("deletePost", () => {
     it("should delete post by id", async () => {
       const postId = "post-1";
@@ -168,7 +151,6 @@ describe("Post Service", () => {
     });
   });
 
-  // --- Test: getPostById ---
   describe("getPostById", () => {
     it("should return a single post with comments and topic details", async () => {
       const postId = "post-123";
@@ -180,8 +162,7 @@ describe("Post Service", () => {
 
       const result = await postService.getPostById(postId);
 
-      // Verify ObjectId constructor was called
-      expect(mocks.mockObjectId).toHaveBeenCalledWith(postId);
+      expect(mocks.mockObjectId).toHaveBeenNthCalledWith(1, postId);
 
       expect(post.aggregate).toHaveBeenCalled();
       expect(result).toEqual(mockAggregatedResult[0]);

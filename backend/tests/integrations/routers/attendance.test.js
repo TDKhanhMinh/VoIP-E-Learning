@@ -1,5 +1,4 @@
 import request from "supertest";
-// 1. IMPORT APP THẬT (Thay vì tự tạo express app)
 import app from "../../../src/server.js";
 import {
   connectTestDB,
@@ -10,9 +9,6 @@ import {
 } from "../setup.js";
 import mongoose from "mongoose";
 
-// 2. XÓA ĐOẠN KHỞI TẠO APP THỦ CÔNG
-// const app = express();
-// ...
 
 describe("Attendance Routes", () => {
   beforeAll(async () => await connectTestDB());
@@ -20,13 +16,11 @@ describe("Attendance Routes", () => {
   afterEach(async () => await clearTestDB());
 
   let teacherToken, studentUser;
-  // 3. Tạo ID lớp học giả hợp lệ để dùng chung
   const mockClassId = new mongoose.Types.ObjectId();
 
   beforeEach(async () => {
     const teacher = await createTestUser("teacher");
     studentUser = await createTestUser("student");
-    // Lưu ý hàm createAuthToken của bạn nếu không nhận email thì bỏ tham số giữa đi
     teacherToken = createAuthToken(teacher._id, teacher.email, "teacher");
   });
 
@@ -39,7 +33,6 @@ describe("Attendance Routes", () => {
 
   describe("POST /api/attendance", () => {
     it("should create attendance as teacher", async () => {
-      // Create a class first since service validates it exists
       const Class = (await import("../../../src/model/class.js")).default;
       const teacher = await createTestUser("teacher");
       const testClass = await Class.create({
@@ -74,7 +67,6 @@ describe("Attendance Routes", () => {
         .set("Authorization", `Bearer ${teacherToken}`)
         .send(attendanceData);
 
-      // Log lỗi nếu có
       if (res.status === 400 || res.status === 500)
         console.log("Create Attendance Error:", res.body);
 
@@ -96,10 +88,9 @@ describe("Attendance Routes", () => {
       const Attendance = (await import("../../../src/model/attendance.js"))
         .default;
 
-      // 5. TẠO DỮ LIỆU MẪU CHUẨN
       const attendance = await Attendance.create({
         student: studentUser._id,
-        class: mockClassId, // Dùng ID hợp lệ
+        class: mockClassId, 
         date: new Date(),
         status: "present",
       });

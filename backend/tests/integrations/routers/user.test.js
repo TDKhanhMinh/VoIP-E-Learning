@@ -1,5 +1,4 @@
 import request from "supertest";
-// 1. IMPORT APP THẬT
 import app from "../../../src/server.js";
 import {
   connectTestDB,
@@ -53,7 +52,7 @@ describe("User Routes", () => {
       const res = await request(app)
         .put(`/api/user/${user._id}`)
         .set("Authorization", `Bearer ${adminToken}`)
-        .send({ full_name: "Updated Name" }); // Sửa firstName -> full_name
+        .send({ full_name: "Updated Name" });
 
       expect(res.status).toBe(200);
     });

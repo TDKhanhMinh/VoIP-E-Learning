@@ -41,7 +41,6 @@ describe("Material Routes", () => {
 
   describe("POST /api/material", () => {
     it("should create material as teacher", async () => {
-      // Create a class first since service likely validates it exists
       const Class = (await import("../../../src/model/class.js")).default;
       const testClass = await Class.create({
         name: "Test Class",
@@ -86,12 +85,11 @@ describe("Material Routes", () => {
     it("should delete material as teacher", async () => {
       const Material = (await import("../../../src/model/material.js")).default;
 
-      // 6. Fix: Tạo dữ liệu giả đúng Schema để không bị lỗi Validation
       const material = await Material.create({
         title: "Test Material to Delete",
-        class: mockClassId, // Sửa: classId -> class
-        file_url: "http://example.com/file.pdf", // Sửa: fileUrl -> file_url
-        upload_by: teacherUser._id, // Fix: Thêm trường bắt buộc này
+        class: mockClassId,
+        file_url: "http://example.com/file.pdf",
+        upload_by: teacherUser._id,
       });
 
       const res = await request(app)

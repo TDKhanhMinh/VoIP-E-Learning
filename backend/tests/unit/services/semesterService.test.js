@@ -26,20 +26,17 @@ vi.mock("../../../src/model/semester.js", () => ({
     create: vi.fn(),
     findByIdAndUpdate: vi.fn(),
     findByIdAndDelete: vi.fn(),
-    findOne: vi.fn(), // Dùng cho validateName
+    findOne: vi.fn(),
   },
 }));
 
 describe("Semester Service", () => {
-  // Reset mocks trước mỗi test case
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Reset behavior của chain mock
     mocks.mockFind.mockReturnValue({ sort: mocks.mockSort });
   });
 
-  // --- Structure Verification ---
   describe("Structure Verification", () => {
     it("should export all required functions", () => {
       expect(semesterService.getAll).toBeDefined();
@@ -50,12 +47,10 @@ describe("Semester Service", () => {
     });
   });
 
-  // --- Test: getAll ---
   describe("getAll", () => {
     it("should return all semesters sorted by createdAt desc", async () => {
       const mockSemesters = [{ name: "Spring 2024" }, { name: "Fall 2023" }];
 
-      // Setup mock sort trả về kết quả
       mocks.mockSort.mockResolvedValue(mockSemesters);
 
       const result = await semesterService.getAll();
@@ -66,7 +61,6 @@ describe("Semester Service", () => {
     });
   });
 
-  // --- Test: findById ---
   describe("findById", () => {
     it("should return semester if found", async () => {
       const mockSemester = { _id: "123", name: "Spring 2024" };
@@ -91,15 +85,12 @@ describe("Semester Service", () => {
     });
   });
 
-  // --- Test: createSemester ---
   describe("createSemester", () => {
     const mockData = { name: "Summer 2024", start_date: "2024-06-01" };
 
     it("should create semester if name is valid (unique)", async () => {
-      // 1. Validate: findOne trả về null (chưa tồn tại)
       vi.mocked(Semester.findOne).mockResolvedValue(null);
 
-      // 2. Create: trả về data mới
       vi.mocked(Semester.create).mockResolvedValue({
         _id: "new-id",
         ...mockData,
@@ -113,7 +104,6 @@ describe("Semester Service", () => {
     });
 
     it("should throw 400 error if semester name already exists", async () => {
-      // Validate: findOne trả về object (đã tồn tại)
       vi.mocked(Semester.findOne).mockResolvedValue({
         _id: "old-id",
         name: mockData.name,
@@ -123,15 +113,13 @@ describe("Semester Service", () => {
         `Semester name ${mockData.name} already declared`
       );
 
-      // Đảm bảo không gọi create
       expect(Semester.create).not.toHaveBeenCalled();
     });
   });
 
-  // --- Test: updateSemester ---
   describe("updateSemester", () => {
     const id = "123";
-    const updateData = { name: "Updated Name", description: null }; // null sẽ bị filter
+    const updateData = { name: "Updated Name", description: null };
 
     it("should update semester and return new data", async () => {
       const mockUpdated = { _id: id, name: "Updated Name" };
@@ -139,10 +127,9 @@ describe("Semester Service", () => {
 
       const result = await semesterService.updateSemester(id, updateData);
 
-      // Verify logic filter null
       expect(Semester.findByIdAndUpdate).toHaveBeenCalledWith(
         id,
-        { $set: { name: "Updated Name" } }, // description bị xóa
+        { $set: { name: "Updated Name" } },
         { new: true }
       );
       expect(result).toEqual(mockUpdated);
@@ -160,7 +147,6 @@ describe("Semester Service", () => {
     });
   });
 
-  // --- Test: deleteSemester ---
   describe("deleteSemester", () => {
     it("should delete and return semester if found", async () => {
       const mockDeleted = { _id: "123", name: "Deleted" };

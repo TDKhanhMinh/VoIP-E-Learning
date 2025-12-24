@@ -6,18 +6,14 @@ import TestSession from "../../../src/model/testSession.js";
 import TestQuestion from "../../../src/model/testQuestion.js";
 import ClassStudent from "../../../src/model/class_student.js";
 
-// --- 1. SỬ DỤNG vi.hoisted ĐỂ KHẮC PHỤC LỖI HOISTING ---
 const mocks = vi.hoisted(() => {
-  // Mock các hàm cuối chain
   const mockSort = vi.fn();
 
-  // Mock populate (trả về chính nó và sort để chain)
   const mockPopulate = vi.fn(() => ({
     populate: mockPopulate,
     sort: mockSort,
   }));
 
-  // Mock find/findById (trả về object chứa populate/sort)
   const mockFind = vi.fn(() => ({
     populate: mockPopulate,
     sort: mockSort,
@@ -29,9 +25,6 @@ const mocks = vi.hoisted(() => {
 
   const mockSave = vi.fn();
 
-  // --- SỬA LỖI Ở ĐÂY ---
-  // Dùng Regular Function (function keyword) thay vì Arrow Function
-  // để hỗ trợ từ khóa 'new' (ví dụ: new TestAttempt(data))
   const createMockModel = (name) => {
     const MockModel = vi.fn(function (data) {
       return {
@@ -40,7 +33,6 @@ const mocks = vi.hoisted(() => {
       };
     });
 
-    // Gán các static methods dùng chung
     MockModel.find = mockFind;
     MockModel.findById = mockFindById;
     MockModel.findOne = vi.fn();
@@ -60,8 +52,6 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-// --- 2. Setup Mocks cho Models ---
-
 vi.mock("../../../src/model/testAttempt.js", () =>
   mocks.createMockModel("TestAttempt")
 );
@@ -78,7 +68,6 @@ vi.mock("../../../src/model/class_student.js", () =>
   mocks.createMockModel("ClassStudent")
 );
 
-// Mock Mongoose
 vi.mock("mongoose", () => ({
   default: {
     Types: { ObjectId: vi.fn((id) => id) },
@@ -89,7 +78,6 @@ describe("Test Attempt Service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Reset chain mocks về behavior mặc định
     mocks.mockFind.mockReturnValue({
       populate: mocks.mockPopulate,
       sort: mocks.mockSort,

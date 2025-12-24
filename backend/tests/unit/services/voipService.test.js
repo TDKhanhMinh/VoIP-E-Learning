@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import * as voipService from "../../../src/service/voipService.js";
 import User from "../../../src/model/user.js";
 
-// --- 1. SỬ DỤNG vi.hoisted ĐỂ KHẮC PHỤC LỖI HOISTING ---
 const mocks = vi.hoisted(() => {
   const mockFindById = vi.fn();
 
@@ -11,7 +10,6 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-// --- 2. Setup Mocks ---
 vi.mock("../../../src/model/user.js", () => ({
   default: {
     findById: mocks.mockFindById,
@@ -57,7 +55,7 @@ describe("VoIP Service", () => {
         _id: "user123",
         email: "student@tdtu.edu.vn",
         full_name: "Test Student",
-        sipPassword: null, // Thiếu password
+        sipPassword: null,
       };
 
       mocks.mockFindById.mockResolvedValue(mockUser);

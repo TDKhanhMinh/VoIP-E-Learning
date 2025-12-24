@@ -1,17 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-// Điều chỉnh đường dẫn import cho phù hợp với cấu trúc thư mục của bạn
 import * as materialService from "../../../src/service/materialService.js";
 import Material from "../../../src/model/material.js";
 import Class from "../../../src/model/class.js";
 import User from "../../../src/model/user.js";
 import mongoose from "mongoose";
-// --- 1. SỬ DỤNG vi.hoisted ĐỂ KHẮC PHỤC LỖI HOISTING ---
-// Đoạn này sẽ chạy trước tất cả các import và mock khác
 const mocks = vi.hoisted(() => {
   const mockSort = vi.fn();
 
-  // Mô phỏng chuỗi hàm .find().sort()
-  // Khi gọi find() sẽ trả về object có chứa hàm sort
   const mockFind = vi.fn(() => ({
     sort: mockSort,
   }));
@@ -22,28 +17,21 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-// --- 2. Mock các module phụ thuộc ---
-
-// Mock Material Model
 vi.mock("../../../src/model/material.js", () => ({
   default: {
-    // Sử dụng biến từ mocks đã được hoisted
     find: mocks.mockFind,
-    // Các hàm này có thể định nghĩa trực tiếp vì ta sẽ spy qua import module
     findById: vi.fn(),
     create: vi.fn(),
     findByIdAndDelete: vi.fn(),
   },
 }));
 
-// Mock Class Model
 vi.mock("../../../src/model/class.js", () => ({
   default: {
     findById: vi.fn(),
   },
 }));
 
-// Mock User Model
 vi.mock("../../../src/model/user.js", () => ({
   default: {
     findOne: vi.fn(),
@@ -51,11 +39,9 @@ vi.mock("../../../src/model/user.js", () => ({
 }));
 
 describe("Material Service", () => {
-  // Setup môi trường trước mỗi test case
   beforeEach(() => {
-    vi.clearAllMocks(); // Reset số lần gọi các hàm mock
+    vi.clearAllMocks();
 
-    // Quan trọng: Phải reset behavior của mockFind để đảm bảo nó luôn trả về object chứa sort
     mocks.mockFind.mockReturnValue({ sort: mocks.mockSort });
   });
 
@@ -82,12 +68,10 @@ describe("Material Service", () => {
     it("should return all materials sorted by createdAt desc", async () => {
       const mockMaterials = [{ title: "M1" }, { title: "M2" }];
 
-      // Setup mock: dùng mocks.mockSort thay vì biến cục bộ
       mocks.mockSort.mockResolvedValue(mockMaterials);
 
       const result = await materialService.getAll();
 
-      // Verify
       expect(Material.find).toHaveBeenCalled();
       expect(mocks.mockSort).toHaveBeenCalledWith({ createdAt: -1 });
       expect(result).toEqual(mockMaterials);
@@ -121,7 +105,6 @@ describe("Material Service", () => {
       const classId = "class-001";
       const mockMaterials = [{ title: "Lesson 1" }];
 
-      // Setup mock sort
       mocks.mockSort.mockResolvedValue(mockMaterials);
 
       const result = await materialService.getClassMaterial(classId);
@@ -140,11 +123,8 @@ describe("Material Service", () => {
     };
 
     it("should create material successfully when Class and User exist", async () => {
-      // Setup: Class tồn tại
       vi.mocked(Class.findById).mockResolvedValue({ _id: "class-123" });
-      // Setup: User tồn tại và available
       vi.mocked(User.findOne).mockResolvedValue({ _id: "user-456" });
-      // Setup: Create thành công
       vi.mocked(Material.create).mockResolvedValue({
         _id: "mat-789",
         ...mockData,
@@ -152,20 +132,17 @@ describe("Material Service", () => {
 
       const result = await materialService.createMaterial(mockData);
 
-      // Verify logic validation
-      expect(Class.findById).toHaveBeenCalledWith(mockData.class);
-      expect(User.findOne).toHaveBeenCalledWith({
+      expect(Class.findById).toHaveBeenNthCalledWith(1, mockData.class);
+      expect(User.findOne).toHaveBeenNthCalledWith(1, {
         _id: mockData.upload_by,
         available: "true",
       });
 
-      // Verify create logic
-      expect(Material.create).toHaveBeenCalledWith(mockData);
+      expect(Material.create).toHaveBeenNthCalledWith(1, mockData);
       expect(result).toHaveProperty("_id", "mat-789");
     });
 
     it("should throw 404 if Class does not exist", async () => {
-      // Class trả về null
       vi.mocked(Class.findById).mockResolvedValue(null);
       vi.mocked(User.findOne).mockResolvedValue({ _id: "user-456" });
 
@@ -178,7 +155,6 @@ describe("Material Service", () => {
 
     it("should throw 404 if User does not exist (or not available)", async () => {
       vi.mocked(Class.findById).mockResolvedValue({ _id: "class-123" });
-      // User trả về null
       vi.mocked(User.findOne).mockResolvedValue(null);
 
       await expect(materialService.createMaterial(mockData)).rejects.toThrow(
@@ -198,7 +174,7 @@ describe("Material Service", () => {
 
       const result = await materialService.deleteMaterial("123");
 
-      expect(Material.findByIdAndDelete).toHaveBeenCalledWith("123");
+      expect(Material.findByIdAndDelete).toHaveBeenNthCalledWith(1, "123");
       expect(result).toEqual(mockDeletedMaterial);
     });
 

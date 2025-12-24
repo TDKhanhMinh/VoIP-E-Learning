@@ -1,12 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-// 1. MOCK MODELS
 vi.mock("../../../src/model/attendance.js", () => ({
   default: {
     find: vi.fn(),
     findById: vi.fn(),
-    findOne: vi.fn(), // Dùng cho logic check ngày và lesson cũ
-    insertMany: vi.fn(), // createAttendance dùng insertMany
+    findOne: vi.fn(), 
+    insertMany: vi.fn(), 
     findByIdAndUpdate: vi.fn(),
     findByIdAndDelete: vi.fn(),
   },
@@ -18,7 +17,6 @@ vi.mock("../../../src/model/class.js", () => ({
   },
 }));
 
-// 2. IMPORT SERVICE & MODELS
 const attendanceService = await import(
   "../../../src/service/attendanceService.js"
 );
@@ -30,14 +28,10 @@ describe("Attendance Service", () => {
     vi.clearAllMocks();
   });
 
-  // =======================
-  // getAll
-  // =======================
   describe("getAll", () => {
     it("should return all attendances sorted by createdAt", async () => {
       const mockData = [{ _id: "1" }, { _id: "2" }];
 
-      // Mock chain: find -> sort
       const mockSort = vi.fn().mockResolvedValue(mockData);
       Attendance.find.mockReturnValue({ sort: mockSort });
 
@@ -49,9 +43,7 @@ describe("Attendance Service", () => {
     });
   });
 
-  // =======================
-  // findById
-  // =======================
+
   describe("findById", () => {
     it("should return attendance if found", async () => {
       const mockData = { _id: "123" };
@@ -67,22 +59,17 @@ describe("Attendance Service", () => {
       try {
         await attendanceService.findById("invalid");
       } catch (error) {
-        // Lưu ý: Source code của bạn đang ghi nhầm là "Announcement..." thay vì "Attendance..."
-        // Test này expect đúng theo source code hiện tại
         expect(error.statusCode).toBe(404);
       }
     });
   });
 
-  // =======================
-  // findByClassId
-  // =======================
+
   describe("findByClassId", () => {
     it("should return attendances if found (populated and sorted)", async () => {
       const classId = "class123";
       const mockResult = [{ _id: "att1" }];
 
-      // Mock chain: find -> populate -> populate -> sort
       const mockSort = vi.fn().mockResolvedValue(mockResult);
       const mockPopulate2 = vi.fn().mockReturnValue({ sort: mockSort });
       const mockPopulate1 = vi
@@ -101,7 +88,6 @@ describe("Attendance Service", () => {
     });
 
     it("should throw 404 if no records found (empty array)", async () => {
-      // Mock trả về mảng rỗng
       const mockSort = vi.fn().mockResolvedValue([]);
       const mockPopulate2 = vi.fn().mockReturnValue({ sort: mockSort });
       const mockPopulate1 = vi
@@ -115,15 +101,12 @@ describe("Attendance Service", () => {
     });
   });
 
-  // =======================
-  // findByStudentId
-  // =======================
+
   describe("findByStudentId", () => {
     it("should return attendances for student", async () => {
       const studentId = "student123";
       const mockResult = [{ _id: "att1" }];
 
-      // Mock chain
       const mockSort = vi.fn().mockResolvedValue(mockResult);
       const mockPopulate2 = vi.fn().mockReturnValue({ sort: mockSort });
       const mockPopulate1 = vi
@@ -136,7 +119,6 @@ describe("Attendance Service", () => {
     });
 
     it("should return empty array if null (logic || [])", async () => {
-      // Mock trả về null
       const mockSort = vi.fn().mockResolvedValue(null);
       const mockPopulate2 = vi.fn().mockReturnValue({ sort: mockSort });
       const mockPopulate1 = vi
@@ -149,9 +131,7 @@ describe("Attendance Service", () => {
     });
   });
 
-  // =======================
-  // createAttendance (Complex Logic)
-  // =======================
+
   describe("createAttendance", () => {
     const inputData = {
       class: "class123",
@@ -171,7 +151,6 @@ describe("Attendance Service", () => {
     it("should throw 400 if attendance already marked today", async () => {
       Class.findById.mockResolvedValue({ _id: "class123" });
 
-      // Mock findOne trả về object (nghĩa là đã có record hôm nay)
       Attendance.findOne.mockResolvedValue({ _id: "exists" });
 
       try {
@@ -187,18 +166,15 @@ describe("Attendance Service", () => {
     it("should create new attendance with Lesson 1 (if no previous history)", async () => {
       Class.findById.mockResolvedValue({ _id: "class123" });
 
-      // Lần gọi 1 (check today): null
-      // Lần gọi 2 (check last lesson): null (chưa có lesson nào)
-      // Dùng chain mockResolvedValueOnce để giả lập 2 lần gọi khác nhau
       Attendance.findOne
-        .mockResolvedValueOnce(null) // Check today
-        .mockReturnValue({ sort: vi.fn().mockResolvedValue(null) }); // Check last lesson (chain sort)
+        .mockResolvedValueOnce(null) 
+        .mockReturnValue({ sort: vi.fn().mockResolvedValue(null) }); 
 
-      Attendance.insertMany.mockResolvedValue([1, 2]); // Giả lập insert thành công
+      Attendance.insertMany.mockResolvedValue([1, 2]);
 
       const result = await attendanceService.createAttendance(inputData);
 
-      expect(result.lesson).toBe(1); // Lesson đầu tiên phải là 1
+      expect(result.lesson).toBe(1); 
       expect(result.count).toBe(2);
       expect(Attendance.insertMany).toHaveBeenCalled();
     });
@@ -206,11 +182,8 @@ describe("Attendance Service", () => {
     it("should create new attendance incrementing Lesson (if history exists)", async () => {
       Class.findById.mockResolvedValue({ _id: "class123" });
 
-      // Lần 1: check today -> null
-      // Lần 2: check last lesson -> trả về lesson: 5
       Attendance.findOne.mockResolvedValueOnce(null);
 
-      // Mock chain cho lastAttendance: findOne().sort()
       const mockSort = vi.fn().mockResolvedValue({ lesson: 5 });
       Attendance.findOne.mockReturnValue({ sort: mockSort });
 
@@ -218,13 +191,11 @@ describe("Attendance Service", () => {
 
       const result = await attendanceService.createAttendance(inputData);
 
-      expect(result.lesson).toBe(6); // 5 + 1 = 6
+      expect(result.lesson).toBe(6); 
     });
   });
 
-  // =======================
-  // updateAttendance
-  // =======================
+
   describe("updateAttendance", () => {
     it("should update attendance and ignore null fields", async () => {
       const id = "att1";
@@ -237,10 +208,9 @@ describe("Attendance Service", () => {
 
       const result = await attendanceService.updateAttendance(id, updateData);
 
-      // Kiểm tra xem 'note': null có bị xóa khỏi object update không
       expect(Attendance.findByIdAndUpdate).toHaveBeenCalledWith(
         id,
-        { $set: { status: "absent" } }, // note bị xóa
+        { $set: { status: "absent" } }, 
         { new: true }
       );
       expect(result.status).toBe("absent");
@@ -254,9 +224,7 @@ describe("Attendance Service", () => {
     });
   });
 
-  // =======================
-  // deleteAttendance
-  // =======================
+
   describe("deleteAttendance", () => {
     it("should delete attendance if found", async () => {
       Attendance.findByIdAndDelete.mockResolvedValue({ _id: "del1" });

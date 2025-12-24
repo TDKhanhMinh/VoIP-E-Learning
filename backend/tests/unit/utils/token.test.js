@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { generateToken } from '../../../src/utils/token.js';
 
-// Mock environment variable
 process.env.JWT_SECRET = 'test-secret-key-for-unit-tests-12345';
 
 describe('Token Utils', () => {
@@ -15,7 +14,7 @@ describe('Token Utils', () => {
       
       expect(token).toBeDefined();
       expect(typeof token).toBe('string');
-      expect(token.split('.')).toHaveLength(3); // JWT has 3 parts
+      expect(token.split('.')).toHaveLength(3);
     });
 
     it('should encode correct payload data', () => {
@@ -39,7 +38,7 @@ describe('Token Utils', () => {
       const expectedExpiry = now + (24 * 60 * 60);
       
       expect(decoded.exp).toBeGreaterThan(now);
-      expect(decoded.exp).toBeLessThanOrEqual(expectedExpiry + 5); // 5 sec tolerance
+      expect(decoded.exp).toBeLessThanOrEqual(expectedExpiry + 5); 
     });
 
     it('should generate different tokens for different users', () => {
@@ -87,7 +86,6 @@ describe('Token Utils', () => {
       const token1 = generateToken(id, email, role);
       const token2 = generateToken(id, email, role);
       
-      // Tokens might differ due to 'iat' (issued at) claim, but should decode to same data
       const decoded1 = jwt.verify(token1, process.env.JWT_SECRET);
       const decoded2 = jwt.verify(token2, process.env.JWT_SECRET);
       

@@ -1,7 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-// 1. MOCK DEPENDENCIES
-// Mock Google Config Client
 vi.mock("../../../src/config/googleConfig.js", () => ({
   default: {
     generateAuthUrl: vi.fn(),
@@ -10,19 +8,16 @@ vi.mock("../../../src/config/googleConfig.js", () => ({
   },
 }));
 
-// Mock User Model
 vi.mock("../../../src/model/user.js", () => ({
   default: {
     findOne: vi.fn(),
   },
 }));
 
-// Mock Token Utils
 vi.mock("../../../src/utils/token.js", () => ({
   generateToken: vi.fn(),
 }));
 
-// 2. IMPORT SERVICE & MOCKED MODULES
 const authService = await import("../../../src/service/authService.js");
 const client = (await import("../../../src/config/googleConfig.js")).default;
 const User = (await import("../../../src/model/user.js")).default;
@@ -33,9 +28,6 @@ describe("Auth Service", () => {
     vi.clearAllMocks();
   });
 
-  // ==========================
-  // getGoogleAuthUrl
-  // ==========================
   describe("getGoogleAuthUrl", () => {
     it("should generate and return google auth url", () => {
       const mockUrl = "https://accounts.google.com/o/oauth2/auth?...";
@@ -52,19 +44,14 @@ describe("Auth Service", () => {
     });
   });
 
-  // ==========================
-  // getGoogleUser
-  // ==========================
   describe("getGoogleUser", () => {
     it("should exchange code for tokens and user payload", async () => {
       const code = "auth_code_123";
       const mockTokens = { id_token: "id_token_123", access_token: "abc" };
       const mockPayload = { email: "test@gmail.com", name: "Test User" };
 
-      // Mock getToken
       client.getToken.mockResolvedValue({ tokens: mockTokens });
 
-      // Mock verifyIdToken (trả về ticket object có hàm getPayload)
       client.verifyIdToken.mockResolvedValue({
         getPayload: vi.fn().mockReturnValue(mockPayload),
       });
@@ -87,9 +74,6 @@ describe("Auth Service", () => {
     });
   });
 
-  // ==========================
-  // generateAppToken
-  // ==========================
   describe("generateAppToken", () => {
     it("should generate token if user exists", async () => {
       const inputData = { email: "exist@test.com" };
@@ -120,7 +104,7 @@ describe("Auth Service", () => {
     });
 
     it("should throw 400 if email not registered", async () => {
-      User.findOne.mockResolvedValue(null); // User not found
+      User.findOne.mockResolvedValue(null); 
 
       try {
         await authService.generateAppToken({ email: "notfound@test.com" });
@@ -131,9 +115,6 @@ describe("Auth Service", () => {
     });
   });
 
-  // ==========================
-  // login
-  // ==========================
   describe("login", () => {
     const email = "test@test.com";
     const password = "password123";
@@ -145,7 +126,7 @@ describe("Auth Service", () => {
         email: email,
         role: "teacher",
         sipPassword: "sip_secret",
-        matchPassword: vi.fn().mockResolvedValue(true), // Password match
+        matchPassword: vi.fn().mockResolvedValue(true),
       };
 
       User.findOne.mockResolvedValue(mockUser);
@@ -179,7 +160,7 @@ describe("Auth Service", () => {
     it("should throw 400 if password does not match", async () => {
       const mockUser = {
         email: email,
-        matchPassword: vi.fn().mockResolvedValue(false), // Password WRONG
+        matchPassword: vi.fn().mockResolvedValue(false), 
       };
       User.findOne.mockResolvedValue(mockUser);
 

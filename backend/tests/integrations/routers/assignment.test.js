@@ -1,5 +1,4 @@
 import request from "supertest";
-// 1. IMPORT APP THẬT (Thay vì express và router lẻ)
 import app from "../../../src/server.js";
 import {
   connectTestDB,
@@ -10,10 +9,6 @@ import {
 } from "../setup.js";
 import mongoose from "mongoose";
 
-// 2. XÓA ĐOẠN KHỞI TẠO APP THỦ CÔNG
-// const app = express();
-// app.use(express.json());
-// app.use("/api/assignment", assignmentRoutes);
 
 describe("Assignment Routes", () => {
   beforeAll(async () => await connectTestDB());
@@ -36,7 +31,6 @@ describe("Assignment Routes", () => {
 
   describe("POST /api/assignment", () => {
     it("should create assignment as teacher", async () => {
-      // Create a class first since the service validates it exists
       const Class = (await import("../../../src/model/class.js")).default;
       const teacher = await createTestUser("teacher");
       const testClass = await Class.create({

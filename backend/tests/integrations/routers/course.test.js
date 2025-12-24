@@ -1,5 +1,4 @@
 import request from "supertest";
-// 1. IMPORT APP THẬT TỪ SERVER.JS
 import app from "../../../src/server.js";
 import {
   connectTestDB,
@@ -9,10 +8,6 @@ import {
   createTestUser,
 } from "../setup.js";
 
-// 2. XÓA ĐOẠN KHỞI TẠO APP THỦ CÔNG
-// const app = express();
-// app.use(express.json());
-// app.use('/api/course', courseRoutes);
 
 describe("Course Routes", () => {
   beforeAll(async () => await connectTestDB());
@@ -23,8 +18,6 @@ describe("Course Routes", () => {
 
   beforeEach(async () => {
     const adminUser = await createTestUser("admin");
-    // Lưu ý: Kiểm tra lại hàm createAuthToken của bạn nhận bao nhiêu tham số
-    // Nếu chỉ nhận (id, role) thì bỏ email đi. Ở đây mình giữ nguyên theo code bạn gửi.
     adminToken = createAuthToken(adminUser._id, adminUser.email, "admin");
   });
 
@@ -102,7 +95,6 @@ describe("Course Routes", () => {
 
       const res = await request(app)
         .delete(`/api/course/${course._id}`)
-        // 3. THÊM TOKEN CHO DELETE (Thường xóa cần quyền Admin)
         .set("Authorization", `Bearer ${adminToken}`);
 
       expect(res.status).toBe(200);

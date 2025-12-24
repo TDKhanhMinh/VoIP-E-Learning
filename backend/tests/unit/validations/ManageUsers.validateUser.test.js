@@ -1,5 +1,3 @@
-// Note: This would typically be in frontend tests
-// If using Jest in frontend, move to: d:\VoIP E-Learning\frontend\src\pages\Admin\__tests__\
 
 const validateUser = (user) => {
   const errors = [];

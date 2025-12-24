@@ -27,7 +27,6 @@ const mocks = vi.hoisted(() => {
       this.save = mockSave;
     });
 
-    // Gán static methods
     MockModel.find = mockFind;
     MockModel.findById = mockFindById;
     MockModel.findByIdAndDelete = mockFindByIdAndDelete;
@@ -48,9 +47,6 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-// --- 2. Setup Mocks ---
-
-// Mock Models
 vi.mock("../../../src/model/testSession.js", () =>
   mocks.createMockModel("TestSession")
 );
@@ -58,17 +54,14 @@ vi.mock("../../../src/model/online_test.js", () =>
   mocks.createMockModel("OnlineTest")
 );
 
-// Mock Dependency Services
 vi.mock("../../../src/service/testAttemptService.js", () => ({
   createTestAttempt: mocks.mockCreateTestAttempt,
   checkAttempt: mocks.mockCheckAttempt,
 }));
 
-// Mock Mongoose (hỗ trợ new ObjectId)
 vi.mock("mongoose", () => ({
   default: {
     Types: {
-      // Mock ObjectId trả về string object để có method toString() tự nhiên
       ObjectId: vi.fn(function (id) {
         return new String(id);
       }),
@@ -85,7 +78,6 @@ describe("Test Session Service", () => {
     vi.useRealTimers();
   });
 
-  // --- Test: createTestSession ---
   describe("createTestSession", () => {
     const mockData = { test: "test-1", student: "student-1" };
     const mockTest = {
@@ -102,14 +94,12 @@ describe("Test Session Service", () => {
     };
 
     it("should create a new session with shuffled questions", async () => {
-      // Mock aggregate trả về mảng chứa mockTest
       mocks.mockAggregate.mockResolvedValue([mockTest]);
 
       const result = await testSessionService.createTestSession(mockData);
 
       expect(OnlineTest.aggregate).toHaveBeenCalled();
-      // Kiểm tra logic khởi tạo session
-      expect(result.remainingTime).toBe(60 * 60); // 60 mins -> seconds
+      expect(result.remainingTime).toBe(60 * 60);
       expect(result.questions).toHaveLength(1);
       expect(result.questions[0].questionId).toBe("q1");
       expect(result.finished).toBe(false);
@@ -118,7 +108,7 @@ describe("Test Session Service", () => {
     });
 
     it("should throw error if test not found", async () => {
-      mocks.mockAggregate.mockResolvedValue([]); // Không tìm thấy test
+      mocks.mockAggregate.mockResolvedValue([]);
 
       await expect(
         testSessionService.createTestSession(mockData)
@@ -126,7 +116,6 @@ describe("Test Session Service", () => {
     });
   });
 
-  // --- Test: getTestSessionById ---
   describe("getTestSessionById", () => {
     it("should return session by id", async () => {
       const mockSession = { _id: "session-1" };
@@ -139,13 +128,10 @@ describe("Test Session Service", () => {
     });
   });
 
-  // --- Test: updateTestSession ---
   describe("updateTestSession", () => {
     const sessionId = "session-1";
 
     it("should update selected options for questions", async () => {
-      // Mock session hiện tại trong DB
-      // Lưu ý: Không cần mock toString cho questionId vì String primitive đã có sẵn method toString() trả về chính nó.
       const mockSession = {
         _id: sessionId,
         questions: [
@@ -157,7 +143,6 @@ describe("Test Session Service", () => {
 
       mocks.mockFindById.mockResolvedValue(mockSession);
 
-      // Data update gửi lên
       const updateData = {
         questions: [{ questionId: "q1", selectedOptionId: "opt-new" }],
       };
@@ -168,9 +153,8 @@ describe("Test Session Service", () => {
       );
 
       expect(TestSession.findById).toHaveBeenCalledWith(sessionId);
-      // Kiểm tra giá trị đã update
       expect(result.questions[0].selectedOptionId).toBe("opt-new");
-      expect(result.questions[1].selectedOptionId).toBe("old"); // Không đổi
+      expect(result.questions[1].selectedOptionId).toBe("old");
       expect(mocks.mockSave).toHaveBeenCalled();
     });
 
@@ -183,7 +167,6 @@ describe("Test Session Service", () => {
     });
   });
 
-  // --- Test: deleteTestSession ---
   describe("deleteTestSession", () => {
     it("should delete session", async () => {
       const mockDeleted = { _id: "session-1" };
@@ -196,7 +179,6 @@ describe("Test Session Service", () => {
     });
   });
 
-  // --- Test: getTestSessionsByTestAndStudent ---
   describe("getTestSessionsByTestAndStudent", () => {
     const testId = "test-1";
     const studentId = "student-1";
@@ -222,9 +204,8 @@ describe("Test Session Service", () => {
 
     it("should create NEW session if no existing session found", async () => {
       mocks.mockCheckAttempt.mockResolvedValue(true);
-      mocks.mockFind.mockResolvedValue([]); // Không có session nào đang chạy
+      mocks.mockFind.mockResolvedValue([]);
 
-      // Mock aggregate cho createTestSession (được gọi bên trong)
       const mockTest = {
         _id: testId,
         time: 60,
@@ -238,9 +219,9 @@ describe("Test Session Service", () => {
       );
 
       expect(mocks.mockCheckAttempt).toHaveBeenCalled();
-      expect(OnlineTest.aggregate).toHaveBeenCalled(); // createTestSession được gọi
+      expect(OnlineTest.aggregate).toHaveBeenCalled();
       expect(result).toHaveLength(1);
-      expect(result[0]._id).toBe("new-id"); // ID từ mock constructor
+      expect(result[0]._id).toBe("new-id");
     });
 
     it("should throw error if attempts limit reached", async () => {
@@ -254,11 +235,9 @@ describe("Test Session Service", () => {
     });
   });
 
-  // --- Test: autoSubmitExpiredSessions ---
   describe("autoSubmitExpiredSessions", () => {
     it("should auto-submit expired sessions", async () => {
       const now = new Date();
-      // Session bắt đầu từ 61 phút trước
       const startTime = new Date(now.getTime() - 61 * 60 * 1000);
 
       const mockSession = {
@@ -268,7 +247,6 @@ describe("Test Session Service", () => {
       };
       mocks.mockFind.mockResolvedValue([mockSession]);
 
-      // Test có thời gian làm bài 60 phút
       const mockTest = { _id: "test-1", time: 60 };
       mocks.mockFindById.mockResolvedValue(mockTest);
 
@@ -276,7 +254,6 @@ describe("Test Session Service", () => {
 
       expect(TestSession.find).toHaveBeenCalledWith({ finished: false });
       expect(OnlineTest.findById).toHaveBeenCalledWith("test-1");
-      // Kiểm tra service submit được gọi
       expect(mocks.mockCreateTestAttempt).toHaveBeenCalledWith(
         "session-expired"
       );
@@ -284,7 +261,6 @@ describe("Test Session Service", () => {
 
     it("should NOT submit if time remains", async () => {
       const now = new Date();
-      // Session bắt đầu từ 30 phút trước
       const startTime = new Date(now.getTime() - 30 * 60 * 1000);
 
       const mockSession = {
@@ -294,7 +270,6 @@ describe("Test Session Service", () => {
       };
       mocks.mockFind.mockResolvedValue([mockSession]);
 
-      // Test 60 phút
       const mockTest = { _id: "test-1", time: 60 };
       mocks.mockFindById.mockResolvedValue(mockTest);
 
@@ -305,7 +280,7 @@ describe("Test Session Service", () => {
 
     it("should handle errors gracefully during auto-submit", async () => {
       const now = new Date();
-      const startTime = new Date(now.getTime() - 100 * 60 * 1000); // Expired
+      const startTime = new Date(now.getTime() - 100 * 60 * 1000);
 
       const mockSession = {
         _id: "session-error",
@@ -315,10 +290,8 @@ describe("Test Session Service", () => {
       mocks.mockFind.mockResolvedValue([mockSession]);
       mocks.mockFindById.mockResolvedValue({ _id: "test-1", time: 60 });
 
-      // Giả lập lỗi khi submit
       mocks.mockCreateTestAttempt.mockRejectedValue(new Error("Submit failed"));
 
-      // Spy console.error để kiểm tra log
       const consoleSpy = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});

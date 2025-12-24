@@ -4,15 +4,12 @@ import User from "../../../src/model/user.js";
 import Class from "../../../src/model/class.js";
 import mongoose from "mongoose";
 
-// --- 1. SỬ DỤNG vi.hoisted ĐỂ KHẮC PHỤC LỖI HOISTING ---
 const mocks = vi.hoisted(() => {
-  // 1. Mock Chain cho Class (find -> populate -> populate -> lean)
   const mockLean = vi.fn();
   const mockPopulate2 = vi.fn(() => ({ lean: mockLean }));
   const mockPopulate1 = vi.fn(() => ({ populate: mockPopulate2 }));
   const mockFind = vi.fn(() => ({ populate: mockPopulate1 }));
 
-  // 2. Mock ObjectId (Dùng function thường để hỗ trợ 'new')
   const mockObjectId = vi.fn(function (id) {
     return new String(id);
   });
@@ -26,9 +23,6 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-// --- 2. Setup Mocks ---
-
-// Mock Mongoose
 vi.mock("mongoose", async () => {
   const actual = await vi.importActual("mongoose");
   return {
@@ -37,29 +31,25 @@ vi.mock("mongoose", async () => {
       ...actual.default,
       Types: {
         ...actual.default.Types,
-        // Sử dụng mockObjectId từ biến hoisted
         ObjectId: mocks.mockObjectId,
       },
     },
   };
 });
 
-// Mock User Model
 vi.mock("../../../src/model/user.js", () => ({
   default: {
     findById: vi.fn(),
   },
 }));
 
-// Mock Class Model
 vi.mock("../../../src/model/class.js", () => ({
   default: {
-    find: mocks.mockFind, // Truy cập qua mocks
+    find: mocks.mockFind,
     aggregate: vi.fn(),
   },
 }));
 
-// Mock Semester Model
 vi.mock("../../../src/model/semester.js", () => ({
   default: {},
 }));
@@ -68,12 +58,10 @@ describe("Schedule Service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Reset behavior của chain mock thông qua mocks object
     mocks.mockFind.mockReturnValue({ populate: mocks.mockPopulate1 });
     mocks.mockPopulate1.mockReturnValue({ populate: mocks.mockPopulate2 });
     mocks.mockPopulate2.mockReturnValue({ lean: mocks.mockLean });
 
-    // Reset ObjectId mock
     mocks.mockObjectId.mockClear();
   });
 
@@ -101,13 +89,11 @@ describe("Schedule Service", () => {
     });
 
     it("should return schedule for TEACHER (using find/populate)", async () => {
-      // Setup User là teacher
       vi.mocked(User.findById).mockResolvedValue({
         _id: userId,
         role: "teacher",
       });
 
-      // Setup kết quả trả về từ Class.find chain
       const mockClasses = [{ name: "Math" }, { name: "Physics" }];
       mocks.mockLean.mockResolvedValue(mockClasses);
 
@@ -116,13 +102,11 @@ describe("Schedule Service", () => {
         semesterId
       );
 
-      // Verify logic
       expect(Class.find).toHaveBeenCalledWith({
-        teacher: expect.anything(), // do mock ObjectId
+        teacher: expect.anything(),
         semester: expect.anything(),
       });
 
-      // Verify chain calls
       expect(mocks.mockPopulate1).toHaveBeenCalledWith("course", "title");
       expect(mocks.mockPopulate2).toHaveBeenCalledWith(
         "semester",
@@ -134,13 +118,11 @@ describe("Schedule Service", () => {
     });
 
     it("should return schedule for STUDENT (using aggregate)", async () => {
-      // Setup User là student
       vi.mocked(User.findById).mockResolvedValue({
         _id: userId,
         role: "student",
       });
 
-      // Setup kết quả trả về từ aggregate
       const mockSchedule = [
         {
           name: "Math",
@@ -155,18 +137,14 @@ describe("Schedule Service", () => {
         semesterId
       );
 
-      // Verify logic
       expect(Class.aggregate).toHaveBeenCalled();
 
-      // Kiểm tra xem aggregate pipeline có chứa match semester và student không
       const pipeline = vi.mocked(Class.aggregate).mock.calls[0][0];
 
-      // Kiểm tra stage đầu tiên (Match Semester)
       expect(pipeline[0]).toEqual({
         $match: { semester: expect.anything() },
       });
 
-      // Kiểm tra có stage match user enrollment
       const matchStudentStage = pipeline.find(
         (stage) => stage.$match && stage.$match["enrollments.student"]
       );
@@ -176,7 +154,6 @@ describe("Schedule Service", () => {
     });
 
     it("should throw 400 error for INVALID role", async () => {
-      // Setup User role admin
       vi.mocked(User.findById).mockResolvedValue({
         _id: userId,
         role: "admin",

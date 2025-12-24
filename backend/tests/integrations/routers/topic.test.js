@@ -31,7 +31,6 @@ describe("Topic Routes", () => {
   describe("POST /api/topic", () => {
     it("should create topic as teacher", async () => {
       const topicData = {
-        // 2. SỬA LỖI VALIDATION: Đổi 'name' thành 'title'
         title: "Test Topic",
         description: "Test Description",
       };
@@ -41,12 +40,10 @@ describe("Topic Routes", () => {
         .set("Authorization", `Bearer ${teacherToken}`)
         .send(topicData);
 
-      // Nếu vẫn lỗi 401, hãy kiểm tra xem middleware của bạn dùng Header hay Cookie
       if (res.status === 401) console.log("Auth Error:", res.body);
       if (res.status === 400) console.log("Validation Error:", res.body);
 
       expect(res.status).toBe(201);
-      // Kiểm tra xem server trả về title đúng không
       expect(res.body.title).toBe("Test Topic");
     });
   });
@@ -55,7 +52,6 @@ describe("Topic Routes", () => {
     it("should update topic as teacher", async () => {
       const Topic = (await import("../../../src/model/topic.js")).default;
 
-      // 3. SỬA LỖI TẠO DỮ LIỆU GIẢ: Phải dùng 'title'
       const topic = await Topic.create({
         title: "Test Topic Old",
         description: "Description",
@@ -64,7 +60,7 @@ describe("Topic Routes", () => {
       const res = await request(app)
         .put(`/api/topic/${topic._id}`)
         .set("Authorization", `Bearer ${teacherToken}`)
-        .send({ title: "Updated Topic" }); // Gửi field 'title'
+        .send({ title: "Updated Topic" });
 
       expect(res.status).toBe(200);
       expect(res.body.title).toBe("Updated Topic");

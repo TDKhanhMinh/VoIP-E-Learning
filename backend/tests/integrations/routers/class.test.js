@@ -1,5 +1,4 @@
 import request from "supertest";
-// 1. IMPORT APP THẬT
 import app from "../../../src/server.js";
 import {
   connectTestDB,
@@ -78,7 +77,6 @@ describe("Class Routes", () => {
     it("should get class by id", async () => {
       const Class = (await import("../../../src/model/class.js")).default;
 
-      // 3. SỬA DỮ LIỆU TẠO GIẢ (Thêm schedule)
       const classDoc = await Class.create({
         name: "Test Class",
         course: new mongoose.Types.ObjectId(),

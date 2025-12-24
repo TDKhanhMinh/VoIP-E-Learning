@@ -2,7 +2,6 @@ import { mongo } from "mongoose";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import mongoose from "mongoose";
 
-// 1. MOCK CÁC MODEL VÀ SERVICE PHỤ THUỘC
 vi.mock("../../../src/model/class.js", () => ({
   default: {
     find: vi.fn(),
@@ -34,12 +33,10 @@ vi.mock("../../../src/model/user.js", () => ({
   },
 }));
 
-// Mock roomService (vì createClass có gọi hàm createRoom)
 vi.mock("../../../src/service/roomService.js", () => ({
   createRoom: vi.fn(),
 }));
 
-// 2. IMPORT SERVICE & MODELS
 const classService = await import("../../../src/service/classService.js");
 const Class = (await import("../../../src/model/class.js")).default;
 const Course = (await import("../../../src/model/course.js")).default;
@@ -53,15 +50,11 @@ describe("Class Service", () => {
     vi.clearAllMocks();
   });
 
-  // ==========================
-  // getAll
-  // ==========================
   describe("getAll", () => {
     it("should return all classes sorted by createdAt", async () => {
       const mockClasses = [
         { _id: new mongoose.Types.ObjectId().toString(), name: "Class 1" },
       ];
-      // Mock chain: find -> sort
       const mockSort = vi.fn().mockResolvedValue(mockClasses);
       Class.find.mockReturnValue({ sort: mockSort });
 
@@ -73,9 +66,6 @@ describe("Class Service", () => {
     });
   });
 
-  // ==========================
-  // getUserClasses (Complex Logic: Aggregation)
-  // ==========================
   describe("getUserClasses", () => {
     it("should throw 404 if user not found", async () => {
       User.findById.mockResolvedValue(null);
@@ -103,7 +93,6 @@ describe("Class Service", () => {
       const result = await classService.getUserClasses(mockUser._id);
 
       expect(Class.aggregate).toHaveBeenCalled();
-      // Kiểm tra sơ bộ pipeline có match teacher id không (chi tiết pipeline phức tạp khó check deep equal chính xác tuyệt đối, chỉ cần đảm bảo gọi đúng)
       expect(result).toEqual(mockResult);
     });
 
@@ -126,9 +115,6 @@ describe("Class Service", () => {
     });
   });
 
-  // ==========================
-  // findById
-  // ==========================
   describe("findById", () => {
     it("should return class if found", async () => {
       const mockClass = { _id: new mongoose.Types.ObjectId().toString() };
@@ -147,9 +133,6 @@ describe("Class Service", () => {
     });
   });
 
-  // ==========================
-  // createClass (Logic: Validation & Conflict Check)
-  // ==========================
   describe("createClass", () => {
     const inputData = {
       name: "Math 101",
@@ -162,7 +145,7 @@ describe("Class Service", () => {
     };
 
     it("should throw 404 if semester/teacher/course invalid", async () => {
-      Semester.findById.mockResolvedValue(null); // Invalid Semester
+      Semester.findById.mockResolvedValue(null);
       User.findOne.mockResolvedValue({
         _id: new mongoose.Types.ObjectId().toString(),
       });
@@ -176,7 +159,6 @@ describe("Class Service", () => {
     });
 
     it("should throw 400 if SCHEDULE CONFLICT exists", async () => {
-      // Setup dependencies valid
       Semester.findById.mockResolvedValue({
         _id: new mongoose.Types.ObjectId().toString(),
       });
@@ -188,7 +170,6 @@ describe("Class Service", () => {
       Course.findById.mockResolvedValue({
         _id: new mongoose.Types.ObjectId().toString(),
       });
-      // Mock Conflict: Giảng viên đã có lớp khác vào Thứ 2 - Ca 1
       const existingClasses = [
         {
           _id: new mongoose.Types.ObjectId().toString(),
@@ -196,7 +177,7 @@ describe("Class Service", () => {
           schedule: [{ dayOfWeek: 2, shift: 1 }],
         },
       ];
-      Class.find.mockResolvedValue(existingClasses); // find teacherClasses
+      Class.find.mockResolvedValue(existingClasses);
 
       try {
         await classService.createClass(inputData);
@@ -207,7 +188,6 @@ describe("Class Service", () => {
     });
 
     it("should create class and room if no conflict", async () => {
-      // Setup dependencies valid
       Semester.findById.mockResolvedValue({
         _id: new mongoose.Types.ObjectId().toString(),
       });
@@ -221,9 +201,7 @@ describe("Class Service", () => {
         _id: new mongoose.Types.ObjectId().toString(),
       });
 
-      // No conflict
       Class.find.mockResolvedValue([]);
-      // Create success
       const newClass = {
         _id: new mongoose.Types.ObjectId().toString(),
         ...inputData,
@@ -233,7 +211,6 @@ describe("Class Service", () => {
       const result = await classService.createClass(inputData);
 
       expect(result).toEqual(newClass);
-      // Kiểm tra side-effect: createRoom phải được gọi
       expect(createRoom).toHaveBeenCalledWith({
         classId: newClass._id,
         teacherId: mockTeacher._id,
@@ -243,15 +220,11 @@ describe("Class Service", () => {
     });
   });
 
-  // ==========================
-  // updateClass (Logic: Update Teacher/Room & Conflict Check)
-  // ==========================
   describe("updateClass", () => {
     const classId = new mongoose.Types.ObjectId().toString();
 
     it("should throw 404 if class to update not found", async () => {
       Class.findById.mockResolvedValue(null);
-      // Giả sử không update teacher/semester để skip các check đó
       await expect(
         classService.updateClass(classId, { name: "New Name" })
       ).rejects.toThrow("Class not found");
@@ -260,7 +233,6 @@ describe("Class Service", () => {
     it("should update Room info if Teacher changes", async () => {
       const updateData = { teacher: new mongoose.Types.ObjectId().toString() };
 
-      // Mock new teacher
       const newTeacher = {
         _id: new mongoose.Types.ObjectId().toString(),
         full_name: "New T",
@@ -268,18 +240,14 @@ describe("Class Service", () => {
       };
       User.findOne.mockResolvedValue(newTeacher);
 
-      // Mock existing room
       const mockRoom = { save: vi.fn() };
       Room.findOne.mockResolvedValue(mockRoom);
 
-      // Mock class exist
       Class.findById.mockResolvedValue({
         _id: classId,
         teacher: "old_teacher",
       });
-      // Mock conflict check (empty)
       Class.find.mockResolvedValue([]);
-      // Mock update
       Class.findByIdAndUpdate.mockResolvedValue({
         _id: classId,
         teacher: "new_teacher_id",
@@ -303,13 +271,11 @@ describe("Class Service", () => {
       };
       Class.findById.mockResolvedValue(currentClass);
 
-      // Mock Conflict: Lớp khác của giáo viên này trùng lịch
       const conflictingClass = {
         _id: new mongoose.Types.ObjectId().toString(),
         name: "Other Class",
         schedule: [{ dayOfWeek: 3, shift: 1 }],
       };
-      // Class.find tìm các lớp của giáo viên (ngo trừ lớp hiện tại)
       Class.find.mockResolvedValue([conflictingClass]);
 
       try {
@@ -330,7 +296,7 @@ describe("Class Service", () => {
       };
 
       Class.findById.mockResolvedValue(currentClass);
-      Class.find.mockResolvedValue([]); // No conflict
+      Class.find.mockResolvedValue([]); 
       Class.findByIdAndUpdate.mockResolvedValue({
         ...currentClass,
         ...updateData,
@@ -343,9 +309,6 @@ describe("Class Service", () => {
     });
   });
 
-  // ==========================
-  // addAbsenceDate
-  // ==========================
   describe("addAbsenceDate", () => {
     it("should add absence date to class", async () => {
       const mockClass = {
@@ -376,9 +339,6 @@ describe("Class Service", () => {
     });
   });
 
-  // ==========================
-  // deleteClass
-  // ==========================
   describe("deleteClass", () => {
     it("should delete class successfully", async () => {
       Class.findByIdAndDelete.mockResolvedValue({
