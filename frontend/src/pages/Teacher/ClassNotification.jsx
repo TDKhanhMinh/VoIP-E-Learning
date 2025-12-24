@@ -18,7 +18,7 @@ import { announcementService } from "./../../services/announcementService";
 import NotificationModal from "./../../components/Modals/NotificationModal";
 import ConfirmDialog from "./../../components/UI/ConfirmDialog";
 import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
-import HeaderSkeleton from './../../components/SkeletonLoading/HeaderSkeleton';
+import HeaderSkeleton from "./../../components/SkeletonLoading/HeaderSkeleton";
 
 export default function ClassNotification() {
   const teacherId = sessionStorage.getItem("userId")?.replace(/"/g, "");
@@ -135,8 +135,6 @@ export default function ClassNotification() {
     recent: notifications?.filter((n) => isRecent(n.createdAt)).length || 0,
     older: notifications?.filter((n) => !isRecent(n.createdAt)).length || 0,
   };
-
-
 
   const ListSkeleton = () => (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden animate-pulse">
@@ -356,7 +354,7 @@ export default function ClassNotification() {
                                 href={n.file_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-600 hover:underline flex items-center gap-2 mt-2 inline-block font-medium group"
+                                className="text-blue-600 hover:underline items-center gap-2 mt-2 inline-block font-medium group"
                               >
                                 <FaDownload className="group-hover:animate-bounce" />
                                 {n.file_name.split(".")[0] || "Tệp đính kèm"}

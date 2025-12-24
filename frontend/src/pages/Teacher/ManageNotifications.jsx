@@ -134,7 +134,6 @@ export default function ManageNotifications() {
             })}
           </div>
         ) : (
-          /* Modern Empty State */
           <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-dashed border-gray-300">
             <div className="bg-blue-50 p-6 rounded-full mb-4">
               <FaCalendarAlt className="text-4xl text-blue-300" />

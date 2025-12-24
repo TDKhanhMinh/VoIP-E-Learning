@@ -292,18 +292,16 @@ export default function TeacherClassDetails() {
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b-2 border-gray-200">
                     <tr>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        STT
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Họ và tên
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        MSSV
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Email
-                      </th>
+                      {["STT", "Họ và tên", "MSSV", "Email"].map((header) => {
+                        return (
+                          <th
+                            key={header}
+                            className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                          >
+                            {header}
+                          </th>
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">

@@ -212,21 +212,22 @@ export default function TeacherClasses() {
                 <table className="w-full">
                   <thead className="bg-gray-100 border-b-2 border-gray-200">
                     <tr>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                        Tên lớp
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                        Học kỳ
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                        Lịch học
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                        Số sinh viên
-                      </th>
-                      <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                        Hành động
-                      </th>
+                      {[
+                        "Tên lớp",
+                        "Học kỳ",
+                        "Lịch học",
+                        "Số sinh viên",
+                        "Hành động",
+                      ].map((header) => {
+                        return (
+                          <th
+                            key={header}
+                            className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                          >
+                            {header}
+                          </th>
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">

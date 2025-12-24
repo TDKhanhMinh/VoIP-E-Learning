@@ -25,7 +25,6 @@ export default function ManageSemester() {
   const [classes, setClasses] = useState([]);
   const [users, setUsers] = useState([]);
 
-  // 1. Thêm các biến state loading
   const [isLoading, setIsLoading] = useState(true);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
 
@@ -41,9 +40,8 @@ export default function ManageSemester() {
   const totalPages = Math.ceil(semesters.length / itemsPerPage);
 
   const fetchSemesters = useCallback(async () => {
-    setIsLoading(true); // Bắt đầu load
+    setIsLoading(true);
     try {
-      // Tối ưu: Gọi song song API
       const [data, usersData] = await Promise.all([
         semesterService.getAllSemesters(),
         userService.getAllUsers(),
@@ -55,19 +53,17 @@ export default function ManageSemester() {
       console.error("Error fetching semesters:", error);
       toast.error("Lỗi khi tải dữ liệu");
     } finally {
-      setIsLoading(false); // Kết thúc load
+      setIsLoading(false);
     }
   }, []);
 
   const handleLoadSemesterDetails = async (semesterId) => {
-    setOpenDetail(true); // Mở view chi tiết ngay
-    setIsDetailLoading(true); // Bắt đầu load chi tiết
+    setOpenDetail(true);
+    setIsDetailLoading(true);
     try {
       const semester = semesters.find((sem) => sem._id === semesterId);
       console.log("Loaded semester detail:", semester);
 
-      // Lưu ý: Logic này lấy toàn bộ class rồi filter ở client sẽ chậm nếu dữ liệu lớn.
-      // Tốt hơn nên có API getClassesBySemesterId từ backend.
       const allClasses = await classService.getAllClass();
       const filteredClasses = allClasses.filter(
         (cls) => cls.semester === semesterId
@@ -77,7 +73,7 @@ export default function ManageSemester() {
       console.error("Error loading details:", error);
       toast.error("Không thể tải danh sách lớp học");
     } finally {
-      setIsDetailLoading(false); // Kết thúc load chi tiết
+      setIsDetailLoading(false);
     }
   };
 

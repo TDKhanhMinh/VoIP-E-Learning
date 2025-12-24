@@ -100,7 +100,7 @@ export default function ManageUsers() {
     const { _id, ...payload } = userData;
     try {
       const res = await userService.updateUser(selectedUser._id, payload);
-      console.log("🎉 User update:", res);
+      console.log("User update:", res);
       await fetchUsers();
       setOpenModal(false);
       toast.success("User updated successfully");
@@ -117,7 +117,7 @@ export default function ManageUsers() {
       });
       fetchUsers();
       toast.success("User locked successfully");
-      console.log("🎉 User locked:", res);
+      console.log(" User locked:", res);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Error locking user");
     }

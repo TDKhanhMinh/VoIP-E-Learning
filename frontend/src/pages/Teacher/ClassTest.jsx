@@ -47,7 +47,7 @@ export default function ClassTest() {
 
   useEffect(() => {
     fetchTests();
-  }, []);
+  }, [id]);
 
   const handleAddTest = async (newTest) => {
     try {

@@ -7,7 +7,6 @@ export default function Attendance() {
   const [attendances, setAttendances] = useState([]);
   const [expandedClass, setExpandedClass] = useState(null);
 
-  // 1. Sử dụng biến isLoading
   const [isLoading, setIsLoading] = useState(true);
 
   const userId = sessionStorage
@@ -25,7 +24,7 @@ export default function Attendance() {
       } catch (err) {
         console.error("Error loading attendance:", err);
       } finally {
-        setIsLoading(false); // Kết thúc loading
+        setIsLoading(false); 
       }
     };
     fetchAttendances();

@@ -242,10 +242,15 @@ export default function ClassAttendance() {
           <table className="w-full text-left border-collapse">
             <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
               <tr>
-                <th className="p-3">Buổi</th>
-                <th className="p-3">Sinh viên</th>
-                <th className="p-3">Trạng thái</th>
-                <th className="p-3">Thời gian</th>
+                {["Buổi", "Sinh viên", "Trạng thái", "Thời gian"].map(
+                  (header) => {
+                    return (
+                      <th key={header} className="p-3">
+                        {header}
+                      </th>
+                    );
+                  }
+                )}
               </tr>
             </thead>
             <tbody>

@@ -7,7 +7,7 @@ import GradeModal from "../../components/Modals/GradeModal";
 import { toast } from "react-toastify";
 import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
 import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
-import HeaderSkeleton from './../../components/SkeletonLoading/HeaderSkeleton';
+import HeaderSkeleton from "./../../components/SkeletonLoading/HeaderSkeleton";
 import {
   FaArrowLeft,
   FaFileAlt,
@@ -275,21 +275,20 @@ export default function ManageSubmissions() {
               <table className="w-full">
                 <thead className="bg-gray-100 border-b-2 border-gray-200">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Sinh viên
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      File bài nộp
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Thời gian nộp
-                    </th>
-                    <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Điểm số
-                    </th>
-                    <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Thao tác
-                    </th>
+                    {[
+                      "Sinh viên",
+                      "File bài nộp",
+                      "Thời gian nộp",
+                      "Điểm số",
+                      "Thao tác",
+                    ].map((header) => (
+                      <th
+                        key={header}
+                        className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                      >
+                        {header}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">

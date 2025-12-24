@@ -22,7 +22,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import ConfirmDialog from "../../components/UI/ConfirmDialog";
 import Pagination from "../../components/UI/Pagination";
 import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
-import HeaderSkeleton from './../../components/SkeletonLoading/HeaderSkeleton';
+import HeaderSkeleton from "./../../components/SkeletonLoading/HeaderSkeleton";
 
 export default function ClassDetail() {
   const { id } = useParams();
@@ -119,8 +119,6 @@ export default function ClassDetail() {
       console.error("Error removing student from class:", error);
     }
   };
-
-
 
   const InfoCardSkeleton = () => (
     <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 animate-pulse">
@@ -353,21 +351,16 @@ export default function ClassDetail() {
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b-2 border-gray-200">
                     <tr>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        STT
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Họ và tên
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        MSSV
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Email
-                      </th>
-                      <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Thao tác
-                      </th>
+                      {["STT", "Họ và tên", "MSSV", "Email", "Thao tác"].map(
+                        (header) => (
+                          <th
+                            key={header}
+                            className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                          >
+                            {header}
+                          </th>
+                        )
+                      )}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">

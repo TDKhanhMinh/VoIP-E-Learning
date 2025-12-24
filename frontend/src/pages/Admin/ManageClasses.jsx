@@ -27,7 +27,6 @@ export default function ManageClasses() {
   const [teachers, setTeachers] = useState([]);
   const [semesters, setSemesters] = useState([]);
 
-  // 1. Loading State
   const [isLoading, setIsLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,9 +41,8 @@ export default function ManageClasses() {
   }, []);
 
   const fetchAllData = async () => {
-    setIsLoading(true); // Bắt đầu load
+    setIsLoading(true);
     try {
-      // Tối ưu: Gọi song song 4 API
       const [classData, courseData, userData, semesterData] = await Promise.all(
         [
           classService.getAllClass(),
@@ -65,11 +63,10 @@ export default function ManageClasses() {
       console.error("Error fetching data:", error);
       toast.error("Lỗi khi tải dữ liệu");
     } finally {
-      setIsLoading(false); // Kết thúc load
+      setIsLoading(false);
     }
   };
 
-  // Helper để refresh lại list class sau khi thêm/sửa (nhẹ hơn fetchAllData)
   const refreshClasses = async () => {
     try {
       const data = await classService.getAllClass();
@@ -219,24 +216,21 @@ export default function ManageClasses() {
               <table className="w-full table-fixed min-w-[900px] md:min-w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="w-[20%] px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Tên lớp
-                    </th>
-                    <th className="w-[15%] px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Môn học
-                    </th>
-                    <th className="w-[15%] px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Giảng viên
-                    </th>
-                    <th className="w-[10%] px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Học kỳ
-                    </th>
-                    <th className="w-[20%] px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Lịch học
-                    </th>
-                    <th className="w-[20%] px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Hành động
-                    </th>
+                    {[
+                      "Tên lớp",
+                      "Môn học",
+                      "Giảng viên",
+                      "Học kỳ",
+                      "Lịch học",
+                      "Hành động",
+                    ].map((header) => (
+                      <th
+                        key={header}
+                        className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                      >
+                        {header}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { BookOpen, TrendingUp, Plus } from "lucide-react"; // Bỏ Loader2 vì dùng Skeleton
+import { BookOpen, TrendingUp, Plus } from "lucide-react";
 import CreateDocumentModal from "./../../components/Modals/CreateDocumentModal";
 import DocumentCard from "./../../components/Assignments/DocumentCard";
 import SearchDocumentForm from "../../components/UI/SearchDocumentForm";
@@ -13,9 +13,7 @@ function Recommend() {
   const [searchQuery, setSearchQuery] = useState("");
   const [topK, setTopK] = useState(5);
 
-  // 1. Biến isLoading cho việc tải danh sách ban đầu
   const [isLoading, setIsLoading] = useState(true);
-  // Biến loading riêng cho nút Search
   const [isSearching, setIsSearching] = useState(false);
 
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -27,7 +25,7 @@ function Recommend() {
   }, []);
 
   const fetchDocuments = async () => {
-    setIsLoading(true); // Bắt đầu tải
+    setIsLoading(true);
     try {
       const data = await recommendService.getDocuments();
       setDocuments(data);
@@ -35,7 +33,7 @@ function Recommend() {
       console.error("Error fetching documents:", error);
       toast.error("Không thể tải danh sách tài liệu");
     } finally {
-      setIsLoading(false); // Kết thúc tải
+      setIsLoading(false);
     }
   };
 

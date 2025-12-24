@@ -23,7 +23,6 @@ export default function ManageCourses() {
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // 1. Thêm biến isLoading
   const [isLoading, setIsLoading] = useState(true);
 
   const itemsPerPage = 6;
