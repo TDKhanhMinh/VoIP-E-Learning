@@ -50,10 +50,33 @@ export const startClassRecording = async (roomName, classId) => {
 };
 export const stopClassRecording = async (egressId) => {
   try {
-    await egressClient.stopEgress(egressId);
-    console.log(`[EgressService] Stopped recording. EgressID: ${egressId}`);
+    console.log(
+      `[EgressService] Attempting to stop recording. EgressID: ${egressId}`
+    );
+
+    const stopResult = await egressClient.stopEgress(egressId);
+    console.log(
+      `[EgressService] Stop result:`,
+      JSON.stringify(stopResult, null, 2)
+    );
+
+    const egressInfo = await egressClient.listEgress({ egressId });
+    console.log(
+      `[EgressService] Egress status after stop:`,
+      JSON.stringify(egressInfo, null, 2)
+    );
+
+    console.log(
+      `[EgressService] Successfully stopped recording. EgressID: ${egressId}`
+    );
+    return stopResult;
   } catch (error) {
     console.error("[EgressService] Error stopping recording:", error);
+    console.error("[EgressService] Error details:", {
+      message: error.message,
+      code: error.code,
+      egressId: egressId,
+    });
     throw error;
   }
 };

@@ -75,8 +75,8 @@ export async function generateScheduleWithMidTerm(classData) {
       events.push({
         id: `${classData._id}-${s.type}-${i}-${s.dayOfWeek}-${s.shift}`,
         title: classData.course.title,
-        start: `${dateStr}T${period.start}`,
-        end: `${dateStr}T${period.end}`,
+        start: `${dateStr}T${period.start}Z`,
+        end: `${dateStr}T${period.end}Z`,
         backgroundColor: isAbsent ? "#ef4444" : period.color,
         borderColor: isAbsent ? "#dc2626" : period.color,
         extendedProps: {

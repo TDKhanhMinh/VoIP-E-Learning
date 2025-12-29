@@ -5,15 +5,12 @@
   "type": "module",
   "scripts": {
     "test": "set NODE_OPTIONS=--experimental-vm-modules && jest --runInBand",
-    "test:watch": "set NODE_OPTIONS=--experimental-vm-modules && jest --watch",
-    "test:coverage": "set NODE_OPTIONS=--experimental-vm-modules && jest --coverage --runInBand",
     "test:unit": "set NODE_OPTIONS=--experimental-vm-modules && jest tests/unit --runInBand",
     "test:integration": "set NODE_OPTIONS=--experimental-vm-modules && jest tests/integrations --runInBand",
     "test:routes": "set NODE_OPTIONS=--experimental-vm-modules && jest tests/integrations/routers --runInBand",
     "test:services": "vitest run tests/unit/services",
     "test:utils": "set NODE_OPTIONS=--experimental-vm-modules && jest tests/unit/utils --runInBand",
     "test:validation": "set NODE_OPTIONS=--experimental-vm-modules && jest tests/unit/validation --runInBand",
-    "test:verbose": "set NODE_OPTIONS=--experimental-vm-modules && jest --verbose --runInBand",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
   },

@@ -19,7 +19,7 @@ const downloadFile = async (url, outputPath) => {
 };
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const generateContentWithRetry = async (model, parts, retries = 3) => {
+const generateContentWithRetry = async (model, parts, retries = 5) => {
   try {
     return await model.generateContent(parts);
   } catch (error) {
@@ -56,7 +56,7 @@ export const processMeetingData = async (fileUrl, roomName) => {
     );
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       generationConfig: { responseMimeType: "application/json" },
     });
 
@@ -95,24 +95,25 @@ export const processMeetingData = async (fileUrl, roomName) => {
   }
 `;
 
-    const result = await generateContentWithRetry(model, [
-      {
-        inlineData: {
-          mimeType: "audio/mp4",
-          data: base64Data,
+    const result =
+      // await generateContentWithRetry(model, [
+      //   {
+      //     inlineData: {
+      //       mimeType: "audio/mp4",
+      //       data: base64Data,
+      //     },
+      //   },
+      //   { text: prompt },
+      // ]);
+      await model.generateContent([
+        {
+          inlineData: {
+            mimeType: "audio/mp4",
+            data: base64Data,
+          },
         },
-      },
-      { text: prompt },
-    ]);
-    // await model.generateContent([
-    //   {
-    //     inlineData: {
-    //       mimeType: "audio/mp4",
-    //       data: base64Data,
-    //     },
-    //   },
-    //   { text: prompt },
-    // ]);
+        { text: prompt },
+      ]);
 
     console.log("[AI Service] Gemini đã trả về kết quả.");
 

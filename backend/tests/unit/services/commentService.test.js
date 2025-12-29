@@ -47,7 +47,7 @@ describe("Comment Service", () => {
       const mockSort = vi.fn().mockReturnValue({ skip: mockSkip });
 
       Comment.find.mockReturnValue({ sort: mockSort });
-
+      Comment.countDocuments.mockResolvedValue(10);
 
       const result = await commentService.getCommentsByPost(postId, params);
 

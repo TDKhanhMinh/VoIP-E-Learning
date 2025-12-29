@@ -3,7 +3,7 @@ import mysql from "mysql2/promise";
 
 export const syncUserToAsterisk = async (user) => {
   const connection = await mysql.createConnection({
-    host: "52.77.226.38", 
+    host: "13.229.204.143", 
     user: "asteriskuser",
     password: "strongpassword",
     database: "asterisk",

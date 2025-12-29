@@ -43,6 +43,7 @@ import chatSocket from "./sockets/chatSocket.js";
 await connectDB();
 const app = express();
 const allowedOrigins = [
+  "http://localhost",
   "http://localhost:5173",
   "http://localhost:5174",
   "https://voip-e-learning-1.onrender.com",

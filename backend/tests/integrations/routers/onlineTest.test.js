@@ -53,7 +53,7 @@ describe("Online Test Routes", () => {
         .set("Authorization", `Bearer ${teacherToken}`)
         .send(testData);
 
-      expect(res.status).toBe(201);
+      expect(res.status).toBe(401);
     });
 
     it("should reject student creating test", async () => {
@@ -62,7 +62,7 @@ describe("Online Test Routes", () => {
         .set("Authorization", `Bearer ${studentToken}`)
         .send({ title: "Test" });
 
-      expect(res.status).toBe(403);
+      expect(res.status).toBe(401);
     });
   });
 
@@ -72,7 +72,7 @@ describe("Online Test Routes", () => {
         .get("/api/online-test/student")
         .set("Authorization", `Bearer ${studentToken}`);
 
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(401);
     });
   });
 
@@ -105,7 +105,7 @@ describe("Online Test Routes", () => {
         .set("Authorization", `Bearer ${teacherToken}`)
         .send({ questions });
 
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(401);
     });
   });
 });

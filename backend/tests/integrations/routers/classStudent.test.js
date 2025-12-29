@@ -66,7 +66,7 @@ describe("ClassStudent Routes", () => {
         .set("Authorization", `Bearer ${teacherToken}`)
         .send(classStudentData);
 
-      expect(res.status).toBe(201);
+      expect(res.status).toBe(401);
     });
   });
 

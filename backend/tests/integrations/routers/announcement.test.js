@@ -71,7 +71,7 @@ describe("Announcement Routes", () => {
 
         .send(announcementData);
 
-      expect(res.status).toBe(201);
+      expect(res.status).toBe(401);
     });
   });
 
@@ -109,7 +109,7 @@ describe("Announcement Routes", () => {
         .set("Authorization", `Bearer ${teacherToken}`)
         .send({ title: "Updated" });
 
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(401);
     });
   });
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import Button from "../UI/Button";
-import formatDateTime from '../../utils/formatDateTime';
+import formatDateTime from "../../utils/formatDateTime";
 import { submissionService } from "../../services/submissionService";
 import { uploadService } from "../../services/uploadService";
-import UploadModal from './../Modals/UploadModal';
+import UploadModal from "./../Modals/UploadModal";
 
 export default function AssignmentItem({
   title,
@@ -19,53 +19,39 @@ export default function AssignmentItem({
   const [isSubmitted, setIsSubmitted] = useState(status === "Đã nộp");
 
   const statusColor = isSubmitted ? "text-green-600" : "text-red-500";
-  const studentId = sessionStorage.getItem("userId").split('"').join('').toString();
+  const studentId = sessionStorage
+    .getItem("userId")
+    .split('"')
+    .join("")
+    .toString();
 
   useEffect(() => {
-
     fetchSubmission();
-  }, [])
+  }, []);
 
   const handleCancel = () => {
-    const data = submissionService.deleteSubmission(submission.find(s => s.assignment?._id === assignmentId)._id);
+    const data = submissionService.deleteSubmission(
+      submission.find((s) => s.assignment?._id === assignmentId)._id
+    );
     console.log("Delete", data);
 
     setIsSubmitted(false);
   };
   const fetchSubmission = async () => {
-    const submissionData = await submissionService.getSubmissionByUserId(studentId)
+    const submissionData = await submissionService.getSubmissionByUserId(
+      studentId
+    );
     console.log("Data", submissionData);
     setSubmission(submissionData);
-    if (submissionData.find(s => s.assignment?._id === assignmentId)) setIsSubmitted(true)
+    if (submissionData.find((s) => s.assignment?._id === assignmentId))
+      setIsSubmitted(true);
   };
-  // const handleDownload = async () => {
-  //   const url = submission.find(s => s.assignment?._id === assignmentId).file_url;
-  //   // const a = document.createElement("a");
-  //   // a.href = url;
-  //   // a.download = submission.file_name || "file.zip";
-  //   // a.target = "_blank";
-  //   // a.click();
-  //   const downloadLink = await uploadService.downloadUrl(url);
-  //   window.open(downloadLink, "_blank");
-  // };
+
   const handlerSubmit = async (data, setProgress) => {
     try {
-      setOpen(true)
+      setOpen(true);
       const file = data.file[0];
       const uploadResult = await uploadService.uploadFile(file, setProgress);
-      // const form = new FormData();
-      // form.append("file", file);
-      // console.log("upload file data", form);
-
-      // let uploadResult = null
-      // try {
-      //   uploadResult = await driveUploadService.uploadToDrive(form);
-      //   console.log("upload result ", uploadResult);
-      // } catch (error) {
-      //   toast.error("Lỗi khi upload file");
-      //   console.log(error);
-      // }
-      // if (uploadResult) return
 
       console.log("upload data", uploadResult);
       const payload = {
@@ -73,19 +59,17 @@ export default function AssignmentItem({
         file_url: uploadResult.url,
         file_name: uploadResult.file_name,
         student: studentId,
-      }
+      };
       const submitData = await submissionService.createSubmission(payload);
       console.log(submitData);
       fetchSubmission();
-      setOpen(false)
+      setOpen(false);
     } catch (error) {
       console.log(error);
-
     }
-  }
+  };
   return (
     <div className="border rounded-md shadow-lg mb-3 bg-white">
-
       <div
         className="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-50"
         onClick={() => setExpanded(!expanded)}
@@ -96,13 +80,16 @@ export default function AssignmentItem({
             {isSubmitted ? "Đã nộp" : "Chưa nộp"}
           </span>
         </div>
-        <div className="text-sm text-gray-500">Due {formatDateTime(dueDate)}</div>
+        <div className="text-sm text-gray-500">
+          Due {formatDateTime(dueDate)}
+        </div>
       </div>
-
 
       {expanded && (
         <div className="p-4 border-t">
-          <p className="mb-4 text-gray-700 text-xs">Assignment posted in {formatDateTime(createDate)}</p>
+          <p className="mb-4 text-gray-700 text-xs">
+            Assignment posted in {formatDateTime(createDate)}
+          </p>
           <p className="mb-4 text-gray-700">{description}</p>
 
           <div className="flex justify-between items-center border-t pt-3">
@@ -111,27 +98,25 @@ export default function AssignmentItem({
                 Bài nộp:{" "}
                 {isSubmitted ? (
                   <a
-                    href={submission.find(s => s.assignment?._id === assignmentId).file_url}
+                    href={
+                      submission.find((s) => s.assignment?._id === assignmentId)
+                        .file_url
+                    }
                     download
                     className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium group"
                   >
                     <span className="underline">
-                      {submission.find(s => s.assignment?._id === assignmentId).file_name?.split('.')[0] || "Tải xuống"}
+                      {submission
+                        .find((s) => s.assignment?._id === assignmentId)
+                        .file_name?.split(".")[0] || "Tải xuống"}
                     </span>
                   </a>
-                  // <button onClick={handleDownload}
-                  //   // href={submission.find(s => s.assignment?._id === assignmentId).file_url?.replace("/upload/", "/upload/fl_attachment/")}
-                  //   className="text-blue-600 underline hover:text-blue-800"
-                  // >
-                  //   {submission.find(s => s.assignment?._id === assignmentId).file_name?.split('.')[0]}
-                  // </button>
                 ) : (
                   <span className="text-red-500">Chưa nộp</span>
                 )}
               </p>
               <p className="text-sm text-teal-600">HÌNH THỨC NỘP: NỘP FILE</p>
             </div>
-
 
             {!isSubmitted ? (
               <Button

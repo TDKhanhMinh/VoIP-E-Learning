@@ -85,7 +85,8 @@ export default function Schedule() {
         const eventsForClass = await generateScheduleWithMidTerm(cls);
         allEvents.push(...eventsForClass);
       }
-      console.log("event", allEvents);
+
+      console.log("All event", allEvents);
 
       setEvents(allEvents);
     } catch (err) {
