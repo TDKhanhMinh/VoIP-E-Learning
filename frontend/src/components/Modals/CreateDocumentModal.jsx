@@ -19,16 +19,16 @@ const CreateDocumentModal = ({ isOpen, onClose, onCreate }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b">
-          <h3 className="text-2xl font-bold text-gray-800">
+    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-black/60 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b dark:border-gray-700">
+          <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
             Thêm tài liệu mới
           </h3>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
+            <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">
               Tiêu đề *
             </label>
             <input
@@ -36,12 +36,12 @@ const CreateDocumentModal = ({ isOpen, onClose, onCreate }) => {
               required
               value={newDoc.title}
               onChange={(e) => setNewDoc({ ...newDoc, title: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
               placeholder="Nhập tiêu đề tài liệu"
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
+            <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">
               Mô tả
             </label>
             <textarea
@@ -50,30 +50,30 @@ const CreateDocumentModal = ({ isOpen, onClose, onCreate }) => {
                 setNewDoc({ ...newDoc, description: e.target.value })
               }
               rows="4"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
               placeholder="Nhập mô tả chi tiết về tài liệu"
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
+            <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">
               Tags (phân cách bằng dấu phẩy)
             </label>
             <input
               type="text"
               value={newDoc.tags}
               onChange={(e) => setNewDoc({ ...newDoc, tags: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
               placeholder="VD: python, beginner, programming"
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
+            <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">
               Cấp độ
             </label>
             <select
               value={newDoc.level}
               onChange={(e) => setNewDoc({ ...newDoc, level: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none"
             >
               <option value="">Chọn cấp độ</option>
               <option value="Beginner">Beginner</option>
@@ -82,14 +82,14 @@ const CreateDocumentModal = ({ isOpen, onClose, onCreate }) => {
             </select>
           </div>
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
+            <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">
               Link tài liệu
             </label>
             <input
               type="url"
               value={newDoc.link}
               onChange={(e) => setNewDoc({ ...newDoc, link: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
               placeholder="https://..."
             />
           </div>
@@ -103,7 +103,7 @@ const CreateDocumentModal = ({ isOpen, onClose, onCreate }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-medium transition-colors"
+              className="flex-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 py-3 rounded-lg font-medium transition-colors"
             >
               Hủy
             </button>

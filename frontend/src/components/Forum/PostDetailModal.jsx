@@ -16,9 +16,9 @@ export default function PostDetailModal({
 
   const getStatusBadge = (status) => {
     const styles = {
-      pending: "bg-yellow-100 text-yellow-800",
-      approved: "bg-green-100 text-green-800",
-      rejected: "bg-red-100 text-red-800",
+      pending: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400",
+      approved: "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400",
+      rejected: "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400",
     };
     const labels = {
       pending: "Chờ duyệt",
@@ -35,8 +35,8 @@ export default function PostDetailModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-black/60 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div className="flex-1">
@@ -68,11 +68,11 @@ export default function PostDetailModal({
           </div>
 
           <div className="prose max-w-none mb-6">
-            <p className="text-gray-700 whitespace-pre-wrap">{post.content}</p>
+            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{post.content}</p>
           </div>
 
           {canApprove && post.status === "pending" && (
-            <div className="flex gap-3 mb-6 pb-6 border-b">
+            <div className="flex gap-3 mb-6 pb-6 border-b dark:border-gray-700">
               <button
                 onClick={() => onApprovePost(post._id)}
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"

@@ -143,7 +143,7 @@ export default function ClassModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto  flex items-center justify-center px-4 py-8 ">
@@ -156,13 +156,13 @@ export default function ClassModal({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95 translate-y-2"
           >
-            <Dialog.Panel className="w-full max-w-xl transform rounded-2xl bg-white shadow-2xl ring-1 ring-gray-200 transition-all flex flex-col max-h-[90vh]">
+            <Dialog.Panel className="w-full max-w-xl transform rounded-2xl bg-white dark:bg-gray-800 shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 transition-all flex flex-col max-h-[90vh]">
               {/* Header */}
               <div
-                className={`flex items-center gap-3 px-6 py-4 border-b rounded-t-xl ${
+                className={`flex items-center gap-3 px-6 py-4 border-b dark:border-gray-700 rounded-t-xl ${
                   isEditing
-                    ? "bg-gradient-to-r from-amber-100 to-yellow-50"
-                    : "bg-gradient-to-r from-blue-100 to-indigo-50"
+                    ? "bg-gradient-to-r from-amber-100 to-yellow-50 dark:from-yellow-900/30 dark:to-amber-900/30"
+                    : "bg-gradient-to-r from-blue-100 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30"
                 }`}
               >
                 <div
@@ -176,7 +176,7 @@ export default function ClassModal({
                 </div>
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-semibold text-gray-800"
+                  className="text-lg font-semibold text-gray-800 dark:text-white"
                 >
                   {isEditing ? "Chỉnh sửa lớp học" : "Thêm lớp học mới"}
                 </Dialog.Title>
@@ -187,23 +187,26 @@ export default function ClassModal({
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col flex-1 overflow-hidden"
               >
-                <div className="px-6 py-5 bg-white overflow-y-auto flex-1">
+                <div className="px-6 py-5 bg-white dark:bg-gray-900 overflow-y-auto flex-1">
                   <div className="space-y-5">
                     {/* --- Tên lớp --- */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Tên lớp <span className="text-red-500">*</span>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Tên lớp{" "}
+                        <span className="text-red-500 dark:text-red-400">
+                          *
+                        </span>
                       </label>
                       <input
                         type="text"
-                        className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         placeholder="VD: Lập trình Web - Nhóm 1"
                         {...register("name", {
                           required: "Vui lòng nhập tên lớp",
                         })}
                       />
                       {errors.name && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 dark:text-red-400 text-sm mt-1">
                           {errors.name.message}
                         </p>
                       )}
@@ -211,8 +214,11 @@ export default function ClassModal({
 
                     {/* --- Môn học --- */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Môn học <span className="text-red-500">*</span>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Môn học{" "}
+                        <span className="text-red-500 dark:text-red-400">
+                          *
+                        </span>
                       </label>
                       <SelectField
                         name="course"
@@ -230,8 +236,11 @@ export default function ClassModal({
 
                     {/* --- Giảng viên --- */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Giảng viên <span className="text-red-500">*</span>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Giảng viên{" "}
+                        <span className="text-red-500 dark:text-red-400">
+                          *
+                        </span>
                       </label>
                       <SelectField
                         name="teacher"
@@ -249,8 +258,11 @@ export default function ClassModal({
 
                     {/* --- Học kỳ --- */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Học kỳ <span className="text-red-500">*</span>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Học kỳ{" "}
+                        <span className="text-red-500 dark:text-red-400">
+                          *
+                        </span>
                       </label>
                       <SelectField
                         name="semester"
@@ -268,52 +280,57 @@ export default function ClassModal({
 
                     {/* --- Lịch học --- */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Số tuần học lý thuyết{" "}
-                        <span className="text-red-500">*</span>
+                        <span className="text-red-500 dark:text-red-400">
+                          *
+                        </span>
                       </label>
                       <input
                         type="text"
-                        className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         placeholder="VD: 15"
                         {...register("theoryWeeks", {
                           required: "Vui lòng nhập số tuần học lý thuyết",
                         })}
                       />
                       {errors.theoryWeeks && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 dark:text-red-400 text-sm mt-1">
                           {errors.theoryWeeks.message}
                         </p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Số tuần học thực hành (nếu có){" "}
                       </label>
                       <input
                         type="text"
-                        className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         placeholder="VD: 10"
                         {...register("practiceWeeks", {
                           required: false,
                         })}
                       />
                       {errors.practiceWeeks && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 dark:text-red-400 text-sm mt-1">
                           {errors.practiceWeeks.message}
                         </p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Lịch học <span className="text-red-500">*</span>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Lịch học{" "}
+                        <span className="text-red-500 dark:text-red-400">
+                          *
+                        </span>
                       </label>
 
                       <div className="space-y-3">
                         {fields.map((field, index) => (
                           <div
                             key={field.id}
-                            className="flex items-center gap-3 border p-3 rounded-lg bg-gray-50"
+                            className="flex items-center gap-3 border dark:border-gray-600 p-3 rounded-lg bg-gray-50 dark:bg-gray-700"
                           >
                             <div className="flex flex-row space-x-2 flex-1 ">
                               <div className="flex-1">
@@ -370,13 +387,15 @@ export default function ClassModal({
                                   required
                                 />
                                 <div>
-                                  <label className="block text-sm font-medium  text-gray-700 mb-1">
+                                  <label className="block text-sm font-medium  text-gray-700 dark:text-gray-300 mb-1">
                                     Phòng học{" "}
-                                    <span className="text-red-500">*</span>
+                                    <span className="text-red-500 dark:text-red-400">
+                                      *
+                                    </span>
                                   </label>
                                   <input
                                     type="text"
-                                    className="w-full border border-gray-300 rounded-lg p-2.5 h-10 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg p-2.5 h-10 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 transition placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                     placeholder="VD: A0502"
                                     {...register(`schedule.${index}.room`, {
                                       required: "Vui lòng nhập phòng học",
@@ -385,7 +404,7 @@ export default function ClassModal({
                                   {errors.schedule &&
                                     errors.schedule[index] &&
                                     errors.schedule[index].room && (
-                                      <p className="text-red-500 text-sm mt-1">
+                                      <p className="text-red-500 dark:text-red-400 text-sm mt-1">
                                         {errors.schedule[index].room.message}
                                       </p>
                                     )}
@@ -395,7 +414,7 @@ export default function ClassModal({
                                 <button
                                   type="button"
                                   onClick={() => remove(index)}
-                                  className=" rounded-lg transition flex text-gray-400 hover:text-red-500 h-fit w-fit"
+                                  className=" rounded-lg transition flex text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 h-fit w-fit"
                                   title="Xóa buổi học"
                                 >
                                   <FaTrash />
@@ -405,7 +424,7 @@ export default function ClassModal({
                           </div>
                         ))}
                         {scheduleError && (
-                          <p className="text-red-500 text-sm mt-1 font-medium">
+                          <p className="text-red-500 dark:text-red-400 text-sm mt-1 font-medium">
                             {scheduleError}
                           </p>
                         )}
@@ -414,14 +433,14 @@ export default function ClassModal({
                           onClick={() =>
                             append({ dayOfWeek: "", shift: "", type: "" })
                           }
-                          className="w-full flex items-center justify-center gap-2 text-blue-600 text-md font-medium border-2 rounded-md px-2 py-2 border-blue-600 hover:bg-blue-600 hover:text-white transition"
+                          className="w-full flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400 text-md font-medium border-2 rounded-md px-2 py-2 border-blue-600 dark:border-blue-500 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 transition"
                         >
                           <FaPlus /> Thêm buổi học
                         </button>
                       </div>
 
                       {errors.schedule && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 dark:text-red-400 text-sm mt-1">
                           {errors.schedule.message}
                         </p>
                       )}
@@ -430,10 +449,10 @@ export default function ClassModal({
                 </div>
 
                 {/* Footer */}
-                <div className="flex justify-end space-x-3 border-t pt-4 px-6 pb-5 bg-white">
+                <div className="flex justify-end space-x-3 border-t dark:border-gray-700 pt-4 px-6 pb-5 bg-white dark:bg-gray-800">
                   <Button
                     type="button"
-                    className="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                    className="px-5 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                     onClick={() => {
                       onClose();
                       reset();

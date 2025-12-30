@@ -58,7 +58,6 @@ export default function AssignmentModal({
         className="fixed inset-0 z-50 flex items-center justify-center"
         onClose={onClose}
       >
-
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-200"
@@ -68,9 +67,8 @@ export default function AssignmentModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm" />
         </Transition.Child>
-
 
         <Transition.Child
           as={Fragment}
@@ -81,74 +79,70 @@ export default function AssignmentModal({
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <div className="relative bg-gradient-to-b from-white via-slate-50 to-white rounded-2xl shadow-2xl p-6 w-[480px] border border-slate-200">
-            <Dialog.Title className="text-xl font-bold text-gray-800 mb-5 text-center">
+          <div className="relative bg-gradient-to-b from-white via-slate-50 to-white dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 rounded-2xl shadow-2xl p-6 w-[480px] border border-slate-200 dark:border-gray-700">
+            <Dialog.Title className="text-xl font-bold text-gray-800 dark:text-white mb-5 text-center">
               {initialData ? "Chỉnh sửa bài tập" : "Giao bài tập mới"}
             </Dialog.Title>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                   Tên bài
                 </label>
                 <input
                   type="text"
-                  className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 transition outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   placeholder="Nhập tên bài tập"
                   {...register("title", { required: "Vui lòng nhập tên bài" })}
                 />
                 {errors.title && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
                     {errors.title.message}
                   </p>
                 )}
               </div>
 
-
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                   Hạn nộp
                 </label>
                 <input
                   type="datetime-local"
-                  className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 transition outline-none"
                   {...register("due_at", {
                     required: "Vui lòng chọn hạn nộp",
                   })}
                 />
                 {errors.due_at && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
                     {errors.due_at.message}
                   </p>
                 )}
               </div>
 
-
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                   Mô tả
                 </label>
                 <textarea
                   rows={4}
-                  className="w-full rounded-lg border border-gray-300 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none resize-none"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 transition outline-none resize-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   placeholder="Nhập nội dung mô tả bài tập"
                   {...register("description", {
                     required: "Vui lòng nhập mô tả",
                   })}
                 />
                 {errors.description && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">
                     {errors.description.message}
                   </p>
                 )}
               </div>
 
-
               <div className="mt-6 flex justify-end space-x-3">
                 <Button
                   type="button"
-                  className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition font-medium"
+                  className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition font-medium"
                   onClick={onClose}
                 >
                   Hủy
