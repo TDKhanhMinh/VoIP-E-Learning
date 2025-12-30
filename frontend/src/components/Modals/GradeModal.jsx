@@ -46,12 +46,9 @@ export default function GradeModal({ isOpen, onClose, onSave, initialData }) {
             onClose={onClose}
             className="fixed inset-0 z-50 flex items-center justify-center"
         >
-            {/* Nền mờ */}
             <div className="fixed inset-0 bg-gray-800/40 backdrop-blur-sm" aria-hidden="true" />
 
-            {/* Hộp modal */}
             <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg z-50 border border-gray-100">
-                {/* Header */}
                 <div className="flex items-center justify-between mb-5 border-b pb-3">
                     <div className="flex items-center space-x-3">
                         <div className="bg-blue-100 p-2 rounded-lg">
@@ -67,7 +64,6 @@ export default function GradeModal({ isOpen, onClose, onSave, initialData }) {
                         </div>
                     </div>
 
-                    {/* Trạng thái graded */}
                     {initialData && (
                         <span
                             className={`flex items-center text-xs font-medium px-3 py-1 rounded-full ${initialData.graded
@@ -85,9 +81,7 @@ export default function GradeModal({ isOpen, onClose, onSave, initialData }) {
                     )}
                 </div>
 
-                {/* Form */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                    {/* Điểm */}
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">
                             Điểm (0 - 10)
@@ -110,7 +104,6 @@ export default function GradeModal({ isOpen, onClose, onSave, initialData }) {
                         )}
                     </div>
 
-                    {/* Nhận xét */}
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">
                             Nhận xét (Feedback)
@@ -123,7 +116,6 @@ export default function GradeModal({ isOpen, onClose, onSave, initialData }) {
                         />
                     </div>
 
-                    {/* Actions */}
                     <div className="flex justify-end space-x-3 pt-3 border-t mt-5">
                         <button
                             type="button"

@@ -39,6 +39,7 @@ export default function ManageSubmissions() {
 
   const handleSaveGrade = async (data) => {
     try {
+      data.graded = true;
       console.log("Dữ liệu chấm điểm:", data);
       await submissionService.updateSubmission(selected._id, data);
       fetchSubmission();
