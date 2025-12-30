@@ -21,6 +21,7 @@ import HeaderSkeleton from "./../../components/SkeletonLoading/HeaderSkeleton";
 import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
 import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
 import { MdPublic } from "react-icons/md";
+import TestActions from "../../components/Tests/TestActions";
 
 export default function ClassTest() {
   const [tests, setTests] = useState({ class: {}, tests: [] });
@@ -141,7 +142,7 @@ export default function ClassTest() {
 
   const stats = {
     total: tests.tests.length,
-    active: tests.tests.filter((a) => !isOverdue(a.end)).length,
+    active: tests.tests.filter((a) => a.isPublished).length,
     overdue: tests.tests.filter((a) => isOverdue(a.end)).length,
   };
 
@@ -291,7 +292,7 @@ export default function ClassTest() {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto min-h-[300px]">
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-700 border-b-2 border-gray-200 dark:border-gray-600">
                   <tr>
@@ -314,7 +315,7 @@ export default function ClassTest() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700 ">
                   {filteredTests.map((a) => {
                     const status = getSubmissionStatus(a);
                     const StatusIcon = status.icon;
@@ -410,7 +411,7 @@ export default function ClassTest() {
                         <td className="px-6 py-4 text-center">
                           {a.available ? (
                             <span className="inline-block px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-sm font-medium">
-                              Đang mở
+                              Còn hạn
                             </span>
                           ) : (
                             <span className="inline-block px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-medium">
@@ -430,57 +431,15 @@ export default function ClassTest() {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center justify-center gap-2">
-                            <button
-                              onClick={() => handlePublishTest(a)}
-                              className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all"
-                              title="Công bố bài thi"
-                            >
-                              <MdPublic className="text-lg" />
-                            </button>
-                            <button
-                              onClick={() => {
-                                navigate(
-                                  `/teacher/class-details/${id}/tests/${a._id}`
-                                );
-                              }}
-                              className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all"
-                              title="Thêm câu hỏi cho bài thi"
-                            >
-                              <FaPlus className="text-lg" />
-                            </button>
-                            {a.isPublished !== false && (
-                              <button
-                                onClick={() =>
-                                  navigate(`/teacher/test-results/${a._id}`)
-                                }
-                                className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all"
-                                title="Xem chi tiết"
-                              >
-                                <FaEye className="text-lg" />
-                              </button>
-                            )}
-                            <button
-                              onClick={() => {
-                                setSelectedTest(a);
-                                setModalOpen(true);
-                              }}
-                              className="p-2 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-all"
-                              title="Chỉnh sửa"
-                            >
-                              <FaEdit className="text-lg" />
-                            </button>
-                            <button
-                              onClick={() => {
-                                setSelectedTest(a);
-                                setOpenConfirmModal(true);
-                              }}
-                              className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-all"
-                              title="Xóa"
-                            >
-                              <FaTrash className="text-lg" />
-                            </button>
-                          </div>
+                          <TestActions
+                            a={a}
+                            id={id}
+                            navigate={navigate}
+                            handlePublishTest={handlePublishTest}
+                            setSelectedTest={setSelectedTest}
+                            setModalOpen={setModalOpen}
+                            setOpenConfirmModal={setOpenConfirmModal}
+                          />
                         </td>
                       </tr>
                     );
