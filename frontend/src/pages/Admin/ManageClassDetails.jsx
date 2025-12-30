@@ -188,9 +188,7 @@ export default function ClassDetail() {
           </div>
         </div>
 
-        {/* Info & Stats Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Class Info */}
           <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700 flex items-center gap-2">
               <FaInfoCircle className="text-blue-600 dark:text-blue-400" />

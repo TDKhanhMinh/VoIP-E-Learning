@@ -82,35 +82,35 @@ export default function TeacherClassDetails() {
   };
 
   const InfoCardSkeleton = () => (
-    <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 animate-pulse">
-      <div className="h-16 bg-gray-200 w-full"></div>
+    <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 animate-pulse">
+      <div className="h-16 bg-gray-200 dark:bg-gray-700 w-full"></div>
       <div className="p-6 space-y-4">
-        <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
-        <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+        <div className="h-20 bg-gray-100 dark:bg-gray-700 rounded-xl w-full"></div>
+        <div className="h-20 bg-gray-100 dark:bg-gray-700 rounded-xl w-full"></div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
-          <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+          <div className="h-20 bg-gray-100 dark:bg-gray-700 rounded-xl w-full"></div>
+          <div className="h-20 bg-gray-100 dark:bg-gray-700 rounded-xl w-full"></div>
         </div>
       </div>
     </div>
   );
 
   const StatsCardSkeleton = () => (
-    <div className=" rounded-2xl shadow-lg p-6 h-64 animate-pulse bg-gray-200">
+    <div className=" rounded-2xl shadow-lg p-6 h-64 animate-pulse bg-gray-200 dark:bg-gray-800">
       <div className="flex justify-between mb-4">
-        <div className="h-6 bg-gray-300 rounded w-1/3"></div>
-        <div className="h-8 w-8 bg-gray-300 rounded-full"></div>
+        <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-1/3"></div>
+        <div className="h-8 w-8 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
       </div>
       <div className="space-y-4">
-        <div className="h-20 bg-gray-300 rounded-xl w-full"></div>
-        <div className="h-20 bg-gray-300 rounded-xl w-full"></div>
+        <div className="h-20 bg-gray-300 dark:bg-gray-700 rounded-xl w-full"></div>
+        <div className="h-20 bg-gray-300 dark:bg-gray-700 rounded-xl w-full"></div>
       </div>
     </div>
   );
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           <HeaderSkeleton />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -124,17 +124,17 @@ export default function TeacherClassDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-800 font-medium mb-4 transition-colors"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 font-medium mb-4 transition-colors"
           >
             <FaArrowLeft /> Quay lại
           </button>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 flex items-center gap-3">
-            <div className="p-3 bg-blue-600 rounded-xl shadow-lg">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
+            <div className="p-3 bg-blue-600 dark:bg-blue-700 rounded-xl shadow-lg">
               <FaUserGraduate className="text-white text-2xl" />
             </div>
             Chi tiết lớp học
@@ -142,43 +142,45 @@ export default function TeacherClassDetails() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
-            <div className="bg-blue-600 px-6 py-4">
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700">
+            <div className="bg-blue-600 dark:bg-blue-700 px-6 py-4">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <FaBook /> Thông tin lớp học
               </h2>
             </div>
             <div className="p-6 space-y-4">
-              <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-xl">
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <FaBook className="text-blue-600 text-xl" />
+              <div className="flex items-start gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <FaBook className="text-blue-600 dark:text-blue-400 text-xl" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-500 font-medium">Môn học</p>
-                  <p className="text-lg font-semibold text-gray-800 mt-1">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                    Môn học
+                  </p>
+                  <p className="text-lg font-semibold text-gray-800 dark:text-white mt-1">
                     {course.title || "—"}
                   </p>
                   {course.code && (
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                       Mã: {course.code}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 p-4 bg-green-50 rounded-xl">
-                <div className="p-3 bg-green-100 rounded-lg">
-                  <FaChalkboardTeacher className="text-green-600 text-xl" />
+              <div className="flex items-start gap-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
+                <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                  <FaChalkboardTeacher className="text-green-600 dark:text-green-400 text-xl" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-500 font-medium">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                     Giảng viên
                   </p>
-                  <p className="text-lg font-semibold text-gray-800 mt-1">
+                  <p className="text-lg font-semibold text-gray-800 dark:text-white mt-1">
                     {teacher?.full_name || "—"}
                   </p>
                   {teacher?.email && (
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                       {teacher.email}
                     </p>
                   )}
@@ -186,27 +188,29 @@ export default function TeacherClassDetails() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-start gap-4 p-4 bg-purple-50 rounded-xl">
-                  <div className="p-3 bg-purple-100 rounded-lg">
-                    <FaCalendarAlt className="text-purple-600 text-xl" />
+                <div className="flex items-start gap-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                    <FaCalendarAlt className="text-purple-600 dark:text-purple-400 text-xl" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-gray-500 font-medium">Học kỳ</p>
-                    <p className="text-base font-semibold text-gray-800 mt-1">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                      Học kỳ
+                    </p>
+                    <p className="text-base font-semibold text-gray-800 dark:text-white mt-1">
                       {semester?.name || "—"}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-xl">
-                  <div className="p-3 bg-blue-100 rounded-lg">
-                    <FaClock className="text-blue-600 text-xl" />
+                <div className="flex items-start gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                    <FaClock className="text-blue-600 dark:text-blue-400 text-xl" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-gray-500 font-medium">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                       Lịch học
                     </p>
-                    <p className="text-base font-semibold text-gray-800 mt-1">
+                    <p className="text-base font-semibold text-gray-800 dark:text-white mt-1">
                       {Array.isArray(classData.schedule) &&
                         formatSchedule(classData.schedule)}
                     </p>
@@ -216,7 +220,7 @@ export default function TeacherClassDetails() {
             </div>
           </div>
 
-          <div className="bg-blue-600 rounded-2xl shadow-lg p-6 text-white">
+          <div className="bg-blue-600 dark:bg-blue-700 rounded-2xl shadow-lg p-6 text-white">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Thống kê lớp học</h3>
               <FaUsers className="text-3xl opacity-50" />
@@ -238,15 +242,15 @@ export default function TeacherClassDetails() {
 
         <ClassNavigation id={id} />
 
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="bg-gray-100 px-6 py-4 border-b">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="bg-gray-100 dark:bg-gray-700 px-6 py-4 border-b dark:border-gray-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                  <FaUsers className="text-blue-600" />
+                <h3 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                  <FaUsers className="text-blue-600 dark:text-blue-400" />
                   Danh sách sinh viên
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                   Có {filteredStudents.length} sinh viên
                   {searchTerm && " phù hợp"}
                 </p>
@@ -254,7 +258,7 @@ export default function TeacherClassDetails() {
             </div>
           </div>
 
-          <div className="px-6 py-4 bg-gray-50 border-b">
+          <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b dark:border-gray-700">
             <div className="relative max-w-md">
               <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -265,7 +269,7 @@ export default function TeacherClassDetails() {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-11 pr-4 py-2.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:text-white dark:placeholder-gray-400"
               />
             </div>
           </div>
@@ -273,15 +277,15 @@ export default function TeacherClassDetails() {
           <div className="overflow-x-auto">
             {filteredStudents.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 px-4">
-                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                  <FaUserGraduate className="text-gray-400 text-4xl" />
+                <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                  <FaUserGraduate className="text-gray-400 dark:text-gray-500 text-4xl" />
                 </div>
-                <p className="text-gray-600 font-medium text-lg">
+                <p className="text-gray-600 dark:text-gray-300 font-medium text-lg">
                   {searchTerm
                     ? "Không tìm thấy sinh viên"
                     : "Chưa có sinh viên nào trong lớp"}
                 </p>
-                <p className="text-gray-400 text-sm mt-2">
+                <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
                   {searchTerm
                     ? "Thử tìm kiếm với từ khóa khác"
                     : "Nhấn nút 'Thêm sinh viên' để bắt đầu"}
@@ -290,13 +294,13 @@ export default function TeacherClassDetails() {
             ) : (
               <>
                 <table className="w-full">
-                  <thead className="bg-gray-50 border-b-2 border-gray-200">
+                  <thead className="bg-gray-50 dark:bg-gray-700 border-b-2 border-gray-200 dark:border-gray-600">
                     <tr>
                       {["STT", "Họ và tên", "MSSV", "Email"].map((header) => {
                         return (
                           <th
                             key={header}
-                            className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                            className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider"
                           >
                             {header}
                           </th>
@@ -304,32 +308,32 @@ export default function TeacherClassDetails() {
                       })}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                     {currentStudent.map((s, index) => (
                       <tr
                         key={s.id || index}
-                        className="hover:bg-blue-50 transition-colors duration-150"
+                        className="hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-150"
                       >
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
                           {startIndex + index + 1}
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                            <div className="w-10 h-10 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center text-white font-semibold">
                               {s.student?.full_name?.charAt(0)?.toUpperCase() ||
                                 "?"}
                             </div>
-                            <span className="font-semibold text-gray-800">
+                            <span className="font-semibold text-gray-800 dark:text-white">
                               {s.student?.full_name || "—"}
                             </span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="font-mono text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded-lg">
+                          <span className="font-mono text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-lg">
                             {s.student?.email.split("@")[0] || "—"}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
                           {s.student?.email || "—"}
                         </td>
                       </tr>
@@ -338,7 +342,7 @@ export default function TeacherClassDetails() {
                 </table>
 
                 {totalPages > 1 && (
-                  <div className="px-6 py-4 bg-gray-50 border-t">
+                  <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t dark:border-gray-700">
                     <Pagination
                       currentPage={currentPage}
                       totalPages={totalPages}

@@ -87,22 +87,22 @@ export default function ClassAttendance() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 dark:bg-gray-900 dark:text-gray-100 min-h-screen">
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+        className="flex items-center gap-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 font-medium transition-colors"
       >
         <FaArrowLeft /> Quay lại
       </button>
 
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
             Điểm danh sinh viên
           </h2>
-          <p className="text-gray-500 flex items-center gap-2 mt-1">
-            <FaCalendarAlt className="text-blue-600" />
-            <span className="font-medium text-gray-800">
+          <p className="text-gray-500 dark:text-gray-400 flex items-center gap-2 mt-1">
+            <FaCalendarAlt className="text-blue-600 dark:text-blue-400" />
+            <span className="font-medium text-gray-800 dark:text-gray-200">
               {formatDate(new Date())}
             </span>
           </p>
@@ -111,7 +111,7 @@ export default function ClassAttendance() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleViewSavedAttendance}
-            className="bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-200 shadow-sm transition-all duration-200 flex items-center gap-2"
+            className="bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm transition-all duration-200 flex items-center gap-2"
           >
             <FaListUl /> Xem điểm danh đã lưu
           </button>
@@ -119,7 +119,7 @@ export default function ClassAttendance() {
           {savedAttendances.length === 0 && (
             <button
               onClick={handleSaveAttendance}
-              className="bg-green-600 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 shadow-md transition-all duration-200"
+              className="bg-green-600 dark:bg-green-700 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 shadow-md transition-all duration-200"
             >
               Lưu điểm danh
             </button>
@@ -128,9 +128,9 @@ export default function ClassAttendance() {
       </div>
 
       {savedAttendances.length === 0 && (
-        <div className="bg-white shadow-lg rounded-xl p-5 border border-gray-100 overflow-x-auto">
+        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-5 border border-gray-100 dark:border-gray-700 overflow-x-auto">
           <table className="w-full text-left border-collapse">
-            <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
+            <thead className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 uppercase text-sm">
               <tr>
                 <th className="p-3 w-16">Email</th>
                 <th className="p-3">Họ và tên</th>
@@ -143,10 +143,12 @@ export default function ClassAttendance() {
               {students.map((s, index) => (
                 <tr
                   key={s.student._id || index}
-                  className="border-t hover:bg-gray-50 transition"
+                  className="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                 >
-                  <td className="p-3 text-gray-600">{s.student.email}</td>
-                  <td className="p-3 font-medium text-gray-800">
+                  <td className="p-3 text-gray-600 dark:text-gray-400">
+                    {s.student.email}
+                  </td>
+                  <td className="p-3 font-medium text-gray-800 dark:text-gray-200">
                     {s.student.full_name}
                   </td>
 
@@ -194,24 +196,28 @@ export default function ClassAttendance() {
       )}
 
       {showSaved && (
-        <div className="bg-white shadow-xl rounded-xl p-6 border border-gray-200 mt-6">
+        <div className="bg-white dark:bg-gray-800 shadow-xl rounded-xl p-6 border border-gray-200 dark:border-gray-700 mt-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-              <FaListUl className="text-blue-600" /> Danh sách điểm danh đã lưu
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+              <FaListUl className="text-blue-600 dark:text-blue-400" /> Danh
+              sách điểm danh đã lưu
             </h3>
             <button
               onClick={() => {
                 setShowSaved(false);
                 setSavedAttendances([]);
               }}
-              className="text-red-500 text-sm hover:underline"
+              className="text-red-500 dark:text-red-400 text-sm hover:underline"
             >
               Đóng
             </button>
           </div>
 
           <div className="flex items-center gap-3 mb-4">
-            <label htmlFor="lessonFilter" className="text-gray-700 font-medium">
+            <label
+              htmlFor="lessonFilter"
+              className="text-gray-700 dark:text-gray-300 font-medium"
+            >
               Lọc theo buổi:
             </label>
             <select
@@ -226,7 +232,7 @@ export default function ClassAttendance() {
                   );
                 }
               }}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
               <option value="all">Tất cả</option>
               {[...new Set(savedAttendances.map((a) => a.lesson))].map(
@@ -240,7 +246,7 @@ export default function ClassAttendance() {
           </div>
 
           <table className="w-full text-left border-collapse">
-            <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
+            <thead className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 uppercase text-sm">
               <tr>
                 {["Buổi", "Sinh viên", "Trạng thái", "Thời gian"].map(
                   (header) => {
@@ -255,16 +261,23 @@ export default function ClassAttendance() {
             </thead>
             <tbody>
               {(filteredAttendances || savedAttendances).map((a, idx) => (
-                <tr key={idx} className="border-t hover:bg-gray-50">
-                  <td className="p-3 text-gray-700">Buổi {a.lesson}</td>
-                  <td className="p-3">{a.student?.full_name}</td>
+                <tr
+                  key={idx}
+                  className="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <td className="p-3 text-gray-700 dark:text-gray-300">
+                    Buổi {a.lesson}
+                  </td>
+                  <td className="p-3 dark:text-gray-200">
+                    {a.student?.full_name}
+                  </td>
                   <td
                     className={`p-3 font-medium ${
                       a.status === "present"
-                        ? "text-green-600"
+                        ? "text-green-600 dark:text-green-400"
                         : a.status === "late"
-                        ? "text-yellow-600"
-                        : "text-red-600"
+                        ? "text-yellow-600 dark:text-yellow-400"
+                        : "text-red-600 dark:text-red-400"
                     }`}
                   >
                     {a.status === "present"
@@ -273,7 +286,7 @@ export default function ClassAttendance() {
                       ? "Trễ"
                       : "Vắng"}
                   </td>
-                  <td className="p-3 text-gray-500">
+                  <td className="p-3 text-gray-500 dark:text-gray-400">
                     {a.attend_at ? formatDateTime(new Date(a.attend_at)) : "—"}
                   </td>
                 </tr>

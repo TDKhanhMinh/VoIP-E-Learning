@@ -105,7 +105,7 @@ export default function ManageSubmissions() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
         <div className="max-w-7xl mx-auto space-y-6">
           <HeaderSkeleton />
           <StatsSkeleton />
@@ -116,27 +116,27 @@ export default function ManageSubmissions() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-800 font-medium mb-4 transition-colors"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 font-medium mb-4 transition-colors"
           >
             <FaArrowLeft /> Quay lại
           </button>
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div className="flex items-start gap-4">
               <div className="p-4 bg-blue-600 rounded-xl shadow-lg">
                 <FaFileAlt className="text-white text-3xl" />
               </div>
               <div className="flex-1">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-2">
                   {assignment?.title || "Đang tải..."}
                 </h1>
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-300">
                   <div className="flex items-center gap-2">
-                    <FaCalendarAlt className="text-gray-400" />
+                    <FaCalendarAlt className="text-gray-400 dark:text-gray-500" />
                     <span>
                       Hạn nộp:{" "}
                       <strong>
@@ -147,7 +147,7 @@ export default function ManageSubmissions() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FaUsers className="text-gray-400" />
+                    <FaUsers className="text-gray-400 dark:text-gray-500" />
                     <span>
                       <strong>{submissions.length}</strong> bài nộp
                     </span>
@@ -159,75 +159,79 @@ export default function ManageSubmissions() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
                   Tổng bài nộp
                 </p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">
+                <p className="text-3xl font-bold text-gray-800 dark:text-white mt-2">
                   {stats.total}
                 </p>
               </div>
-              <div className="p-4 bg-blue-100 rounded-xl">
-                <FaFileAlt className="text-blue-600 text-3xl" />
+              <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
+                <FaFileAlt className="text-blue-600 dark:text-blue-400 text-3xl" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
                   Đã chấm điểm
                 </p>
-                <p className="text-3xl font-bold text-green-600 mt-2">
+                <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">
                   {stats.graded}
                 </p>
               </div>
-              <div className="p-4 bg-green-100 rounded-xl">
-                <FaCheckCircle className="text-green-600 text-3xl" />
+              <div className="p-4 bg-green-100 dark:bg-green-900/30 rounded-xl">
+                <FaCheckCircle className="text-green-600 dark:text-green-400 text-3xl" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium">Chưa chấm</p>
-                <p className="text-3xl font-bold text-orange-600 mt-2">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                  Chưa chấm
+                </p>
+                <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mt-2">
                   {stats.ungraded}
                 </p>
               </div>
-              <div className="p-4 bg-orange-100 rounded-xl">
-                <FaClock className="text-orange-600 text-3xl" />
+              <div className="p-4 bg-orange-100 dark:bg-orange-900/30 rounded-xl">
+                <FaClock className="text-orange-600 dark:text-orange-400 text-3xl" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium">Điểm TB</p>
-                <p className="text-3xl font-bold text-purple-600 mt-2">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                  Điểm TB
+                </p>
+                <p className="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-2">
                   {stats.averageScore}
                 </p>
               </div>
-              <div className="p-4 bg-purple-100 rounded-xl">
-                <FaChartBar className="text-purple-600 text-3xl" />
+              <div className="p-4 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
+                <FaChartBar className="text-purple-600 dark:text-purple-400 text-3xl" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 border border-gray-100 dark:border-gray-700">
           <div className="flex gap-2 overflow-x-auto">
             <button
               onClick={() => setFilterStatus("all")}
               className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
                 filterStatus === "all"
                   ? "bg-blue-600 text-white shadow-md"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               Tất cả ({stats.total})
@@ -237,7 +241,7 @@ export default function ManageSubmissions() {
               className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
                 filterStatus === "graded"
                   ? "bg-green-600 text-white shadow-md"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               Đã chấm ({stats.graded})
@@ -247,7 +251,7 @@ export default function ManageSubmissions() {
               className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
                 filterStatus === "ungraded"
                   ? "bg-orange-600 text-white shadow-md"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               Chưa chấm ({stats.ungraded})
@@ -255,16 +259,16 @@ export default function ManageSubmissions() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
           {filteredSubmissions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 px-4">
-              <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <FaFileAlt className="text-blue-600 text-4xl" />
+              <div className="w-24 h-24 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
+                <FaFileAlt className="text-blue-600 dark:text-blue-400 text-4xl" />
               </div>
-              <p className="text-gray-600 font-medium text-lg">
+              <p className="text-gray-600 dark:text-gray-300 font-medium text-lg">
                 Không có bài nộp nào
               </p>
-              <p className="text-gray-400 text-sm mt-2">
+              <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
                 {filterStatus === "all"
                   ? "Chưa có sinh viên nào nộp bài"
                   : "Thử thay đổi bộ lọc để xem bài nộp khác"}
@@ -273,7 +277,7 @@ export default function ManageSubmissions() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-100 border-b-2 border-gray-200">
+                <thead className="bg-gray-100 dark:bg-gray-700 border-b-2 border-gray-200 dark:border-gray-600">
                   <tr>
                     {[
                       "Sinh viên",
@@ -284,14 +288,14 @@ export default function ManageSubmissions() {
                     ].map((header) => (
                       <th
                         key={header}
-                        className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                        className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider"
                       >
                         {header}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                   {filteredSubmissions.map((s) => {
                     const scoreColor = getScoreColor(s.score);
                     const isLate = isLateSubmission(
@@ -302,7 +306,7 @@ export default function ManageSubmissions() {
                     return (
                       <tr
                         key={s._id}
-                        className="hover:bg-blue-50 transition-colors duration-150"
+                        className="hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-150"
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
@@ -311,10 +315,10 @@ export default function ManageSubmissions() {
                                 "?"}
                             </div>
                             <div>
-                              <p className="font-semibold text-gray-800">
+                              <p className="font-semibold text-gray-800 dark:text-white">
                                 {s.student?.full_name || "—"}
                               </p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {s.student?.email || "—"}
                               </p>
                             </div>
@@ -324,7 +328,7 @@ export default function ManageSubmissions() {
                           <a
                             href={s.file_url}
                             download
-                            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium group"
+                            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium group"
                           >
                             <FaDownload className="group-hover:animate-bounce" />
                             <span className="underline">
@@ -336,21 +340,23 @@ export default function ManageSubmissions() {
                           <div className="flex items-center gap-2">
                             <FaClock
                               className={
-                                isLate ? "text-red-500" : "text-gray-400"
+                                isLate
+                                  ? "text-red-500 dark:text-red-400"
+                                  : "text-gray-400 dark:text-gray-500"
                               }
                             />
                             <div>
                               <p
                                 className={`text-sm ${
                                   isLate
-                                    ? "text-red-600 font-medium"
-                                    : "text-gray-600"
+                                    ? "text-red-600 dark:text-red-400 font-medium"
+                                    : "text-gray-600 dark:text-gray-300"
                                 }`}
                               >
                                 {formatDateTime(s.createdAt)}
                               </p>
                               {isLate && (
-                                <span className="inline-flex items-center gap-1 text-xs text-red-600 mt-1">
+                                <span className="inline-flex items-center gap-1 text-xs text-red-600 dark:text-red-400 mt-1">
                                   <FaExclamationCircle /> Nộp trễ
                                 </span>
                               )}
@@ -361,14 +367,14 @@ export default function ManageSubmissions() {
                           {s.score != null ? (
                             <div className="inline-flex items-center gap-2">
                               <span
-                                className={`inline-flex items-center gap-1 px-4 py-2 rounded-xl text-lg font-bold bg-${scoreColor}-100 text-${scoreColor}-700`}
+                                className={`inline-flex items-center gap-1 px-4 py-2 rounded-xl text-lg font-bold bg-${scoreColor}-100 dark:bg-${scoreColor}-900/30 text-${scoreColor}-700 dark:text-${scoreColor}-400`}
                               >
                                 <FaStar className="text-sm" />
                                 {s.score}/10
                               </span>
                             </div>
                           ) : (
-                            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-500 rounded-xl text-sm font-medium">
+                            <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-xl text-sm font-medium">
                               <FaClock className="text-xs" />
                               Chưa chấm
                             </span>

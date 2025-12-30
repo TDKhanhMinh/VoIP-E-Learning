@@ -25,6 +25,7 @@ import {
   MdOutlineForum,
 } from "react-icons/md";
 import SupportWidget from "../components/Common/SupportedWidget";
+import DarkModeButton from "../components/Common/DarkModeButton";
 
 export default function TeacherLayout() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -90,13 +91,13 @@ export default function TeacherLayout() {
 
   return (
     <LoadingProvider>
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
         <aside
           className={`${
             isCollapsed ? "w-20" : "w-72"
-          } bg-white shadow-2xl flex flex-col transition-all duration-300 relative border-r border-gray-200`}
+          } bg-white dark:bg-gray-800 shadow-2xl flex flex-col transition-all duration-300 relative border-r border-gray-200 dark:border-gray-700`}
         >
-          <div className="p-6 border-b border-gray-200 bg-blue-600">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-blue-600 dark:bg-blue-700">
             <div className="flex items-center justify-between">
               {!isCollapsed && (
                 <div className="flex items-center gap-3">
@@ -111,7 +112,7 @@ export default function TeacherLayout() {
               )}
               <button
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="p-2 hover:bg-white/20 rounded-lg transition-colors text-white"
+                className="p-2 hover:bg-white/20 dark:hover:bg-white/10 rounded-lg transition-colors text-white"
                 title={isCollapsed ? "Mở rộng" : "Thu gọn"}
               >
                 {isCollapsed ? <FaBars /> : <FaChevronLeft />}
@@ -131,15 +132,15 @@ export default function TeacherLayout() {
                       to={item.path}
                       className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group relative ${
                         active
-                          ? "bg-blue-600 text-white shadow-lg"
-                          : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+                          ? "bg-blue-600 dark:bg-blue-700 text-white shadow-lg"
+                          : "text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400"
                       }`}
                     >
                       <Icon
                         className={`text-xl ${
                           active
                             ? "text-white"
-                            : "text-gray-500 group-hover:text-blue-600"
+                            : "text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400"
                         }`}
                       />
                       {!isCollapsed && (
@@ -155,10 +156,10 @@ export default function TeacherLayout() {
             </ul>
           </nav>
 
-          <div className="p-4 border-t border-gray-200">
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={handlerLogout}
-              className="flex items-center gap-3 w-full p-3 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-200 group"
+              className="flex items-center gap-3 w-full p-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 group"
             >
               <FaSignOutAlt className="text-xl" />
               {!isCollapsed && <span className="font-medium">Đăng xuất</span>}
@@ -167,25 +168,28 @@ export default function TeacherLayout() {
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-40">
+          <header className="bg-white dark:bg-gray-800 shadow-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
             <div className="flex justify-between items-center px-6 py-4">
               <div className="flex items-center gap-4 flex-1 max-w-xl">
-                <h1 className="text-2xl font-bold text-blue-600">
+                <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   Hệ thống E-learning
                 </h1>
               </div>
 
               <div className="flex items-center gap-4">
+                <DarkModeButton />
                 <div className="relative">
                   <button
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                    className="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
                   >
                     <div className="text-right hidden md:block">
-                      <p className="text-sm font-semibold text-gray-800">
+                      <p className="text-sm font-semibold text-gray-800 dark:text-white">
                         {teacherInfo?.full_name}
                       </p>
-                      <p className="text-xs text-gray-500">Giảng viên</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Giảng viên
+                      </p>
                     </div>
                     <div className="relative">
                       <img
@@ -198,12 +202,12 @@ export default function TeacherLayout() {
                   </button>
 
                   {showProfileMenu && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50">
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="text-sm font-semibold text-gray-800">
+                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 py-2 z-50">
+                      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                        <p className="text-sm font-semibold text-gray-800 dark:text-white">
                           {teacherInfo?.full_name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           {teacherInfo?.email}
                         </p>
                       </div>
@@ -211,7 +215,7 @@ export default function TeacherLayout() {
                         onClick={() => {
                           setShowProfileMenu(false);
                         }}
-                        className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors text-sm text-gray-700"
+                        className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm text-gray-700 dark:text-gray-300"
                       >
                         Thông tin cá nhân
                       </button>
@@ -219,17 +223,17 @@ export default function TeacherLayout() {
                         onClick={() => {
                           setShowProfileMenu(false);
                         }}
-                        className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors text-sm text-gray-700"
+                        className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm text-gray-700 dark:text-gray-300"
                       >
                         Cài đặt
                       </button>
-                      <div className="border-t border-gray-100 mt-2 pt-2">
+                      <div className="border-t border-gray-100 dark:border-gray-700 mt-2 pt-2">
                         <button
                           onClick={() => {
                             setShowProfileMenu(false);
                             handlerLogout();
                           }}
-                          className="w-full text-left px-4 py-2 hover:bg-red-50 transition-colors text-sm text-red-600 font-medium"
+                          className="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm text-red-600 dark:text-red-400 font-medium"
                         >
                           Đăng xuất
                         </button>

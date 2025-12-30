@@ -162,7 +162,7 @@ export default function ClassNotification() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 md:p-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 p-4 md:p-8">
         <div className="max-w-7xl mx-auto space-y-6">
           <HeaderSkeleton />
           <StatsSkeleton />
@@ -173,27 +173,27 @@ export default function ClassNotification() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-800 font-medium mb-4 transition-colors"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 font-medium mb-4 transition-colors"
           >
             <FaArrowLeft /> Quay lại
           </button>
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="p-4 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow-lg">
                   <FaBell className="text-white text-3xl" />
                 </div>
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">
+                  <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-1">
                     Thông báo lớp học
                   </h1>
-                  <p className="text-gray-600 flex items-center gap-2">
-                    <FaInfoCircle className="text-blue-600" />
+                  <p className="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                    <FaInfoCircle className="text-blue-600 dark:text-blue-400" />
                     {classInfo?.name || "Đang tải..."}
                   </p>
                 </div>
@@ -212,61 +212,63 @@ export default function ClassNotification() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
                   Tổng thông báo
                 </p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">
+                <p className="text-3xl font-bold text-gray-800 dark:text-white mt-2">
                   {stats.total}
                 </p>
               </div>
-              <div className="p-4 bg-blue-100 rounded-xl">
-                <FaBell className="text-blue-600 text-3xl" />
+              <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
+                <FaBell className="text-blue-600 dark:text-blue-400 text-3xl" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
                   Gần đây (7 ngày)
                 </p>
-                <p className="text-3xl font-bold text-green-600 mt-2">
+                <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">
                   {stats.recent}
                 </p>
               </div>
-              <div className="p-4 bg-green-100 rounded-xl">
-                <FaCheckCircle className="text-green-600 text-3xl" />
+              <div className="p-4 bg-green-100 dark:bg-green-900/30 rounded-xl">
+                <FaCheckCircle className="text-green-600 dark:text-green-400 text-3xl" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-medium">Cũ hơn</p>
-                <p className="text-3xl font-bold text-purple-600 mt-2">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                  Cũ hơn
+                </p>
+                <p className="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-2">
                   {stats.older}
                 </p>
               </div>
-              <div className="p-4 bg-purple-100 rounded-xl">
-                <FaClock className="text-purple-600 text-3xl" />
+              <div className="p-4 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
+                <FaClock className="text-purple-600 dark:text-purple-400 text-3xl" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 border border-gray-100 dark:border-gray-700">
           <div className="flex gap-2 overflow-x-auto">
             <button
               onClick={() => setFilterType("all")}
               className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
                 filterType === "all"
                   ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               Tất cả ({stats.total})
@@ -276,7 +278,7 @@ export default function ClassNotification() {
               className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
                 filterType === "recent"
                   ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-md"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               Gần đây ({stats.recent})
@@ -286,7 +288,7 @@ export default function ClassNotification() {
               className={`px-5 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
                 filterType === "older"
                   ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               Cũ hơn ({stats.older})
@@ -294,59 +296,63 @@ export default function ClassNotification() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
           {filteredNotifications?.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 px-4">
-              <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mb-4">
-                <FaBell className="text-blue-600 text-4xl" />
+              <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full flex items-center justify-center mb-4">
+                <FaBell className="text-blue-600 dark:text-blue-400 text-4xl" />
               </div>
-              <p className="text-gray-600 font-medium text-lg">
+              <p className="text-gray-600 dark:text-gray-300 font-medium text-lg">
                 {filterType === "all"
                   ? "Chưa có thông báo nào"
                   : "Không có thông báo nào"}
               </p>
-              <p className="text-gray-400 text-sm mt-2">
+              <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
                 {filterType === "all"
                   ? "Nhấn 'Tạo thông báo mới' để bắt đầu"
                   : "Thử thay đổi bộ lọc để xem thông báo khác"}
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-gray-100 dark:divide-gray-700">
               {filteredNotifications.map((n) => {
                 const recent = isRecent(n.createdAt);
 
                 return (
                   <div
                     key={n._id}
-                    className="p-6 hover:bg-blue-50 transition-colors duration-150 group"
+                    className="p-6 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-150 group"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start gap-3 mb-3">
                           <div
                             className={`p-3 rounded-xl ${
-                              recent ? "bg-green-100" : "bg-blue-100"
+                              recent
+                                ? "bg-green-100 dark:bg-green-900/30"
+                                : "bg-blue-100 dark:bg-blue-900/30"
                             }`}
                           >
                             <FaBell
                               className={`${
-                                recent ? "text-green-600" : "text-blue-600"
+                                recent
+                                  ? "text-green-600 dark:text-green-400"
+                                  : "text-blue-600 dark:text-blue-400"
                               } text-xl`}
                             />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
-                              <h3 className="text-lg font-bold text-gray-800 truncate">
+                              <h3 className="text-lg font-bold text-gray-800 dark:text-white truncate">
                                 {n.title}
                               </h3>
                               {recent && (
-                                <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                                <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full">
                                   Mới
                                 </span>
                               )}
                             </div>
-                            <p className="text-gray-600 leading-relaxed line-clamp-2">
+                            <p className="text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-2">
                               {n.content}
                             </p>
                             {n.file_url && (
@@ -354,7 +360,7 @@ export default function ClassNotification() {
                                 href={n.file_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-600 hover:underline items-center gap-2 mt-2 inline-block font-medium group"
+                                className="text-blue-600 dark:text-blue-400 hover:underline items-center gap-2 mt-2 inline-block font-medium group"
                               >
                                 <FaDownload className="group-hover:animate-bounce" />
                                 {n.file_name.split(".")[0] || "Tệp đính kèm"}
@@ -363,14 +369,14 @@ export default function ClassNotification() {
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-4 text-sm text-gray-500 ml-14">
+                        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 ml-14">
                           <div className="flex items-center gap-2">
-                            <FaClock className="text-gray-400" />
+                            <FaClock className="text-gray-400 dark:text-gray-500" />
                             <span>{formatDate(n.createdAt)}</span>
                           </div>
                           {n.created_by?.full_name && (
                             <div className="flex items-center gap-2">
-                              <FaUser className="text-gray-400" />
+                              <FaUser className="text-gray-400 dark:text-gray-500" />
                               <span>{n.created_by.full_name}</span>
                             </div>
                           )}
@@ -383,7 +389,7 @@ export default function ClassNotification() {
                             setSelectedNotification(n);
                             setIsOpen(true);
                           }}
-                          className="p-3 text-blue-600 hover:bg-blue-100 rounded-xl transition-all"
+                          className="p-3 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-xl transition-all"
                           title="Chỉnh sửa"
                         >
                           <FaEdit className="text-lg" />
@@ -393,7 +399,7 @@ export default function ClassNotification() {
                             setSelectedNotification(n);
                             setOpenConfirmModal(true);
                           }}
-                          className="p-3 text-red-600 hover:bg-red-100 rounded-xl transition-all"
+                          className="p-3 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-all"
                           title="Xóa"
                         >
                           <FaTrash className="text-lg" />

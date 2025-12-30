@@ -165,30 +165,30 @@ const TestQuestion = () => {
   }, [testId]);
 
   const QuestionSkeleton = () => (
-    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 animate-pulse relative">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 animate-pulse relative">
       <div className="flex justify-between items-center mb-4">
-        <div className="h-6 bg-gray-200 rounded w-32"></div>
-        <div className="h-8 w-8 bg-gray-200 rounded"></div>
+        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+        <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
       </div>
 
-      <div className="h-24 bg-gray-100 rounded-lg w-full mb-6 border border-gray-200"></div>
+      <div className="h-24 bg-gray-100 dark:bg-gray-700 rounded-lg w-full mb-6 border border-gray-200 dark:border-gray-600"></div>
 
       <div className="space-y-3">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="flex items-center gap-3">
-            <div className="h-5 w-5 bg-gray-200 rounded-full flex-shrink-0"></div>
-            <div className="h-10 bg-gray-50 rounded-lg w-full border border-gray-100"></div>
-            <div className="h-8 w-8 bg-gray-200 rounded flex-shrink-0"></div>
+            <div className="h-5 w-5 bg-gray-200 dark:bg-gray-700 rounded-full flex-shrink-0"></div>
+            <div className="h-10 bg-gray-50 dark:bg-gray-700 rounded-lg w-full border border-gray-100 dark:border-gray-600"></div>
+            <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded flex-shrink-0"></div>
           </div>
         ))}
       </div>
 
-      <div className="mt-4 h-8 w-32 bg-gray-200 rounded"></div>
+      <div className="mt-4 h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
     </div>
   );
 
   return (
-    <div className="max-h-[calc(100vh-100px)] overflow-y-auto p-10 bg-gray-50/50">
+    <div className="max-h-[calc(100vh-100px)] overflow-y-auto p-10 bg-gray-50/50 dark:bg-gray-900">
       <AddQuestionModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
@@ -244,11 +244,11 @@ const TestQuestion = () => {
               ))}
             </div>
           ) : (
-            <div className="w-full flex flex-col justify-center items-center p-16 rounded-2xl border-2 border-dashed border-gray-300 bg-white hover:border-blue-400 transition-all">
-              <div className="bg-blue-50 p-6 rounded-full mb-6">
+            <div className="w-full flex flex-col justify-center items-center p-16 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-blue-400 dark:hover:border-blue-500 transition-all">
+              <div className="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-full mb-6">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-12 w-12 text-blue-500"
+                  className="h-12 w-12 text-blue-500 dark:text-blue-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -262,11 +262,11 @@ const TestQuestion = () => {
                 </svg>
               </div>
 
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
                 Bạn chưa thêm câu hỏi nào
               </h3>
 
-              <p className="text-gray-500 max-w-md text-center mb-6">
+              <p className="text-gray-500 dark:text-gray-400 max-w-md text-center mb-6">
                 Tạo câu hỏi đầu tiên để xây dựng bài test. Bạn có thể nhập thủ
                 công hoặc sử dụng chức năng đọc file Word.
               </p>

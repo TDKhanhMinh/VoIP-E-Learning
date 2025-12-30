@@ -308,12 +308,12 @@ const ManageStudentsChats = () => {
   return (
     <div className="mt-4">
       <div className="container px-4 py-1 mx-auto">
-        <div className="overflow-hidden bg-white shadow-lg rounded-xl">
+        <div className="overflow-hidden bg-white dark:bg-gray-800 shadow-lg rounded-xl">
           <div className="flex h-[calc(100vh-180px)]">
-            <div className="w-1/3 border-r border-gray-200 bg-gray-50 flex flex-col">
-              <div className="p-4 bg-white border-b border-gray-200">
+            <div className="w-1/3 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex flex-col">
+              <div className="p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-800">
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
                     Cuộc trò chuyện
                   </h2>
                   <div className="flex items-center space-x-2">
@@ -323,7 +323,7 @@ const ManageStudentsChats = () => {
                         isConnected ? "text-green-500" : "text-red-500"
                       } fill-current`}
                     />
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
                       {isConnected ? "Đã kết nối" : "Đang kết nối..."}
                     </span>
                   </div>
@@ -334,8 +334,11 @@ const ManageStudentsChats = () => {
                 {isLoading ? (
                   [...Array(6)].map((_, i) => <ConversationSkeleton key={i} />)
                 ) : conversations.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-64 p-8 text-gray-500">
-                    <MessageCircle size={48} className="mb-4 text-gray-400" />
+                  <div className="flex flex-col items-center justify-center h-64 p-8 text-gray-500 dark:text-gray-400">
+                    <MessageCircle
+                      size={48}
+                      className="mb-4 text-gray-400 dark:text-gray-500"
+                    />
                     <p className="text-center">Chưa có cuộc trò chuyện nào</p>
                   </div>
                 ) : (
@@ -350,9 +353,9 @@ const ManageStudentsChats = () => {
                       <div
                         key={conv._id}
                         onClick={() => handleSelectChat(conv)}
-                        className={`p-4 cursor-pointer transition-all duration-200 border-b border-gray-100 hover:bg-blue-50 ${
+                        className={`p-4 cursor-pointer transition-all duration-200 border-b border-gray-100 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-700 ${
                           selectedChat?._id === conv._id
-                            ? "bg-blue-100 border-l-4 border-l-blue-500"
+                            ? "bg-blue-100 dark:bg-gray-700 border-l-4 border-l-blue-500"
                             : ""
                         }`}
                       >
@@ -362,7 +365,7 @@ const ManageStudentsChats = () => {
                               <User size={20} className="text-white" />
                             </div>
                             {isOnline && (
-                              <div className="absolute w-4 h-4 bg-green-500 border-2 border-white rounded-full shadow-sm -bottom-1 -right-1"></div>
+                              <div className="absolute w-4 h-4 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full shadow-sm -bottom-1 -right-1"></div>
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -376,8 +379,8 @@ const ManageStudentsChats = () => {
                               <p
                                 className={`mt-2 text-sm truncate ${
                                   unreadCount > 0
-                                    ? "text-gray-800 font-bold"
-                                    : "text-gray-600"
+                                    ? "text-gray-800 dark:text-white font-bold"
+                                    : "text-gray-600 dark:text-gray-300"
                                 }`}
                               >
                                 {conv.lastMessage.sender !== userID
@@ -386,7 +389,7 @@ const ManageStudentsChats = () => {
                                 {conv.lastMessage.content}
                               </p>
                             ) : (
-                              <p className="mt-2 text-sm text-gray-400">
+                              <p className="mt-2 text-sm text-gray-400 dark:text-gray-500">
                                 Chưa có tin nhắn nào
                               </p>
                             )}
@@ -402,15 +405,15 @@ const ManageStudentsChats = () => {
             <div className="flex flex-col flex-1">
               {selectedChat ? (
                 <>
-                  <div className="p-4 bg-white border-b border-gray-200">
+                  <div className="p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center space-x-3">
                       <div className="flex items-center justify-center w-12 h-12 bg-blue-500 rounded-full shadow-lg">
                         <User size={20} className="text-white" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-800">
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
                           {userSelected?.full_name || (
-                            <div className="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
                           )}
                         </h3>
                         <div className="flex items-center space-x-2">
@@ -423,10 +426,10 @@ const ManageStudentsChats = () => {
                                   getOtherParticipantId(selectedChat)
                               )
                                 ? "text-green-500"
-                                : "text-gray-400"
+                                : "text-gray-400 dark:text-gray-500"
                             } fill-current`}
                           />
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
                             {onlineUsers.some(
                               (u) =>
                                 u.userId === getOtherParticipantId(selectedChat)
@@ -439,15 +442,15 @@ const ManageStudentsChats = () => {
                     </div>
                   </div>
 
-                  <div className="flex-1 p-4 space-y-2 overflow-y-auto bg-gray-50">
+                  <div className="flex-1 p-4 space-y-2 overflow-y-auto bg-gray-50 dark:bg-gray-900">
                     {isMessageLoading ? (
                       <MessageSkeleton />
                     ) : messages?.length === 0 ? (
                       <div className="flex items-center justify-center h-full">
-                        <div className="text-center text-gray-500">
+                        <div className="text-center text-gray-500 dark:text-gray-400">
                           <MessageCircle
                             size={48}
-                            className="mx-auto mb-4 text-gray-400"
+                            className="mx-auto mb-4 text-gray-400 dark:text-gray-500"
                           />
                           <p>Chưa có tin nhắn nào</p>
                         </div>
@@ -471,7 +474,7 @@ const ManageStudentsChats = () => {
                                 "px-4 py-3 max-w-xs lg:max-w-md shadow-sm rounded-2xl",
                                 isMyMessage
                                   ? "bg-blue-500 text-white"
-                                  : "bg-white text-gray-800 border border-gray-200",
+                                  : "bg-white dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-200 dark:border-gray-700",
                                 isSameAsNext ? "mb-0.5" : "mb-2"
                               )}
                             >
@@ -483,7 +486,7 @@ const ManageStudentsChats = () => {
                                   "mt-2 text-xs",
                                   isMyMessage
                                     ? "text-blue-100"
-                                    : "text-gray-500"
+                                    : "text-gray-500 dark:text-gray-400"
                                 )}
                               >
                                 {formatTime(msg.createdAt)}
@@ -495,15 +498,15 @@ const ManageStudentsChats = () => {
                     )}
                     {isTyping && (
                       <div className="flex justify-start">
-                        <div className="px-4 py-3 bg-white border border-gray-200 shadow-sm rounded-2xl rounded-bl-md">
+                        <div className="px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm rounded-2xl rounded-bl-md">
                           <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce"></div>
                             <div
-                              className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                              className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce"
                               style={{ animationDelay: "0.1s" }}
                             ></div>
                             <div
-                              className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                              className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce"
                               style={{ animationDelay: "0.2s" }}
                             ></div>
                           </div>
@@ -513,7 +516,7 @@ const ManageStudentsChats = () => {
                     <div ref={messagesEndRef} />
                   </div>
 
-                  <div className="p-4 bg-white border-t border-gray-200">
+                  <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex gap-3">
                       <input
                         type="text"
@@ -521,13 +524,13 @@ const ManageStudentsChats = () => {
                         onChange={handleInputChange}
                         onKeyPress={handleKeyPress}
                         placeholder="Nhập tin nhắn của bạn..."
-                        className="flex-1 px-4 py-3 transition-all border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 px-4 py-3 transition-all border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                         disabled={!isConnected}
                       />
                       <button
                         onClick={handleSendMessage}
                         disabled={!newMessage.trim() || !isConnected}
-                        className="flex items-center gap-2 px-6 py-3 text-white transition-all bg-blue-500 rounded-lg shadow-sm hover:bg-blue-600 disabled:bg-gray-300"
+                        className="flex items-center gap-2 px-6 py-3 text-white transition-all bg-blue-500 rounded-lg shadow-sm hover:bg-blue-600 disabled:bg-gray-300 dark:disabled:bg-gray-600"
                       >
                         <Send size={18} />
                         <span className="hidden sm:inline">Gửi</span>
@@ -536,16 +539,16 @@ const ManageStudentsChats = () => {
                   </div>
                 </>
               ) : (
-                <div className="flex items-center justify-center h-full bg-gray-50">
-                  <div className="text-center text-gray-500">
+                <div className="flex items-center justify-center h-full bg-gray-50 dark:bg-gray-900">
+                  <div className="text-center text-gray-500 dark:text-gray-400">
                     <MessageCircle
                       size={64}
-                      className="mx-auto mb-6 text-gray-400"
+                      className="mx-auto mb-6 text-gray-400 dark:text-gray-500"
                     />
-                    <h3 className="mb-2 text-lg font-medium text-gray-700">
+                    <h3 className="mb-2 text-lg font-medium text-gray-700 dark:text-gray-300">
                       Chọn cuộc trò chuyện
                     </h3>
-                    <p className="text-gray-500">
+                    <p className="text-gray-500 dark:text-gray-400">
                       Chọn một cuộc trò chuyện từ danh sách bên trái để bắt đầu
                     </p>
                   </div>

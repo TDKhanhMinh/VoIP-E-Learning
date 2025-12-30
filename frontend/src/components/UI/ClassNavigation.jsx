@@ -80,7 +80,7 @@ export default function ClassNavigation({ id }) {
               to={item.to}
               className={`
                 group flex flex-col items-center justify-center p-4 
-                bg-white rounded-2xl border border-gray-100 shadow-sm
+                bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm
                 transition-all duration-300 ease-in-out
                 hover:-translate-y-1 hover:shadow-md ${item.border}
               `}
@@ -94,7 +94,7 @@ export default function ClassNavigation({ id }) {
                 <Icon size={20} />
               </div>
 
-              <span className="text-sm font-semibold text-gray-600 group-hover:text-gray-900 text-center">
+              <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white text-center">
                 {item.label}
               </span>
             </Link>

@@ -70,16 +70,16 @@ export default function TeacherClasses() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 flex items-center gap-3 mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white flex items-center gap-3 mb-2">
             <div className="p-3 bg-blue-600 rounded-xl shadow-lg">
               <FaChalkboardTeacher className="text-white text-2xl" />
             </div>
             Lớp học phụ trách
           </h1>
-          <p className="text-gray-600 ml-16">
+          <p className="text-gray-600 dark:text-gray-400 ml-16">
             Quản lý và theo dõi các lớp học của bạn
           </p>
         </div>
@@ -88,13 +88,13 @@ export default function TeacherClasses() {
           <StatsSkeleton />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-500 text-sm font-medium">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
                     Tổng số lớp
                   </p>
-                  <p className="text-3xl font-bold text-gray-800 mt-2">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white mt-2">
                     {classes.length}
                   </p>
                 </div>
@@ -104,13 +104,13 @@ export default function TeacherClasses() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-500 text-sm font-medium">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
                     Tổng sinh viên
                   </p>
-                  <p className="text-3xl font-bold text-green-600 mt-2">
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">
                     {classes.reduce(
                       (acc, curr) => acc + (curr.studentCount || 0),
                       0
@@ -123,13 +123,13 @@ export default function TeacherClasses() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-500 text-sm font-medium">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
                     Học kỳ hiện tại
                   </p>
-                  <p className="text-lg font-bold text-purple-600 mt-2">
+                  <p className="text-lg font-bold text-purple-600 dark:text-purple-400 mt-2">
                     {semesters[0]?.name || "—"}
                   </p>
                 </div>
@@ -141,7 +141,7 @@ export default function TeacherClasses() {
           </div>
         )}
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -153,7 +153,7 @@ export default function TeacherClasses() {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-11 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:text-white dark:placeholder-gray-400"
               />
             </div>
 
@@ -165,7 +165,7 @@ export default function TeacherClasses() {
                   setSelectedSemester(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-11 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer"
+                className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer dark:text-white"
               >
                 <option value="all">Tất cả học kỳ</option>
                 {semesters.map((semester) => (
@@ -177,9 +177,9 @@ export default function TeacherClasses() {
             </div>
           </div>
 
-          <div className="mt-4 text-sm text-gray-600">
+          <div className="mt-4 text-sm text-gray-600 dark:text-gray-300">
             Hiển thị{" "}
-            <span className="font-semibold text-blue-600">
+            <span className="font-semibold text-blue-600 dark:text-blue-400">
               {filteredClasses.length}
             </span>{" "}
             lớp học
@@ -187,7 +187,7 @@ export default function TeacherClasses() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
           {isLoading ? (
             <ClassListSkeleton />
           ) : currentClasses.length === 0 ? (
@@ -195,12 +195,12 @@ export default function TeacherClasses() {
               <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-4">
                 <FaChalkboardTeacher className="text-blue-600 text-4xl" />
               </div>
-              <p className="text-gray-600 font-medium text-lg">
+              <p className="text-gray-600 dark:text-gray-300 font-medium text-lg">
                 {searchTerm || selectedSemester !== "all"
                   ? "Không tìm thấy lớp học phù hợp"
                   : "Chưa có lớp học nào"}
               </p>
-              <p className="text-gray-400 text-sm mt-2">
+              <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
                 {searchTerm || selectedSemester !== "all"
                   ? "Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm"
                   : "Các lớp học sẽ được hiển thị ở đây"}
@@ -210,7 +210,7 @@ export default function TeacherClasses() {
             <>
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-100 border-b-2 border-gray-200">
+                  <thead className="bg-gray-100 dark:bg-gray-700 border-b-2 border-gray-200 dark:border-gray-600">
                     <tr>
                       {[
                         "Tên lớp",
@@ -222,7 +222,7 @@ export default function TeacherClasses() {
                         return (
                           <th
                             key={header}
-                            className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+                            className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider"
                           >
                             {header}
                           </th>
@@ -230,11 +230,11 @@ export default function TeacherClasses() {
                       })}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {currentClasses.map((cls) => (
                       <tr
                         key={cls._id}
-                        className="hover:bg-gray-50 transition-colors duration-150"
+                        className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-center">
@@ -242,20 +242,20 @@ export default function TeacherClasses() {
                               <FaBook className="text-blue-600" />
                             </div>
                             <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900 truncate">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
                                 {cls.name}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="inline-flex truncate items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                          <span className="inline-flex truncate items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
                             <FaCalendarAlt className="mr-2 text-xs" />
                             {getSemesterName(cls.semester)}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="inline-flex flex-col text-sm text-gray-700 truncate">
+                          <span className="inline-flex flex-col text-sm text-gray-700 dark:text-gray-300 truncate">
                             {Array.isArray(cls.schedule) &&
                             cls.schedule.length > 0 ? (
                               cls.schedule.map((s, i) => {
@@ -271,7 +271,7 @@ export default function TeacherClasses() {
                                 return (
                                   <span
                                     key={i}
-                                    className="inline-flex truncate items-center px-3 py-1 rounded-full text-sm font-medium bg-pink-100 text-pink-800 mb-1"
+                                    className="inline-flex truncate items-center px-3 py-1 rounded-full text-sm font-medium bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-300 mb-1"
                                   >
                                     {`${days[s.dayOfWeek] || "?"} - Ca ${
                                       s.shift
@@ -292,7 +292,7 @@ export default function TeacherClasses() {
                               <FaUsers className="text-green-600 text-sm" />
                             </div>
                             <div className="ml-3">
-                              <div className="text-sm font-semibold text-gray-900">
+                              <div className="text-sm font-semibold text-gray-900 dark:text-white">
                                 {cls.studentCount || 0}
                               </div>
                             </div>
@@ -315,20 +315,20 @@ export default function TeacherClasses() {
                 {currentClasses.map((cls) => (
                   <div
                     key={cls._id}
-                    className="bg-gray-50 rounded-xl p-4 border border-gray-200"
+                    className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600"
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <div className="p-3 bg-blue-100 rounded-lg">
                         <FaBook className="text-blue-600 text-xl" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-800">
+                        <h3 className="font-semibold text-gray-800 dark:text-white">
                           {cls.name}
                         </h3>
                       </div>
                     </div>
                     <div className="space-y-2 mb-4">
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                         <FaClock className="text-gray-400" />
                         <span>
                           {Array.isArray(cls.schedule) &&
@@ -352,14 +352,14 @@ export default function TeacherClasses() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <FaCalendarAlt className="text-purple-600" />
-                        <span className="text-purple-700 font-medium">
+                        <FaCalendarAlt className="text-purple-600 dark:text-purple-400" />
+                        <span className="text-purple-700 dark:text-purple-400 font-medium">
                           {getSemesterName(cls.semester)}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <FaUsers className="text-green-600" />
-                        <span className="font-semibold text-gray-800">
+                        <FaUsers className="text-green-600 dark:text-green-400" />
+                        <span className="font-semibold text-gray-800 dark:text-white">
                           {cls.studentCount || 0} sinh viên
                         </span>
                       </div>
@@ -374,7 +374,7 @@ export default function TeacherClasses() {
               </div>
 
               {totalPages > 1 && (
-                <div className="px-6 py-4 bg-gray-50 border-t">
+                <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t dark:border-gray-600">
                   <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}

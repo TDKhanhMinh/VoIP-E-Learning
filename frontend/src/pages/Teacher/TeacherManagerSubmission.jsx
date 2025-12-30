@@ -44,14 +44,14 @@ export default function TeacherManageSubmission() {
       : teacherClasses.filter((cls) => cls.semester === selectedSemester);
 
   return (
-    <div className="min-h-screen bg-gray-50/50 p-6 md:p-10 font-sans text-slate-800">
+    <div className="min-h-screen bg-gray-50/50 dark:bg-gray-900 p-6 md:p-10 font-sans text-slate-800 dark:text-gray-100">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-6">
           <div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 dark:text-white tracking-tight">
               Quản lý Bài Nộp
             </h2>
-            <p className="text-slate-500 mt-2 text-base max-w-xl leading-relaxed">
+            <p className="text-slate-500 dark:text-gray-400 mt-2 text-base max-w-xl leading-relaxed">
               Truy cập và quản lý các bài tập sinh viên đã nộp theo từng lớp
               học.
             </p>
@@ -59,12 +59,12 @@ export default function TeacherManageSubmission() {
 
           <div className="relative group min-w-[220px]">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaFilter className="text-blue-500" />
+              <FaFilter className="text-blue-500 dark:text-blue-400" />
             </div>
             <select
               value={selectedSemester}
               onChange={(e) => setSelectedSemester(e.target.value)}
-              className="appearance-none w-full pl-10 pr-10 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium shadow-sm hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer text-slate-700"
+              className="appearance-none w-full pl-10 pr-10 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-medium shadow-sm hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer text-slate-700 dark:text-gray-200"
             >
               <option value="all">Tất cả học kỳ</option>
               {semesters.map((sem) => (
@@ -74,7 +74,7 @@ export default function TeacherManageSubmission() {
               ))}
             </select>
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <FaChevronDown className="text-gray-400 text-xs" />
+              <FaChevronDown className="text-gray-400 dark:text-gray-500 text-xs" />
             </div>
           </div>
         </div>
@@ -93,26 +93,26 @@ export default function TeacherManageSubmission() {
               return (
                 <div
                   key={cls._id || index}
-                  className="group bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 relative"
+                  className="group bg-white dark:bg-gray-800 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_10px_-4px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.4)] border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 relative"
                 >
                   <div className="p-6 flex flex-col flex-1">
                     <div className="flex justify-between items-start mb-4">
-                      <div className="p-2.5 bg-blue-50 rounded-lg text-blue-600">
+                      <div className="p-2.5 bg-blue-50 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">
                         <FaFileUpload size={18} />
                       </div>
-                      <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold uppercase tracking-wider rounded-full">
+                      <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold uppercase tracking-wider rounded-full">
                         {semesterName}
                       </span>
                     </div>
 
-                    <h3 className="text-lg font-bold text-slate-800 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors h-[3.5rem]">
+                    <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors h-[3.5rem]">
                       {cls.name}
                     </h3>
 
-                    <div className="h-px bg-gray-100 w-full my-3"></div>
+                    <div className="h-px bg-gray-100 dark:bg-gray-700 w-full my-3"></div>
 
                     <div className="mt-auto">
-                      <div className="flex items-start gap-2 text-sm text-slate-500">
+                      <div className="flex items-start gap-2 text-sm text-slate-500 dark:text-gray-400">
                         <FaClock
                           className="mt-1 text-blue-400 shrink-0"
                           size={14}
@@ -124,10 +124,10 @@ export default function TeacherManageSubmission() {
                     </div>
                   </div>
 
-                  <div className="p-4 bg-gray-50 border-t border-gray-100">
+                  <div className="p-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700">
                     <Button
                       to={`/teacher/class-details/${cls._id}/submissions`}
-                      className="w-full py-2.5 bg-white border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"
+                      className="w-full py-2.5 bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-700 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"
                     >
                       <span>Quản lý bài nộp</span>
                     </Button>
@@ -137,20 +137,20 @@ export default function TeacherManageSubmission() {
             })}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-dashed border-gray-300">
-            <div className="bg-blue-50 p-6 rounded-full mb-4">
-              <FaFolderOpen className="text-4xl text-blue-300" />
+          <div className="flex flex-col items-center justify-center py-24 text-center bg-white dark:bg-gray-800 rounded-3xl border border-dashed border-gray-300 dark:border-gray-700">
+            <div className="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-full mb-4">
+              <FaFolderOpen className="text-4xl text-blue-300 dark:text-blue-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-700 mb-2">
+            <h3 className="text-xl font-bold text-slate-700 dark:text-white mb-2">
               Chưa có dữ liệu bài nộp
             </h3>
-            <p className="text-gray-500 text-sm max-w-xs mx-auto mb-6">
+            <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs mx-auto mb-6">
               Bạn chưa có lớp học nào hoặc chưa có bài tập nào được tạo trong
               học kỳ này.
             </p>
             <button
               onClick={() => setSelectedSemester("all")}
-              className="text-blue-600 font-medium hover:underline text-sm"
+              className="text-blue-600 dark:text-blue-400 font-medium hover:underline text-sm"
             >
               Xem tất cả học kỳ
             </button>
