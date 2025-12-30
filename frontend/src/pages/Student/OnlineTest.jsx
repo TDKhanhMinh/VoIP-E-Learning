@@ -44,7 +44,7 @@ function OnlineTest() {
         ))
       ) : (
         <div className="col-span-1 lg:col-span-2 text-center py-10">
-          <p className="text-gray-500 italic">
+          <p className="text-gray-500 dark:text-gray-400 italic">
             Hiện tại không có bài kiểm tra nào.
           </p>
         </div>

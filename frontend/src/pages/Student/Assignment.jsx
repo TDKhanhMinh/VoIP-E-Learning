@@ -43,9 +43,9 @@ export default function Assignment() {
     <div className="mx-4">
       <div className="h-20 rounded flex items-center">
         {isLoading ? (
-          <div className="h-8 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 animate-pulse"></div>
         ) : (
-          <h2 className="text-3xl font-semibold">{userClass?.name}</h2>
+          <h2 className="text-3xl font-semibold dark:text-white">{userClass?.name}</h2>
         )}
       </div>
 
@@ -58,7 +58,7 @@ export default function Assignment() {
       ) : (
         <>
           {assignments.length === 0 ? (
-            <div className="text-gray-500 italic border border-red-500 h-10 rounded flex items-center ">
+            <div className="text-gray-500 dark:text-gray-400 italic border border-red-500 dark:border-red-600 h-10 rounded flex items-center dark:bg-gray-800">
               <span className="mx-2 font-semibold">Chưa có bài tập nào.</span>
             </div>
           ) : (

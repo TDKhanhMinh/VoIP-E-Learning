@@ -23,33 +23,33 @@ export default function NotificationItem({ data }) {
   }, [data]);
   return (
     <div
-      className={`w-full bg-white my-2 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden ${
-        isOpen ? "ring-1 ring-blue-200" : ""
+      className={`w-full bg-white dark:bg-gray-800 my-2 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden ${
+        isOpen ? "ring-1 ring-blue-200 dark:ring-blue-700" : ""
       }`}
     >
       <div
         className="flex items-center justify-between px-5 pt-4 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 text-gray-800">
-          <FaBell className="text-blue-500 text-lg" />{" "}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 text-gray-800 dark:text-gray-200">
+          <FaBell className="text-blue-500 dark:text-blue-400 text-lg" />{" "}
           <h3 className="font-semibold text-lg truncate">{data.title}</h3>
         </div>
 
-        <div className="flex items-center gap-3 text-gray-500 text-sm">
-          <FaClock className="text-blue-400" />
+        <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-sm">
+          <FaClock className="text-blue-400 dark:text-blue-300" />
           <span>{formatDateTime(data.createdAt)}</span>
           {isOpen ? (
-            <FaChevronUp className="text-gray-600" />
+            <FaChevronUp className="text-gray-600 dark:text-gray-400" />
           ) : (
-            <FaChevronDown className="text-gray-600" />
+            <FaChevronDown className="text-gray-600 dark:text-gray-400" />
           )}
         </div>
       </div>
 
       <div
         onClick={() => navigate(`/home/class-details/${data.class._id}`)}
-        className={`px-5 pb-4 text-gray-700 text-sm transition-all duration-300 cursor-pointer ${
+        className={`px-5 pb-4 text-gray-700 dark:text-gray-300 text-sm transition-all duration-300 cursor-pointer ${
           isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
         } overflow-hidden`}
       >
@@ -59,13 +59,13 @@ export default function NotificationItem({ data }) {
             href={data.file_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline flex items-center gap-2 mt-2 inline-block font-medium group mb-4"
+            className="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-2 mt-2 inline-block font-medium group mb-4"
           >
             <FaDownload className="group-hover:animate-bounce" />
             {data.file_name.split(".")[0] || "Tệp đính kèm"}
           </a>
         )}
-        <div className="flex justify-between items-center text-gray-500 text-xs border-t pt-2">
+        <div className="flex justify-between items-center text-gray-500 dark:text-gray-400 text-xs border-t dark:border-gray-700 pt-2">
           <span>
             <strong>Giảng viên:</strong> {teacher?.full_name || "Ẩn danh"}
           </span>

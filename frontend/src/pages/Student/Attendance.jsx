@@ -24,7 +24,7 @@ export default function Attendance() {
       } catch (err) {
         console.error("Error loading attendance:", err);
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     };
     fetchAttendances();
@@ -43,7 +43,7 @@ export default function Attendance() {
 
   return (
     <div className="mx-4">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800 text-start mt-4">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white text-start mt-4">
         Xem điểm danh
       </h1>
 
@@ -68,22 +68,22 @@ export default function Attendance() {
             return (
               <div
                 key={className}
-                className="border border-gray-200 rounded-lg shadow hover:shadow-lg transition bg-white"
+                className="border border-gray-200 dark:border-gray-700 rounded-lg shadow hover:shadow-lg transition bg-white dark:bg-gray-800"
               >
                 <div
-                  className="flex justify-between items-center p-4 cursor-pointer bg-gray-50 hover:bg-indigo-50"
+                  className="flex justify-between items-center p-4 cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-indigo-50 dark:hover:bg-gray-600"
                   onClick={() => toggleExpand(className)}
                 >
                   <div>
-                    <h2 className="font-semibold text-gray-800 text-lg">
+                    <h2 className="font-semibold text-gray-800 dark:text-white text-lg">
                       {className}
                     </h2>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">
                       Tổng số buổi: {records.length} | Có mặt: {totalPresent} |
                       Muộn: {totalLate} | Vắng: {totalAbsent}
                     </p>
                   </div>
-                  <div className="text-indigo-600 font-medium">
+                  <div className="text-indigo-600 dark:text-indigo-400 font-medium">
                     {expandedClass === className
                       ? "▲ Thu gọn"
                       : "▼ Xem chi tiết"}
@@ -92,8 +92,8 @@ export default function Attendance() {
 
                 {expandedClass === className && (
                   <div className="overflow-x-auto">
-                    <table className="w-full border-t border-gray-200 text-sm">
-                      <thead className="bg-indigo-600 text-white">
+                    <table className="w-full border-t border-gray-200 dark:border-gray-700 text-sm">
+                      <thead className="bg-indigo-600 dark:bg-indigo-700 text-white">
                         <tr>
                           <th className="p-3 text-left">Buổi</th>
                           <th className="p-3 text-left">Trạng thái</th>
@@ -102,17 +102,20 @@ export default function Attendance() {
                       </thead>
                       <tbody>
                         {records.map((r, idx) => (
-                          <tr key={idx} className="border-t hover:bg-gray-50">
-                            <td className="p-3 text-gray-700 font-medium">
+                          <tr
+                            key={idx}
+                            className="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+                          >
+                            <td className="p-3 text-gray-700 dark:text-gray-300 font-medium">
                               Buổi {r.lesson}
                             </td>
                             <td
                               className={`p-3 font-semibold ${
                                 r.status === "present"
-                                  ? "text-green-600"
+                                  ? "text-green-600 dark:text-green-400"
                                   : r.status === "late"
-                                  ? "text-yellow-600"
-                                  : "text-red-600"
+                                  ? "text-yellow-600 dark:text-yellow-400"
+                                  : "text-red-600 dark:text-red-400"
                               }`}
                             >
                               {r.status === "present"
@@ -121,7 +124,7 @@ export default function Attendance() {
                                 ? "Đi muộn"
                                 : "Vắng mặt"}
                             </td>
-                            <td className="p-3 text-gray-600">
+                            <td className="p-3 text-gray-600 dark:text-gray-400">
                               {formatDateTime(r.attend_at)}
                             </td>
                           </tr>
@@ -134,7 +137,7 @@ export default function Attendance() {
             );
           })
         ) : (
-          <div className="text-center text-gray-500 py-10">
+          <div className="text-center text-gray-500 dark:text-gray-400 py-10">
             Không có dữ liệu điểm danh nào.
           </div>
         )}

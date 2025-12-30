@@ -79,12 +79,14 @@ export default function ClassDetails() {
   if (isLoading) return <ClassDetailSkeleton />;
   if (!classInfo || !user)
     return (
-      <div className="p-6 text-center">Không tìm thấy thông tin lớp học.</div>
+      <div className="p-6 text-center dark:text-gray-300">
+        Không tìm thấy thông tin lớp học.
+      </div>
     );
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <div className="rounded-xl bg-blue-600 shadow-lg">
+      <div className="rounded-xl bg-blue-600 dark:bg-blue-700 shadow-lg">
         <div className="p-8 text-white">
           <h1 className="text-3xl font-bold truncate">{classInfo.name}</h1>
           <p className="text-lg mt-2 opacity-95">
@@ -99,14 +101,14 @@ export default function ClassDetails() {
 
       <div className="grid grid-cols-1 md:grid-cols-[25%_75%] gap-6 p-4 mt-2">
         <div>
-          <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 shadow-sm mb-6">
-            <div className="font-semibold text-gray-700 flex items-center gap-2 mb-3">
-              <BsCameraVideo className="text-red-500 text-lg" /> Phòng học
-              Online
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-5 py-4 shadow-sm mb-6">
+            <div className="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2 mb-3">
+              <BsCameraVideo className="text-red-500 dark:text-red-400 text-lg" />{" "}
+              Phòng học Online
             </div>
             <button
               onClick={() => navigate(`/meet-room/${id}`)}
-              className="w-full bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 font-medium py-2 rounded-lg transition-colors"
+              className="w-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900/50 font-medium py-2 rounded-lg transition-colors"
             >
               Vào lớp ngay
             </button>
@@ -138,11 +140,11 @@ export default function ClassDetails() {
               </div>
             </>
           ) : (
-            <div className="border border-dashed border-gray-300 rounded-xl p-8 text-center bg-gray-50">
-              <p className="text-xl font-semibold text-gray-700">
+            <div className="border border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center bg-gray-50 dark:bg-gray-800">
+              <p className="text-xl font-semibold text-gray-700 dark:text-gray-200">
                 Lớp học chưa có bài đăng nào
               </p>
-              <p className="text-gray-500 mt-2">
+              <p className="text-gray-500 dark:text-gray-400 mt-2">
                 Hãy là người đầu tiên bắt đầu cuộc thảo luận!
               </p>
             </div>

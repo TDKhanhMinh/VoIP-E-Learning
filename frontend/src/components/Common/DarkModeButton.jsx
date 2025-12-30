@@ -8,7 +8,7 @@ export default function DarkModeButton() {
     <button
       onClick={toggleTheme}
       className="p-2 rounded-lg transition-all duration-200
-        bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600"
+         hover:bg-gray-300  dark:hover:bg-slate-600"
       aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
     >
       {isDarkMode ? (

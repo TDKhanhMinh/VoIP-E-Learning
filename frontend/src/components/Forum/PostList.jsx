@@ -12,7 +12,7 @@ export default function PostList({
 }) {
   if (posts.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-8 justify-center h-full flex items-center text-gray-500">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 justify-center h-full flex items-center text-gray-500 dark:text-gray-400">
         Chưa có bài viết nào
       </div>
     );

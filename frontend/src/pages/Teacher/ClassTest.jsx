@@ -383,6 +383,17 @@ export default function ClassTest() {
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-center gap-2">
                             <button
+                              onClick={() => {
+                                navigate(
+                                  `/teacher/class-details/${id}/tests/${a._id}`
+                                );
+                              }}
+                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                              title="Thêm câu hỏi cho bài thi"
+                            >
+                              <FaPlus className="text-lg" />
+                            </button>
+                            <button
                               onClick={() =>
                                 navigate(`/teacher/test-results/${a._id}`)
                               }

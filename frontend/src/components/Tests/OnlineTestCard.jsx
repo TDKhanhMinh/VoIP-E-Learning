@@ -99,19 +99,19 @@ const OnlineTestCard = ({ data, role = "student", refreshKey }) => {
     attempts.length > 0 ? formatDateTime(attempts[0].submitedAt) : "Chưa có";
 
   return (
-    <div className="flex flex-col rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white border border-gray-200 overflow-hidden h-fit">
+    <div className="flex flex-col rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden h-fit">
       <div
         onClick={() => setShowDetails(!showDetails)}
-        className="flex justify-between items-center p-4 cursor-pointer bg-white border-b border-gray-100 hover:bg-gray-50 transition-colors"
+        className="flex justify-between items-center p-4 cursor-pointer bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
       >
         <div className="flex flex-col gap-1">
           <h3
-            className="text-lg font-bold text-gray-800 line-clamp-1"
+            className="text-lg font-bold text-gray-800 dark:text-white line-clamp-1"
             title={data.title}
           >
             {data.title}
           </h3>
-          <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full w-fit flex items-center">
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full w-fit flex items-center">
             <Icons.Book />
             {data.subject}
           </span>
@@ -119,15 +119,15 @@ const OnlineTestCard = ({ data, role = "student", refreshKey }) => {
         <div className="flex items-center gap-2">
           {role === "student" &&
             (isMaxAttemptsReached ? (
-              <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded border border-green-200 whitespace-nowrap">
+              <span className="text-xs font-bold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded border border-green-200 dark:border-green-800 whitespace-nowrap">
                 Đã hoàn thành
               </span>
             ) : !data.available ? (
-              <span className="text-xs font-bold text-red-600 bg-red-100 px-2 py-1 rounded border border-red-200 whitespace-nowrap">
+              <span className="text-xs font-bold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded border border-red-200 dark:border-red-800 whitespace-nowrap">
                 Đã đóng
               </span>
             ) : (
-              <span className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded border border-blue-200 whitespace-nowrap">
+              <span className="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded border border-blue-200 dark:border-blue-800 whitespace-nowrap">
                 Đang mở
               </span>
             ))}
@@ -145,9 +145,9 @@ const OnlineTestCard = ({ data, role = "student", refreshKey }) => {
         }`}
       >
         <div className="p-4 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
-            <div className="col-span-1 md:col-span-2 flex items-start justify-between gap-2 bg-blue-50 p-2 rounded-md border border-blue-100">
-              <span className="font-semibold text-blue-800 min-w-fit">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-300">
+            <div className="col-span-1 md:col-span-2 flex items-start justify-between gap-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-md border border-blue-100 dark:border-blue-800">
+              <span className="font-semibold text-blue-800 dark:text-blue-400 min-w-fit">
                 Mô tả:
               </span>
               <div className="text-right w-full">
@@ -155,86 +155,98 @@ const OnlineTestCard = ({ data, role = "student", refreshKey }) => {
               </div>
             </div>
 
-            <div className="flex justify-between items-center border-b border-dashed border-gray-200 pb-1">
-              <span className="flex items-center text-gray-500">
+            <div className="flex justify-between items-center border-b border-dashed border-gray-200 dark:border-gray-700 pb-1">
+              <span className="flex items-center text-gray-500 dark:text-gray-400">
                 <Icons.Clock /> Bắt đầu:
               </span>
-              <span className="font-medium text-gray-800">
+              <span className="font-medium text-gray-800 dark:text-gray-200">
                 {formatDateTime(data.start)}
               </span>
             </div>
 
-            <div className="flex justify-between items-center border-b border-dashed border-gray-200 pb-1">
-              <span className="flex items-center text-gray-500">
+            <div className="flex justify-between items-center border-b border-dashed border-gray-200 dark:border-gray-700 pb-1">
+              <span className="flex items-center text-gray-500 dark:text-gray-400">
                 <Icons.Clock /> Kết thúc:
               </span>
-              <span className="font-medium text-gray-800">
+              <span className="font-medium text-gray-800 dark:text-gray-200">
                 {formatDateTime(data.end)}
               </span>
             </div>
 
-            <div className="flex justify-between items-center border-b border-dashed border-gray-200 pb-1">
-              <span className="flex items-center text-gray-500">
+            <div className="flex justify-between items-center border-b border-dashed border-gray-200 dark:border-gray-700 pb-1">
+              <span className="flex items-center text-gray-500 dark:text-gray-400">
                 Thời lượng:
               </span>
-              <span className="font-medium text-gray-800">
+              <span className="font-medium text-gray-800 dark:text-gray-200">
                 {data.time} phút
               </span>
             </div>
 
-            <div className="flex justify-between items-center border-b border-dashed border-gray-200 pb-1">
-              <span className="flex items-center text-gray-500">
+            <div className="flex justify-between items-center border-b border-dashed border-gray-200 dark:border-gray-700 pb-1">
+              <span className="flex items-center text-gray-500 dark:text-gray-400">
                 Số lần làm:
               </span>
-              <span className="font-medium text-gray-800">
+              <span className="font-medium text-gray-800 dark:text-gray-200">
                 {data.attempts} lần
               </span>
             </div>
 
-            <div className="col-span-1 md:col-span-2 flex justify-between items-center border-b border-dashed border-gray-200 pb-1">
-              <span className="flex items-center text-gray-500">
+            <div className="col-span-1 md:col-span-2 flex justify-between items-center border-b border-dashed border-gray-200 dark:border-gray-700 pb-1">
+              <span className="flex items-center text-gray-500 dark:text-gray-400">
                 <Icons.User /> Giảng viên:
               </span>
-              <span className="font-medium text-gray-800">
+              <span className="font-medium text-gray-800 dark:text-gray-200">
                 {data.teacherInfo?.full_name}
               </span>
             </div>
           </div>
 
           {role === "student" && (
-            <div className="mt-4 bg-gray-50 rounded-lg p-3 border border-gray-200">
-              <h4 className="text-sm font-bold text-gray-700 mb-2 border-b pb-1">
+            <div className="mt-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+              <h4 className="text-sm font-bold text-gray-700 dark:text-gray-200 mb-2 border-b dark:border-gray-700 pb-1">
                 Kết quả của bạn
               </h4>
 
               {attempts.length > 0 ? (
                 <div className="grid grid-cols-2 gap-y-2 gap-x-4 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Đã làm:</span>
-                    <span className="font-medium">{attempts.length} lần</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Đã làm:
+                    </span>
+                    <span className="font-medium dark:text-gray-200">
+                      {attempts.length} lần
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Nộp cuối:</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Nộp cuối:
+                    </span>
                     <span
-                      className="font-medium truncate ml-2"
+                      className="font-medium dark:text-gray-200 truncate ml-2"
                       title={lastSubmit}
                     >
                       {lastSubmit}
                     </span>
                   </div>
                   <div className="flex justify-between col-span-2 md:col-span-1">
-                    <span className="text-gray-500">Điểm cao nhất:</span>
-                    <span className="font-bold text-red-600">{bestScore}</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Điểm cao nhất:
+                    </span>
+                    <span className="font-bold text-red-600 dark:text-red-400">
+                      {bestScore}
+                    </span>
                   </div>
                   <div className="flex justify-between col-span-2 md:col-span-1">
-                    <span className="text-gray-500">Câu đúng nhất:</span>
-                    <span className="font-bold text-green-600">
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Câu đúng nhất:
+                    </span>
+                    <span className="font-bold text-green-600 dark:text-green-400">
                       {bestCorrect}
                     </span>
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 italic text-center py-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center py-2">
                   Bạn chưa thực hiện bài kiểm tra này.
                 </p>
               )}
@@ -252,8 +264,8 @@ const OnlineTestCard = ({ data, role = "student", refreshKey }) => {
                 className={`w-full py-2.5 px-4 rounded-lg font-semibold shadow-sm transition-all duration-200 flex justify-center items-center gap-2
                   ${
                     isNotAvailable || isMaxAttemptsReached
-                      ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
-                      : "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-md active:scale-[0.98]"
+                      ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed border border-gray-200 dark:border-gray-600"
+                      : "bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 hover:shadow-md active:scale-[0.98]"
                   }`}
               >
                 {isMaxAttemptsReached

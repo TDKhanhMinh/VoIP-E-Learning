@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { testService } from "../../services/testService";
 import { toast } from "react-toastify";
@@ -9,9 +9,9 @@ import AddQuestionModal from "./../../components/Modals/AddQuestionModal";
 const TestQuestion = () => {
   const [test, setTest] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { testId } = useParams();
+  const { testId, id } = useParams();
   const [showModal, setShowModal] = useState(false);
-
+  const navigate = useNavigate();
   const getQuestionId = (q) => q._id || q.id;
 
   const handleFileUpload = async (file) => {
@@ -140,6 +140,7 @@ const TestQuestion = () => {
       const testId = test._id;
       const testQuestions = test.questions;
       await testService.updateTestQuestions(testId, testQuestions);
+      navigate(`/teacher/class-details/${id}/tests`);
       toast.success("Lưu thành công!");
     } catch (err) {
       console.error(err);
@@ -149,7 +150,7 @@ const TestQuestion = () => {
 
   useEffect(() => {
     const fetchTest = async () => {
-      setLoading(true); 
+      setLoading(true);
       try {
         const data = await testService.getTestById(testId);
         setTest(data);

@@ -10,9 +10,11 @@ export default function PostCard({
 }) {
   const getStatusBadge = (status) => {
     const styles = {
-      pending: "bg-yellow-100 text-yellow-800",
-      approved: "bg-green-100 text-green-800",
-      rejected: "bg-red-100 text-red-800",
+      pending:
+        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+      approved:
+        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+      rejected: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
     };
     const labels = {
       pending: "Chờ duyệt",
@@ -30,22 +32,24 @@ export default function PostCard({
 
   return (
     <div
-      className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition cursor-pointer"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 hover:shadow-lg transition cursor-pointer"
       onClick={() => onPostClick(post)}
     >
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1">
-          <h3 className="text-xl font-semibold text-gray-800 mb-1">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-1">
             {post.title}
           </h3>
-          <div className="flex items-center gap-3 text-sm text-gray-600">
+          <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
             <span className="font-medium">{post.author?.full_name}</span>
             <span>•</span>
             <span>{new Date(post.createdAt).toLocaleDateString("vi-VN")}</span>
             {post.topic && (
               <>
                 <span>•</span>
-                <span className="text-blue-600">{post.topic.title}</span>
+                <span className="text-blue-600 dark:text-blue-400">
+                  {post.topic.title}
+                </span>
               </>
             )}
           </div>
@@ -58,7 +62,7 @@ export default function PostCard({
                 e.stopPropagation();
                 onEditPost(post);
               }}
-              className="text-blue-600 hover:text-blue-800 px-2"
+              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +86,7 @@ export default function PostCard({
                 e.stopPropagation();
                 onDeletePost(post._id);
               }}
-              className="text-red-600 hover:text-red-800 px-2"
+              className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 px-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -102,8 +106,10 @@ export default function PostCard({
           )}
         </div>
       </div>
-      <p className="text-gray-700 line-clamp-2">{post.content}</p>
-      <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
+      <p className="text-gray-700 dark:text-gray-300 line-clamp-2">
+        {post.content}
+      </p>
+      <div className="mt-3 flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
         <span>{post.commentCount || post.comments?.length || 0} bình luận</span>
         {canApprove && post.status === "pending" && (
           <div className="flex gap-2 ml-auto">
@@ -112,7 +118,7 @@ export default function PostCard({
                 e.stopPropagation();
                 onApprovePost(post._id);
               }}
-              className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+              className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600"
             >
               Duyệt
             </button>
@@ -121,7 +127,7 @@ export default function PostCard({
                 e.stopPropagation();
                 onRejectPost(post._id);
               }}
-              className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+              className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600"
             >
               Từ chối
             </button>

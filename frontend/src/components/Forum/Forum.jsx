@@ -35,14 +35,12 @@ export default function Forum() {
   const [editingTopic, setEditingTopic] = useState(null);
   const [editingPost, setEditingPost] = useState(null);
 
-  // 1. Thêm biến isLoading
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true); // Bắt đầu load
+      setIsLoading(true);
       try {
-        // Tối ưu: Gọi song song 2 API
         const [topicsRes, postsRes] = await Promise.all([
           forumService.getAllTopics(),
           forumService.getAllPosts(),
@@ -54,7 +52,7 @@ export default function Forum() {
       } catch (error) {
         console.error("Failed to fetch topics or posts:", error);
       } finally {
-        setIsLoading(false); // Kết thúc load
+        setIsLoading(false);
       }
     };
 
@@ -290,7 +288,7 @@ export default function Forum() {
   });
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 via-blue-50 p-6 min-h-screen">
+    <div className="bg-gradient-to-br from-gray-50 via-blue-50 dark:from-gray-900 dark:via-gray-800 p-6 min-h-screen">
       <div className="max-w-7xl mx-auto ">
         <div className="flex justify-end mb-3">
           <div className="flex gap-3">
@@ -301,7 +299,7 @@ export default function Forum() {
                   setTopicForm({ title: "", description: "" });
                   setShowTopicModal(true);
                 }}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+                className="bg-indigo-600 dark:bg-indigo-700 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 transition"
               >
                 + Tạo Chủ Đề
               </button>
@@ -312,7 +310,7 @@ export default function Forum() {
                 setPostForm({ topic: "", title: "", content: "" });
                 setShowPostModal(true);
               }}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition"
             >
               + Tạo Bài Viết
             </button>

@@ -10,15 +10,17 @@ export default function TopicSidebar({
 }) {
   return (
     <div className="lg:col-span-1">
-      <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">Chủ Đề</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-200 dark:border-gray-700">
+        <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+          Chủ Đề
+        </h2>
         <div className="space-y-2">
           <button
             onClick={() => onTopicSelect(null)}
             className={`w-full text-left px-3 py-2 rounded transition ${
               !selectedTopic
-                ? "bg-blue-100 text-blue-700 font-medium"
-                : "hover:bg-gray-100"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-medium"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200"
             }`}
           >
             Tất cả
@@ -29,8 +31,8 @@ export default function TopicSidebar({
                 onClick={() => onTopicSelect(topic._id)}
                 className={`flex-1 text-left px-3 py-2 rounded transition ${
                   selectedTopic === topic._id
-                    ? "bg-blue-100 text-blue-700 font-medium"
-                    : "hover:bg-gray-100"
+                    ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-medium"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200"
                 }`}
               >
                 {topic.title}
@@ -38,7 +40,7 @@ export default function TopicSidebar({
               {canCreateTopic && (
                 <button
                   onClick={() => onEditTopic(topic)}
-                  className="p-1 hover:bg-gray-200 rounded"
+                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 dark:text-gray-300 rounded"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -62,14 +64,14 @@ export default function TopicSidebar({
       </div>
 
       {canApprove && (
-        <div className="bg-white rounded-lg shadow-md p-4 mt-4">
-          <h3 className="font-semibold mb-3 text-gray-800">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mt-4">
+          <h3 className="font-semibold mb-3 text-gray-800 dark:text-white">
             Lọc theo trạng thái
           </h3>
           <select
             value={filter}
             onChange={(e) => onFilterChange(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           >
             <option value="all">Tất cả</option>
             <option value="pending">Chờ duyệt</option>

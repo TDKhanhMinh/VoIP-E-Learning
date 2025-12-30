@@ -57,21 +57,21 @@ export default function Notification() {
   });
 
   return (
-    <div className="p-8 min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-6">
+    <div className="p-8 min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2">
             <FaBell /> Thông báo của tôi
           </h1>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 mb-6">
-          <div className="flex items-center border rounded-lg px-3 py-2 bg-gray-50 flex-1">
-            <FaSearch className="text-gray-400 mr-2" />
+          <div className="flex items-center border dark:border-gray-600 rounded-lg px-3 py-2 bg-gray-50 dark:bg-gray-700 flex-1">
+            <FaSearch className="text-gray-400 dark:text-gray-500 mr-2" />
             <input
               type="text"
               placeholder="Tìm kiếm theo tiêu đề..."
-              className="w-full bg-transparent outline-none text-gray-700"
+              className="w-full bg-transparent outline-none text-gray-700 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -80,7 +80,7 @@ export default function Notification() {
           <select
             value={selectedClass}
             onChange={(e) => setSelectedClass(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-gray-700 bg-gray-50 focus:ring-2 focus:ring-blue-400"
+            className="border dark:border-gray-600 rounded-lg px-3 py-2 text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
           >
             <option value="">Tất cả lớp</option>
             {classes.map((cls) => (
@@ -98,7 +98,7 @@ export default function Notification() {
             <NotificationSkeleton />
           </div>
         ) : filteredAnnouncements.length === 0 ? (
-          <p className="text-center text-gray-500 py-10">
+          <p className="text-center text-gray-500 dark:text-gray-400 py-10">
             Không có thông báo nào phù hợp.
           </p>
         ) : (

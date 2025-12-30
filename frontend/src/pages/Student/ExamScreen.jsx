@@ -138,16 +138,18 @@ export default function ExamScreen() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 p-4 gap-4">
-      <div className="flex-1 p-6 overflow-y-auto col-span-1 lg:col-span-3 bg-white rounded-lg shadow-lg border border-gray-200">
+      <div className="flex-1 p-6 overflow-y-auto col-span-1 lg:col-span-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-xl font-semibold">{test.title}</h1>
-          <div className="text-lg font-bold bg-red-500 text-white px-4 py-2 rounded">
+          <h1 className="text-xl font-semibold dark:text-white">
+            {test.title}
+          </h1>
+          <div className="text-lg font-bold bg-red-500 dark:bg-red-600 text-white px-4 py-2 rounded">
             {formatTime(timeLeft)}
           </div>
         </div>
 
-        <div className="bg-white shadow p-6 rounded">
-          <h2 className="text-lg font-medium mb-3">
+        <div className="bg-white dark:bg-gray-700 shadow p-6 rounded">
+          <h2 className="text-lg font-medium mb-3 dark:text-white">
             Câu {currentIndex + 1}: {originalQuestion.question}
           </h2>
 
@@ -165,7 +167,7 @@ export default function ExamScreen() {
             {currentSessionQuestion.options.map((opt) => (
               <label
                 key={opt.optionId}
-                className="flex items-center gap-3 p-3 border rounded hover:bg-gray-100 cursor-pointer"
+                className="flex items-center gap-3 p-3 border dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer dark:text-white"
               >
                 <input
                   type="radio"
@@ -190,7 +192,7 @@ export default function ExamScreen() {
           <button
             disabled={currentIndex === 0}
             onClick={() => setCurrentIndex(currentIndex - 1)}
-            className="px-4 py-2 bg-gray-300 rounded disabled:bg-gray-200"
+            className="px-4 py-2 bg-gray-300 dark:bg-gray-600 dark:text-white rounded disabled:bg-gray-200 dark:disabled:bg-gray-700"
           >
             Câu trước
           </button>
@@ -198,15 +200,17 @@ export default function ExamScreen() {
           <button
             disabled={currentIndex === testSession.questions.length - 1}
             onClick={() => setCurrentIndex(currentIndex + 1)}
-            className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-blue-300"
+            className="px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded disabled:bg-blue-300 dark:disabled:bg-blue-800"
           >
             Câu tiếp
           </button>
         </div>
       </div>
 
-      <div className="bg-white border-r p-4 overflow-y-auto w-full rounded-lg shadow-lg border border-gray-200 h-fit">
-        <h2 className="font-semibold text-lg mb-4">Danh sách câu hỏi</h2>
+      <div className="bg-white dark:bg-gray-800 border-r dark:border-gray-700 p-4 overflow-y-auto w-full rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 h-fit">
+        <h2 className="font-semibold text-lg mb-4 dark:text-white">
+          Danh sách câu hỏi
+        </h2>
         <div className="grid grid-cols-5 gap-2">
           {testSession.questions.map((q, idx) => {
             const isDone = answers[q.questionId] !== undefined;
@@ -215,9 +219,13 @@ export default function ExamScreen() {
               <button
                 key={q.questionId}
                 onClick={() => setCurrentIndex(idx)}
-                className={`py-2 rounded text-sm border
+                className={`py-2 rounded text-sm border dark:border-gray-600
                   ${isActive ? "bg-blue-500 text-white" : ""}
-                  ${!isActive && isDone ? "bg-green-200" : ""}`}
+                  ${
+                    !isActive && isDone
+                      ? "bg-green-200 dark:bg-green-700 dark:text-white"
+                      : "dark:text-white"
+                  }`}
               >
                 {idx + 1}
               </button>

@@ -69,32 +69,36 @@ export default function AssignmentItem({
     }
   };
   return (
-    <div className="border rounded-md shadow-lg mb-3 bg-white">
+    <div className="border dark:border-gray-700 rounded-md shadow-lg mb-3 bg-white dark:bg-gray-800">
       <div
-        className="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-50"
+        className="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center gap-2">
-          <span className="font-medium">{title}</span>
-          <span className={`${statusColor} text-sm`}>
+          <span className="font-medium dark:text-white">{title}</span>
+          <span
+            className={`${statusColor} dark:${
+              isSubmitted ? "text-green-400" : "text-red-400"
+            } text-sm`}
+          >
             {isSubmitted ? "Đã nộp" : "Chưa nộp"}
           </span>
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-gray-500 dark:text-gray-400">
           Due {formatDateTime(dueDate)}
         </div>
       </div>
 
       {expanded && (
-        <div className="p-4 border-t">
-          <p className="mb-4 text-gray-700 text-xs">
+        <div className="p-4 border-t dark:border-gray-700">
+          <p className="mb-4 text-gray-700 dark:text-gray-300 text-xs">
             Assignment posted in {formatDateTime(createDate)}
           </p>
-          <p className="mb-4 text-gray-700">{description}</p>
+          <p className="mb-4 text-gray-700 dark:text-gray-300">{description}</p>
 
-          <div className="flex justify-between items-center border-t pt-3">
+          <div className="flex justify-between items-center border-t dark:border-gray-700 pt-3">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Bài nộp:{" "}
                 {isSubmitted ? (
                   <a
@@ -103,7 +107,7 @@ export default function AssignmentItem({
                         .file_url
                     }
                     download
-                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium group"
+                    className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium group"
                   >
                     <span className="underline">
                       {submission
@@ -112,10 +116,14 @@ export default function AssignmentItem({
                     </span>
                   </a>
                 ) : (
-                  <span className="text-red-500">Chưa nộp</span>
+                  <span className="text-red-500 dark:text-red-400">
+                    Chưa nộp
+                  </span>
                 )}
               </p>
-              <p className="text-sm text-teal-600">HÌNH THỨC NỘP: NỘP FILE</p>
+              <p className="text-sm text-teal-600 dark:text-teal-400">
+                HÌNH THỨC NỘP: NỘP FILE
+              </p>
             </div>
 
             {!isSubmitted ? (

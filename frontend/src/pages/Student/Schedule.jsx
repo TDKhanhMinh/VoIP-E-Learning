@@ -128,23 +128,25 @@ export default function Schedule() {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="p-6 min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center shadow-md">
             <FaChalkboardTeacher className="text-white text-xl" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-800">
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
             {userRole === "teacher" ? "Lịch dạy của tôi" : "Thời khóa biểu"}
           </h2>
         </div>
 
         <div className="flex items-center gap-3">
-          <label className="text-sm font-medium text-gray-700">Học kỳ:</label>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Học kỳ:
+          </label>
           <select
             value={selectedSemester}
             onChange={(e) => setSelectedSemester(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm cursor-pointer outline-none"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white shadow-sm cursor-pointer outline-none"
           >
             {semesters.map((semester) => (
               <option key={semester._id} value={semester._id}>
@@ -155,17 +157,17 @@ export default function Schedule() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg p-5 border border-gray-200">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-5 border border-gray-200 dark:border-gray-700">
         {isLoading ? (
           <CalendarSkeleton />
         ) : events.length === 0 ? (
           <div className="flex items-center justify-center h-[80vh]">
             <div className="text-center">
-              <FaChalkboardTeacher className="mx-auto text-6xl text-gray-300 mb-4" />
-              <p className="text-gray-600 text-lg font-medium">
+              <FaChalkboardTeacher className="mx-auto text-6xl text-gray-300 dark:text-gray-600 mb-4" />
+              <p className="text-gray-600 dark:text-gray-300 text-lg font-medium">
                 Chưa có lịch dạy trong học kỳ này
               </p>
-              <p className="text-gray-400 text-sm mt-2">
+              <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
                 Vui lòng chọn học kỳ khác
               </p>
             </div>
@@ -234,49 +236,55 @@ export default function Schedule() {
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="bg-white p-6 rounded-2xl shadow-2xl w-96 transform transition-all scale-100"
+            className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-2xl w-96 transform transition-all scale-100"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4 border-b dark:border-gray-700 pb-2">
               Chi tiết buổi học
             </h3>
 
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Môn học:</span>
-                <span className="font-semibold text-gray-900 text-right w-2/3">
+                <span className="text-gray-500 dark:text-gray-400">
+                  Môn học:
+                </span>
+                <span className="font-semibold text-gray-900 dark:text-white text-right w-2/3">
                   {selectedEvent.title}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Lớp:</span>
-                <span className="font-semibold text-gray-900">
+                <span className="text-gray-500 dark:text-gray-400">Lớp:</span>
+                <span className="font-semibold text-gray-900 dark:text-white">
                   {selectedEvent.className}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Ca học:</span>
-                <span className="font-semibold text-blue-600 bg-blue-50 px-2 rounded">
+                <span className="text-gray-500 dark:text-gray-400">
+                  Ca học:
+                </span>
+                <span className="font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 rounded">
                   Ca {selectedEvent.shift}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Phòng:</span>
-                <span className="font-semibold text-gray-900">
+                <span className="text-gray-500 dark:text-gray-400">Phòng:</span>
+                <span className="font-semibold text-gray-900 dark:text-white">
                   {selectedEvent.room || "N/A"}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Thời gian:</span>
-                <span className="font-semibold text-gray-900">
+                <span className="text-gray-500 dark:text-gray-400">
+                  Thời gian:
+                </span>
+                <span className="font-semibold text-gray-900 dark:text-white">
                   {formatDate(selectedEvent.start)}
                 </span>
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end gap-3 pt-4 border-t">
+            <div className="mt-6 flex justify-end gap-3 pt-4 border-t dark:border-gray-700">
               <button
-                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 onClick={() => setIsModalOpen(false)}
               >
                 Đóng
@@ -297,7 +305,7 @@ export default function Schedule() {
 
               {userRole === "teacher" && !selectedEvent.isAbsent && (
                 <button
-                  className="px-4 py-2 rounded-lg text-sm font-medium bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 transition-colors"
+                  className="px-4 py-2 rounded-lg text-sm font-medium bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800 transition-colors"
                   onClick={() => {
                     setIsModalOpen(false);
                     setOpenConfirmModal(true);
@@ -308,7 +316,7 @@ export default function Schedule() {
               )}
 
               {userRole === "teacher" && selectedEvent.isAbsent && (
-                <span className="px-3 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-400 cursor-not-allowed">
+                <span className="px-3 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed">
                   Đã báo vắng
                 </span>
               )}
