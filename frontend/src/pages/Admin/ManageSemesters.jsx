@@ -164,11 +164,11 @@ export default function ManageSemester() {
   }, [fetchSemesters]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-3">
-            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-14 h-14 bg-blue-600 dark:bg-blue-700 rounded-2xl flex items-center justify-center shadow-lg dark:shadow-blue-900/50">
               <FaGraduationCap className="text-white text-2xl" />
             </div>
             <div
@@ -176,13 +176,13 @@ export default function ManageSemester() {
                 openDetail ? "flex flex-row w-full justify-between" : ""
               }`}
             >
-              <h2 className="text-4xl font-bold text-blue-600 pb-4">
+              <h2 className="text-4xl font-bold text-blue-600 dark:text-blue-400 pb-4">
                 Quản lý Học kỳ
               </h2>
               {openDetail && (
                 <button
                   onClick={() => setOpenDetail(false)}
-                  className="mb-4 flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold"
+                  className="mb-4 flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold"
                 >
                   <FaArrowLeft /> Quay lại
                 </button>
@@ -194,27 +194,31 @@ export default function ManageSemester() {
             <StatsSkeleton />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-              <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+              <div className="bg-white dark:bg-slate-600 rounded-2xl p-5 shadow-lg dark:shadow-slate-700/50 border border-gray-100 dark:border-slate-500">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <FaCalendarAlt className="text-purple-600 text-xl" />
+                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-400/20 rounded-xl flex items-center justify-center">
+                    <FaCalendarAlt className="text-purple-600 dark:text-purple-300 text-xl" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-600">Total Semesters</div>
-                    <div className="text-3xl font-bold text-gray-800">
+                    <div className="text-sm text-gray-600 dark:text-gray-200">
+                      Total Semesters
+                    </div>
+                    <div className="text-3xl font-bold text-gray-800 dark:text-white">
                       {semesters.length}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-green-600 rounded-2xl p-5 shadow-lg text-white">
+              <div className="bg-green-600 dark:bg-green-500 rounded-2xl p-5 shadow-lg dark:shadow-green-500/20 text-white">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-white/20 dark:bg-white/30 rounded-xl flex items-center justify-center">
                     <FaClock className="text-white text-xl" />
                   </div>
                   <div>
-                    <div className="text-sm opacity-90">Active Now</div>
+                    <div className="text-sm opacity-90 font-medium">
+                      Active Now
+                    </div>
                     <div className="text-3xl font-bold">
                       {getActiveSemesters()}
                     </div>
@@ -222,13 +226,15 @@ export default function ManageSemester() {
                 </div>
               </div>
 
-              <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
+              <div className="bg-blue-600 dark:bg-blue-500 rounded-2xl p-5 shadow-lg dark:shadow-blue-500/20 text-white">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-white/20 dark:bg-white/30 rounded-xl flex items-center justify-center">
                     <FaCalendarAlt className="text-white text-xl" />
                   </div>
                   <div>
-                    <div className="text-sm opacity-90">Upcoming</div>
+                    <div className="text-sm opacity-90 font-medium">
+                      Upcoming
+                    </div>
                     <div className="text-3xl font-bold">
                       {getUpcomingSemesters()}
                     </div>
@@ -240,13 +246,13 @@ export default function ManageSemester() {
         </div>
 
         {openDetail === false && !isLoading && (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6">
+          <div className="bg-white dark:bg-slate-700 rounded-2xl shadow-lg dark:shadow-slate-900/70 border border-gray-100 dark:border-slate-600 p-6 mb-6">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-lg font-bold text-gray-800">
+                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
                   All Semesters
                 </h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   Showing {currentSemesters.length} of {semesters.length}{" "}
                   semesters
                 </p>
@@ -256,7 +262,7 @@ export default function ManageSemester() {
                   setSelectedSemester(null);
                   setOpen(true);
                 }}
-                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5"
+                className="flex items-center gap-2 bg-blue-600 dark:bg-blue-700 text-white px-6 py-3 rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 shadow-lg dark:shadow-blue-900/50 transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5"
               >
                 <FaPlus />
                 <span>Thêm học kỳ</span>
@@ -283,19 +289,19 @@ export default function ManageSemester() {
                   return (
                     <div
                       key={sem._id}
-                      className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all"
+                      className="bg-white dark:bg-slate-700 rounded-2xl shadow-lg dark:shadow-slate-900/70 border border-gray-100 dark:border-slate-600 p-6 hover:shadow-xl transition-all"
                     >
                       <div
                         onClick={() => handleLoadSemesterDetails(sem._id)}
                         className="flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
                       >
                         <div className="flex items-center gap-4 flex-1">
-                          <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                          <div className="w-16 h-16 bg-blue-600 dark:bg-blue-700 rounded-2xl flex items-center justify-center shadow-lg dark:shadow-blue-900/50 flex-shrink-0">
                             <FaGraduationCap className="text-white text-2xl" />
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-xl font-bold text-gray-800">
+                              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
                                 {sem.name}
                               </h3>
                               <span
@@ -304,9 +310,9 @@ export default function ManageSemester() {
                                 {status.label}
                               </span>
                             </div>
-                            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                            <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-300">
                               <div className="flex items-center gap-2">
-                                <FaCalendarAlt className="text-purple-500" />
+                                <FaCalendarAlt className="text-purple-500 dark:text-purple-400" />
                                 <span>
                                   Start:{" "}
                                   <span className="font-semibold">
@@ -315,7 +321,7 @@ export default function ManageSemester() {
                                 </span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <FaCalendarAlt className="text-pink-500" />
+                                <FaCalendarAlt className="text-pink-500 dark:text-pink-400" />
                                 <span>
                                   End:{" "}
                                   <span className="font-semibold">
@@ -336,7 +342,7 @@ export default function ManageSemester() {
                               setOpen(true);
                               setSelectedSemester(sem);
                             }}
-                            className="p-3 bg-yellow-500 text-white rounded-xl hover:bg-yellow-600 transition-all hover:shadow-lg hover:-translate-y-0.5"
+                            className="p-3 bg-yellow-500 dark:bg-yellow-600 text-white rounded-xl hover:bg-yellow-600 dark:hover:bg-yellow-500 transition-all hover:shadow-lg dark:shadow-yellow-900/50 hover:-translate-y-0.5"
                           >
                             <FaEdit />
                           </button>
@@ -347,8 +353,8 @@ export default function ManageSemester() {
                 })}
               </div>
             ) : (
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
-                <p className="text-gray-500 font-medium text-lg">
+              <div className="bg-white dark:bg-slate-700 rounded-2xl shadow-lg dark:shadow-slate-900/70 border border-gray-100 dark:border-slate-600 p-12 text-center">
+                <p className="text-gray-500 dark:text-gray-400 font-medium text-lg">
                   Chưa có học kỳ nào.
                 </p>
               </div>
@@ -371,20 +377,20 @@ export default function ManageSemester() {
                 ))}
               </div>
             ) : classes.length === 0 ? (
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12">
+              <div className="bg-white dark:bg-slate-700 rounded-2xl shadow-lg dark:shadow-slate-900/70 border border-gray-100 dark:border-slate-600 p-12">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
-                    <FaGraduationCap className="text-gray-400 text-3xl" />
+                  <div className="w-20 h-20 bg-gray-100 dark:bg-slate-600 rounded-full flex items-center justify-center">
+                    <FaGraduationCap className="text-gray-400 dark:text-gray-500 text-3xl" />
                   </div>
-                  <p className="text-gray-500 font-medium text-lg">
+                  <p className="text-gray-500 dark:text-gray-400 font-medium text-lg">
                     Không tìm thấy lớp học nào trong học kì này
                   </p>
                 </div>
               </div>
             ) : (
               <>
-                <div className="border-b border-gray-200 pb-3 mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800">
+                <div className="border-b border-gray-200 dark:border-slate-600 pb-3 mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                     Các lớp học có trong học kì này
                   </h2>
                 </div>
@@ -393,7 +399,7 @@ export default function ManageSemester() {
                   return (
                     <div
                       key={cls._id}
-                      className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all my-2"
+                      className="bg-white dark:bg-slate-700 rounded-2xl shadow-lg dark:shadow-slate-900/70 border border-gray-100 dark:border-slate-600 p-6 hover:shadow-xl transition-all my-2"
                     >
                       <div
                         onClick={() => {
@@ -402,18 +408,18 @@ export default function ManageSemester() {
                         className="flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer"
                       >
                         <div className="flex items-center gap-4 flex-1 ">
-                          <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                          <div className="w-16 h-16 bg-blue-600 dark:bg-blue-700 rounded-2xl flex items-center justify-center shadow-lg dark:shadow-blue-900/50 flex-shrink-0">
                             <FaGraduationCap className="text-white text-2xl" />
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-xl font-bold text-gray-800">
+                              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
                                 {cls.name}
                               </h3>
                             </div>
-                            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                            <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-300">
                               <div className="flex items-center gap-2">
-                                <FaUser className="text-purple-500" />
+                                <FaUser className="text-purple-500 dark:text-purple-400" />
                                 <span>
                                   {
                                     users.find((u) => u._id === cls.teacher)

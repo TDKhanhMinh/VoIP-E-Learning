@@ -1,7 +1,5 @@
 import { useNavigate } from "react-router-dom";
-// 1. Import thêm FaSpinner để làm biểu tượng loading
 import { FaEnvelope, FaLock, FaSpinner } from "react-icons/fa";
-// 2. Import useState
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import TextInput from "../components/UI/TextInput";

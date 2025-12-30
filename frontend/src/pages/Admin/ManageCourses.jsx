@@ -102,27 +102,30 @@ export default function ManageCourses() {
   const getCourseColor = (index) => {
     const colors = [
       "bg-blue-600",
-      "bg-blue-500",
+      "bg-violet-600",
       "bg-indigo-600",
       "bg-cyan-600",
       "bg-sky-600",
-      "bg-blue-700",
+      "bg-emerald-600",
     ];
     return colors[index % colors.length];
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-3">
-            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-14 h-14 bg-blue-600 dark:bg-blue-500 rounded-2xl flex items-center justify-center shadow-lg dark:shadow-blue-500/40">
               <FaBook className="text-white text-2xl" />
             </div>
             <div>
-              <h2 className="text-4xl font-bold text-blue-600 pb-4">
+              <h2 className="text-4xl font-bold text-blue-600 dark:text-blue-400 pb-1">
                 Quản lý Môn học
               </h2>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
+                Quản lý tất cả các khóa học và chương trình đào tạo
+              </p>
             </div>
           </div>
 
@@ -131,55 +134,61 @@ export default function ManageCourses() {
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-lg dark:shadow-slate-800/50 border border-gray-100 dark:border-slate-600">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                      <FaLayerGroup className="text-indigo-600 text-xl" />
+                    <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-500/20 rounded-xl flex items-center justify-center">
+                      <FaLayerGroup className="text-indigo-600 dark:text-indigo-300 text-xl" />
                     </div>
                     <div>
-                      <div className="text-sm text-gray-600">Total Courses</div>
-                      <div className="text-3xl font-bold text-gray-800">
+                      <div className="text-sm text-gray-600 dark:text-gray-300">
+                        Total Courses
+                      </div>
+                      <div className="text-3xl font-bold text-gray-800 dark:text-white">
                         {courses.length}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-blue-600 rounded-2xl p-5 shadow-lg text-white">
+                <div className="bg-blue-600 dark:bg-blue-500 rounded-2xl p-5 shadow-lg dark:shadow-blue-500/30 text-white">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-white/20 dark:bg-white/30 rounded-xl flex items-center justify-center">
                       <FaBook className="text-white text-xl" />
                     </div>
                     <div>
-                      <div className="text-sm opacity-90">Active Courses</div>
+                      <div className="text-sm opacity-90 font-medium">
+                        Active Courses
+                      </div>
                       <div className="text-3xl font-bold">{courses.length}</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-blue-500 rounded-2xl p-5 shadow-lg text-white">
+                <div className="bg-sky-500 dark:bg-sky-500 rounded-2xl p-5 shadow-lg dark:shadow-sky-500/30 text-white">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-white/20 dark:bg-white/30 rounded-xl flex items-center justify-center">
                       <FaCode className="text-white text-xl" />
                     </div>
                     <div>
-                      <div className="text-sm opacity-90">Course Codes</div>
+                      <div className="text-sm opacity-90 font-medium">
+                        Course Codes
+                      </div>
                       <div className="text-3xl font-bold">{courses.length}</div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 my-4">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-slate-900/50 border border-gray-100 dark:border-slate-700 p-6 my-6">
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                   <div className="relative flex-1 max-w-md w-full">
-                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-400" />
                     <input
                       type="text"
                       placeholder="Search by code, title, or description..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all bg-gray-50 dark:bg-slate-700/50 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                     />
                   </div>
 
@@ -188,7 +197,7 @@ export default function ManageCourses() {
                       setSelectedCourse(null);
                       setOpen(true);
                     }}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap"
+                    className="flex items-center gap-2 bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-700 dark:hover:bg-blue-400 shadow-lg dark:shadow-blue-500/30 transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap"
                   >
                     <FaPlus />
                     <span>Thêm môn học</span>
@@ -210,23 +219,23 @@ export default function ManageCourses() {
             {currentCourses.map((course, index) => (
               <div
                 key={course.id}
-                className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1"
+                className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-slate-900/50 border border-gray-100 dark:border-slate-600 overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 group"
               >
                 <div
                   className={`h-32 ${getCourseColor(
                     index
                   )} p-6 relative overflow-hidden`}
                 >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12 group-hover:scale-110 transition-transform duration-500"></div>
                   <div className="relative z-10">
-                    <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full mb-2">
+                    <div className="inline-flex items-center gap-2 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-full mb-2 border border-white/10">
                       <FaCode className="text-white text-xs" />
-                      <span className="text-white font-bold text-sm">
+                      <span className="text-white font-bold text-sm tracking-wide">
                         {course.code}
                       </span>
                     </div>
-                    <h3 className="text-white font-bold text-xl line-clamp-2">
+                    <h3 className="text-white font-bold text-xl line-clamp-2 drop-shadow-md">
                       {course.title}
                     </h3>
                   </div>
@@ -234,23 +243,23 @@ export default function ManageCourses() {
 
                 <div className="p-6">
                   <div className="mb-4">
-                    <p className="text-gray-600 text-sm line-clamp-3 min-h-[60px]">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 min-h-[60px] leading-relaxed">
                       {course.description || "No description available"}
                     </p>
                   </div>
 
-                  <div className="flex gap-2 pt-4 border-t border-gray-100">
+                  <div className="flex gap-3 pt-4 border-t border-gray-100 dark:border-slate-700">
                     <button
                       onClick={() => {
                         setSelectedCourse(course);
                         setOpen(true);
                       }}
-                      className="flex-1 flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-2.5 rounded-xl hover:bg-blue-600 transition-all hover:shadow-lg font-semibold"
+                      className="flex-1 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/50 px-4 py-2.5 rounded-xl hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 dark:hover:text-white transition-all font-semibold"
                     >
                       <FaEdit />
                       <span>Edit</span>
                     </button>
-                    <button className="flex-1 flex items-center justify-center gap-2 bg-gray-500 text-white px-4 py-2.5 rounded-xl hover:bg-gray-600 transition-all hover:shadow-lg font-semibold">
+                    <button className="flex-1 flex items-center justify-center gap-2 bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-600 px-4 py-2.5 rounded-xl hover:bg-red-500 hover:text-white hover:border-red-500 dark:hover:bg-red-500 dark:hover:text-white transition-all font-semibold">
                       <FaTrash />
                       <span>Delete</span>
                     </button>
@@ -260,12 +269,12 @@ export default function ManageCourses() {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg dark:shadow-slate-900/50 border border-gray-100 dark:border-slate-700 p-12">
             <div className="flex flex-col items-center gap-4">
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
-                <FaBook className="text-gray-400 text-3xl" />
+              <div className="w-20 h-20 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                <FaBook className="text-gray-400 dark:text-gray-500 text-3xl" />
               </div>
-              <p className="text-gray-500 font-medium text-lg">
+              <p className="text-gray-500 dark:text-gray-400 font-medium text-lg">
                 {searchQuery
                   ? "No courses found matching your search"
                   : "No courses found"}
@@ -276,7 +285,7 @@ export default function ManageCourses() {
                     setSelectedCourse(null);
                     setOpen(true);
                   }}
-                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 shadow-lg transition-all font-semibold"
+                  className="flex items-center gap-2 bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-700 dark:hover:bg-blue-400 shadow-lg dark:shadow-blue-500/30 transition-all font-semibold"
                 >
                   <FaPlus />
                   <span>Add Your First Course</span>
