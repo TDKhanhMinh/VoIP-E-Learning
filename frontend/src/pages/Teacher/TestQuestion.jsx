@@ -139,6 +139,9 @@ const TestQuestion = () => {
     try {
       const testId = test._id;
       const testQuestions = test.questions;
+      await testService.updateTest(testId, {
+        totalQuestions: testQuestions.length,
+      });
       await testService.updateTestQuestions(testId, testQuestions);
       navigate(`/teacher/class-details/${id}/tests`);
       toast.success("Lưu thành công!");

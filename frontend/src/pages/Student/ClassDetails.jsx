@@ -86,6 +86,12 @@ export default function ClassDetails() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
+      <div
+        onClick={() => navigate(-1)}
+        className="cursor-pointer text-black dark:text-white hover:text-gray-700 dark:hover:text-gray-300 mb-4"
+      >
+        &larr; Quay lại
+      </div>
       <div className="rounded-xl bg-blue-600 dark:bg-blue-700 shadow-lg">
         <div className="p-8 text-white">
           <h1 className="text-3xl font-bold truncate">{classInfo.name}</h1>
