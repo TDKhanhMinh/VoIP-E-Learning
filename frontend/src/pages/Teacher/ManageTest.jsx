@@ -90,7 +90,6 @@ export default function ManageTests() {
               const semesterName =
                 semesters.find((se) => se._id === cls?.semester)?.name || "N/A";
 
-              const testCount = cls.testCount || cls.assignmentCount || 0;
 
               return (
                 <div
@@ -111,27 +110,7 @@ export default function ManageTests() {
                       {cls.name}
                     </h3>
 
-                    <div className="flex items-center justify-between bg-blue-50/50 dark:bg-blue-900/20 rounded-xl p-3 mb-4 border border-blue-100 dark:border-blue-800">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={`w-2 h-2 rounded-full ${
-                            testCount > 0
-                              ? "bg-blue-500 dark:bg-blue-400"
-                              : "bg-gray-300 dark:bg-gray-600"
-                          }`}
-                        ></div>
-                        <span className="text-sm font-medium text-slate-600 dark:text-gray-300">
-                          Bài thi
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-slate-800 dark:text-white">
-                        <FaPenNib
-                          className="text-blue-500/70 dark:text-blue-400/70"
-                          size={14}
-                        />
-                        <span className="text-lg font-bold">{testCount}</span>
-                      </div>
-                    </div>
+                    
 
                     <div className="mt-auto">
                       <div className="flex items-start gap-2 text-sm text-slate-500 dark:text-gray-400">

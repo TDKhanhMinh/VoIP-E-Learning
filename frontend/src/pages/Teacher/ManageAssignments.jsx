@@ -89,7 +89,6 @@ export default function ManageAssignments() {
             {filteredClasses.map((cls, index) => {
               const semesterName =
                 semesters.find((se) => se._id === cls?.semester)?.name || "N/A";
-              const assignmentCount = cls.assignmentCount ?? 0;
 
               return (
                 <div
@@ -109,30 +108,6 @@ export default function ManageAssignments() {
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors min-h-[3.5rem]">
                       {cls.name}
                     </h3>
-
-                    <div className="flex items-center justify-between bg-slate-50 dark:bg-gray-700/50 rounded-xl p-3 mb-4 border border-slate-100 dark:border-gray-600">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={`w-2 h-2 rounded-full ${
-                            assignmentCount > 0
-                              ? "bg-green-500 dark:bg-green-400"
-                              : "bg-gray-300 dark:bg-gray-600"
-                          }`}
-                        ></div>
-                        <span className="text-sm font-medium text-slate-600 dark:text-gray-300">
-                          Bài tập
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-slate-800 dark:text-white">
-                        <FaTasks
-                          className="text-blue-500/70 dark:text-blue-400/70"
-                          size={14}
-                        />
-                        <span className="text-lg font-bold">
-                          {assignmentCount}
-                        </span>
-                      </div>
-                    </div>
 
                     <div className="mt-auto pt-4 border-t border-slate-50 dark:border-gray-700">
                       <div className="flex items-start gap-2 text-sm text-slate-500 dark:text-gray-400">

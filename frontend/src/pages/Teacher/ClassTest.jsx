@@ -20,6 +20,7 @@ import ConfirmDialog from "../../components/UI/ConfirmDialog";
 import HeaderSkeleton from "./../../components/SkeletonLoading/HeaderSkeleton";
 import StatsSkeleton from "./../../components/SkeletonLoading/StatsSkeleton";
 import TableSkeleton from "./../../components/SkeletonLoading/TableSkeleton";
+import { MdPublic } from "react-icons/md";
 
 export default function ClassTest() {
   const [tests, setTests] = useState({ class: {}, tests: [] });
@@ -93,6 +94,31 @@ export default function ClassTest() {
     }
   };
 
+  const handlePublishTest = async (test) => {
+    if (test.totalQuestions.toString() === "0") {
+      toast.error(
+        "Không thể công bố bài kiểm tra chưa có câu hỏi. Vui lòng thêm câu hỏi trước khi công bố."
+      );
+      return;
+    }
+    try {
+      const updatedTest = await testService.updateTest(test._id, {
+        isPublished: !test.isPublished,
+      });
+      console.log("Publish Test data", updatedTest);
+      fetchTests();
+      toast.success(
+        `Bài kiểm tra đã được ${
+          updatedTest.isPublished ? "công bố" : "thu hồi"
+        } thành công`
+      );
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Lỗi khi cập nhật trạng thái công bố"
+      );
+      console.error("Error in test:", error);
+    }
+  };
   const getSubmissionStatus = (test) => {
     const submissionRate = (test.submissions / test.total) * 100;
     if (submissionRate >= 80)
@@ -269,20 +295,22 @@ export default function ClassTest() {
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-700 border-b-2 border-gray-200 dark:border-gray-600">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                      Tên bài thi
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                      Hạn làm
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                      Tình trạng nộp
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                      Trạng thái
-                    </th>
+                    {[
+                      "Tên bài thi",
+                      "Hạn làm",
+                      "Tình trạng nộp",
+                      "Trạng thái",
+                      "Công bố",
+                    ].map((header) => (
+                      <th
+                        key={header}
+                        className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider"
+                      >
+                        {header}
+                      </th>
+                    ))}
                     <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                      Thao tác
+                      Hành động
                     </th>
                   </tr>
                 </thead>
@@ -390,8 +418,26 @@ export default function ClassTest() {
                             </span>
                           )}
                         </td>
+                        <td className="px-6 py-4 text-center">
+                          {a.isPublished ? (
+                            <span className="inline-block px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-sm font-medium">
+                              Đã công bố
+                            </span>
+                          ) : (
+                            <span className="inline-block px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-medium">
+                              Chưa công bố
+                            </span>
+                          )}
+                        </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => handlePublishTest(a)}
+                              className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all"
+                              title="Công bố bài thi"
+                            >
+                              <MdPublic className="text-lg" />
+                            </button>
                             <button
                               onClick={() => {
                                 navigate(
@@ -403,15 +449,17 @@ export default function ClassTest() {
                             >
                               <FaPlus className="text-lg" />
                             </button>
-                            <button
-                              onClick={() =>
-                                navigate(`/teacher/test-results/${a._id}`)
-                              }
-                              className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all"
-                              title="Xem chi tiết"
-                            >
-                              <FaEye className="text-lg" />
-                            </button>
+                            {a.isPublished !== false && (
+                              <button
+                                onClick={() =>
+                                  navigate(`/teacher/test-results/${a._id}`)
+                                }
+                                className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all"
+                                title="Xem chi tiết"
+                              >
+                                <FaEye className="text-lg" />
+                              </button>
+                            )}
                             <button
                               onClick={() => {
                                 setSelectedTest(a);

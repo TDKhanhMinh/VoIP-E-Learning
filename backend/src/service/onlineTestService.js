@@ -24,7 +24,15 @@ export async function getClassTests(classId) {
     {
       $match: { class: new mongoose.Types.ObjectId(classId) },
     },
-
+    {
+      $lookup: {
+        from: "users",
+        localField: "teacher",
+        foreignField: "_id",
+        as: "teacherInfo",
+      },
+    },
+    { $unwind: "$teacherInfo" },
     {
       $lookup: {
         from: "testattempts",
@@ -95,8 +103,12 @@ export const getStudentTests = async (studentId) => {
       },
     },
 
-    { $match: { matchStudent: { $ne: [] } } },
-
+    {
+      $match: {
+        matchStudent: { $ne: [] },
+        isPublished: true,
+      },
+    },
     {
       $lookup: {
         from: "users",
@@ -137,6 +149,7 @@ export const getById = async (id) => {
 
 export const createTest = async (data) => {
   data.questions = [];
+  data.isPublished = false;
   const newTest = new OnlineTest(data);
   await newTest.save();
   return newTest;

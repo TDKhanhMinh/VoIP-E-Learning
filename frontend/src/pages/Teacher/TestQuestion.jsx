@@ -195,29 +195,37 @@ const TestQuestion = () => {
         onImport={handleFileUpload}
       />
 
-      <div className="w-full flex flex-row justify-end space-x-3 mb-6 sticky top-0 z-10 py-2">
+      <div className="flex justify-between items-center mb-8">
         <button
-          onClick={() => setShowModal(true)}
-          disabled={loading}
-          className="px-4 py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => navigate(-1)}
+          className="text-black dark:text-white hover:underline font-medium w-60 text-left"
         >
-          Import file
+          <span>&larr; Quay lại </span>
         </button>
-        <button
-          onClick={handleAddQuestion}
-          disabled={loading}
-          className="px-4 py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Thêm câu hỏi
-        </button>
+        <div className="w-full flex flex-row justify-end space-x-3 mb-6 sticky top-0 z-10 py-2">
+          <button
+            onClick={() => setShowModal(true)}
+            disabled={loading}
+            className="px-4 py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Import file
+          </button>
+          <button
+            onClick={handleAddQuestion}
+            disabled={loading}
+            className="px-4 py-2.5 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Thêm câu hỏi
+          </button>
 
-        <button
-          onClick={handleSave}
-          disabled={loading}
-          className="px-6 py-2.5 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Lưu thay đổi
-        </button>
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            className="px-6 py-2.5 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Lưu thay đổi
+          </button>
+        </div>
       </div>
 
       {loading ? (
