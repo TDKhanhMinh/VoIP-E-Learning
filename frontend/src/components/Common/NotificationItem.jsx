@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   FaChevronDown,
   FaChevronUp,
-  FaChalkboardTeacher,
   FaClock,
   FaBell,
   FaDownload,

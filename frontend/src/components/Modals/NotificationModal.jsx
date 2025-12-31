@@ -22,7 +22,6 @@ export default function NotificationModal({
         },
     });
 
-    // Reset lại dữ liệu khi mở modal
     useEffect(() => {
         if (initialData) {
             reset({

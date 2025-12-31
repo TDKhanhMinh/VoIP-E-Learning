@@ -141,7 +141,7 @@ export default function ManageCourses() {
                     </div>
                     <div>
                       <div className="text-sm text-gray-600 dark:text-gray-300">
-                        Total Courses
+                        Tổng số Môn học
                       </div>
                       <div className="text-3xl font-bold text-gray-800 dark:text-white">
                         {courses.length}
@@ -157,7 +157,7 @@ export default function ManageCourses() {
                     </div>
                     <div>
                       <div className="text-sm opacity-90 font-medium">
-                        Active Courses
+                        Môn học Đang Hoạt động
                       </div>
                       <div className="text-3xl font-bold">{courses.length}</div>
                     </div>
@@ -171,7 +171,7 @@ export default function ManageCourses() {
                     </div>
                     <div>
                       <div className="text-sm opacity-90 font-medium">
-                        Course Codes
+                        Mã Môn học
                       </div>
                       <div className="text-3xl font-bold">{courses.length}</div>
                     </div>
@@ -185,7 +185,7 @@ export default function ManageCourses() {
                     <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-400" />
                     <input
                       type="text"
-                      placeholder="Search by code, title, or description..."
+                      placeholder="Tìm kiếm theo mã môn học, tiêu đề hoặc mô tả..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all bg-gray-50 dark:bg-slate-700/50 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
@@ -244,7 +244,7 @@ export default function ManageCourses() {
                 <div className="p-6">
                   <div className="mb-4">
                     <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 min-h-[60px] leading-relaxed">
-                      {course.description || "No description available"}
+                      {course.description || "Chưa có mô tả cho môn học này."}
                     </p>
                   </div>
 
@@ -257,11 +257,11 @@ export default function ManageCourses() {
                       className="flex-1 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/50 px-4 py-2.5 rounded-xl hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 dark:hover:text-white transition-all font-semibold"
                     >
                       <FaEdit />
-                      <span>Edit</span>
+                      <span>Chỉnh sửa</span>
                     </button>
                     <button className="flex-1 flex items-center justify-center gap-2 bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-600 px-4 py-2.5 rounded-xl hover:bg-red-500 hover:text-white hover:border-red-500 dark:hover:bg-red-500 dark:hover:text-white transition-all font-semibold">
                       <FaTrash />
-                      <span>Delete</span>
+                      <span>Xóa</span>
                     </button>
                   </div>
                 </div>
@@ -276,8 +276,8 @@ export default function ManageCourses() {
               </div>
               <p className="text-gray-500 dark:text-gray-400 font-medium text-lg">
                 {searchQuery
-                  ? "No courses found matching your search"
-                  : "No courses found"}
+                  ? "Không tìm thấy môn học phù hợp với tìm kiếm của bạn"
+                  : "Không tìm thấy môn học nào. Hãy thêm môn học mới ngay bây giờ!"}
               </p>
               {!searchQuery && (
                 <button
@@ -288,7 +288,7 @@ export default function ManageCourses() {
                   className="flex items-center gap-2 bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-700 dark:hover:bg-blue-400 shadow-lg dark:shadow-blue-500/30 transition-all font-semibold"
                 >
                   <FaPlus />
-                  <span>Add Your First Course</span>
+                  <span>Thêm Môn Học Đầu Tiên</span>
                 </button>
               )}
             </div>

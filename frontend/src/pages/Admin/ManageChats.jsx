@@ -338,7 +338,6 @@ const ManageChats = () => {
 
               <div className="overflow-y-auto flex-1">
                 {isLoading ? (
-                  // Hiển thị 6 skeleton
                   [...Array(6)].map((_, i) => <ConversationSkeleton key={i} />)
                 ) : conversations.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-64 p-8 text-gray-500 dark:text-gray-400">

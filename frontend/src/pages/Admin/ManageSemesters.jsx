@@ -201,7 +201,7 @@ export default function ManageSemester() {
                   </div>
                   <div>
                     <div className="text-sm text-gray-600 dark:text-gray-200">
-                      Total Semesters
+                      Tổng số học kỳ
                     </div>
                     <div className="text-3xl font-bold text-gray-800 dark:text-white">
                       {semesters.length}
@@ -217,7 +217,7 @@ export default function ManageSemester() {
                   </div>
                   <div>
                     <div className="text-sm opacity-90 font-medium">
-                      Active Now
+                      Học kỳ Đang Hoạt động
                     </div>
                     <div className="text-3xl font-bold">
                       {getActiveSemesters()}
@@ -233,7 +233,7 @@ export default function ManageSemester() {
                   </div>
                   <div>
                     <div className="text-sm opacity-90 font-medium">
-                      Upcoming
+                      Học kỳ Sắp Diễn Ra
                     </div>
                     <div className="text-3xl font-bold">
                       {getUpcomingSemesters()}
@@ -250,11 +250,11 @@ export default function ManageSemester() {
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
-                  All Semesters
+                  Danh sách học kỳ
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Showing {currentSemesters.length} of {semesters.length}{" "}
-                  semesters
+                  Hiển thị {currentSemesters.length} trong tổng số{" "}
+                  {semesters.length} học kỳ
                 </p>
               </div>
               <button
@@ -314,7 +314,7 @@ export default function ManageSemester() {
                               <div className="flex items-center gap-2">
                                 <FaCalendarAlt className="text-purple-500 dark:text-purple-400" />
                                 <span>
-                                  Start:{" "}
+                                  Bắt đầu:{" "}
                                   <span className="font-semibold">
                                     {formatDate(sem.start_date)}
                                   </span>

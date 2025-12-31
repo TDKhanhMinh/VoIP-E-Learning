@@ -73,7 +73,7 @@ function AdminLayout() {
                   <div>
                     <h1 className="font-bold text-lg text-white">E-Learning</h1>
                     <p className="text-xs text-indigo-100 dark:text-blue-200">
-                      Admin Dashboard
+                      Quản trị hệ thống
                     </p>
                   </div>
                 </div>

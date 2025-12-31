@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { formatTime } from '../../utils/formatTime';
 
 const USER_ID = sessionStorage.getItem("userId")?.replace(/"/g, "");
-const ADMIN_ID = '690c256f073c3f2b9a72eaa3';
+const ADMIN_ID = '693c18653e61d40fdfdbc688';
 const getToken = () => localStorage.getItem("token");
 
 export default function ChatWithAdmin() {

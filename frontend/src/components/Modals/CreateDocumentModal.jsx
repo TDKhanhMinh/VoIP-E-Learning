@@ -14,7 +14,6 @@ const CreateDocumentModal = ({ isOpen, onClose, onCreate }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onCreate(newDoc);
-    // Reset form sau khi submit thành công (nếu cần thiết có thể xử lý ở parent)
     setNewDoc({ title: "", description: "", tags: "", level: "", link: "" });
   };
 
@@ -76,9 +75,9 @@ const CreateDocumentModal = ({ isOpen, onClose, onCreate }) => {
               className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none"
             >
               <option value="">Chọn cấp độ</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
+              <option value="Beginner">Sơ cấp</option>
+              <option value="Intermediate">Trung cấp</option>
+              <option value="Advanced">Cao cấp</option>
             </select>
           </div>
           <div>

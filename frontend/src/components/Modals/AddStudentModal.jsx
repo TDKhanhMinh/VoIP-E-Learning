@@ -94,9 +94,7 @@ export default function AddStudentsModal({
             leaveTo="opacity-0 scale-95 translate-y-4"
           >
             <Dialog.Panel className="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transform transition-all">
-              {/* Modern Header with Gradient */}
               <div className="relative px-6 py-5 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 overflow-hidden">
-                {/* Decorative circles */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
 
@@ -123,7 +121,6 @@ export default function AddStudentsModal({
                 </div>
               </div>
 
-              {/* Search Section */}
               <div className="px-6 py-4 bg-gradient-to-b from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 border-b dark:border-gray-700">
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -139,7 +136,6 @@ export default function AddStudentsModal({
                 </div>
               </div>
 
-              {/* Table Header */}
               <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-b dark:border-gray-600">
                 <div className="grid grid-cols-12 gap-4 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                   <span className="col-span-1 flex items-center">
@@ -165,7 +161,6 @@ export default function AddStudentsModal({
                 </div>
               </div>
 
-              {/* Scrollable Student List */}
               <div className="max-h-[50vh] overflow-y-auto">
                 {filteredStudents.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-16 px-4">
@@ -219,7 +214,6 @@ export default function AddStudentsModal({
                 )}
               </div>
 
-              {/* Modern Footer */}
               <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-blue-50 border-t flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {selected.length > 0 ? (

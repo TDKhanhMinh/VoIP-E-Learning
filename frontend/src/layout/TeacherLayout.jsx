@@ -106,7 +106,9 @@ export default function TeacherLayout() {
                   </div>
                   <div>
                     <h2 className="text-white font-bold text-lg">E-Learning</h2>
-                    <p className="text-blue-100 text-xs">Teacher Portal</p>
+                    <p className="text-blue-100 text-xs">
+                      Giảng viên VoIP Tools
+                    </p>
                   </div>
                 </div>
               )}

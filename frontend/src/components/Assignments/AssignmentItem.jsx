@@ -92,7 +92,7 @@ export default function AssignmentItem({
       {expanded && (
         <div className="p-4 border-t dark:border-gray-700">
           <p className="mb-4 text-gray-700 dark:text-gray-300 text-xs">
-            Assignment posted in {formatDateTime(createDate)}
+            Bài tập được đăng vào ngày {formatDateTime(createDate)}
           </p>
           <p className="mb-4 text-gray-700 dark:text-gray-300">{description}</p>
 

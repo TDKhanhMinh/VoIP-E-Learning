@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import DescriptionCopy from "./../Common/DescriptionCopy";
 import formatDateTime from "./../../utils/formatDateTime";
 
-// SVG Icons (Dùng trực tiếp để không cần cài thêm thư viện)
 const Icons = {
   Clock: () => (
     <svg

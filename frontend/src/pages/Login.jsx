@@ -27,16 +27,16 @@ export default function Login() {
 
       if (loginData.role === "admin") {
         navigate("/admin");
-        toast.success("Login successful as Admin");
+        toast.success("Đăng nhập thành công với tư cách Quản trị viên");
       } else if (loginData.role === "teacher") {
         navigate("/teacher");
-        toast.success("Login successful as Teacher");
+        toast.success("Đăng nhập thành công với tư cách Giảng viên");
       } else {
-        toast.success("Login successful");
+        toast.success("Đăng nhập thành công");
         navigate("/home");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
+      toast.error(error.response?.data?.message || "Đăng nhập thất bại");
     } finally {
       setIsLoading(false);
     }
@@ -48,9 +48,11 @@ export default function Login() {
         <div className="flex-1 p-8 lg:p-12 flex flex-col justify-center">
           <div className="max-w-md mx-auto w-full">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Chào mừng trở lại
+              </h1>
               <p className="text-gray-600 text-sm">
-                Login to continue to your account
+                Đăng nhập để tiếp tục vào tài khoản của bạn
               </p>
             </div>
 
@@ -67,10 +69,10 @@ export default function Login() {
                     disabled={isLoading}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all disabled:bg-gray-100"
                     {...register("email", {
-                      required: "Email is required",
+                      required: "Email là bắt buộc",
                       pattern: {
                         value: /^\S+@\S+$/i,
-                        message: "Invalid email format",
+                        message: "Định dạng email không hợp lệ",
                       },
                     })}
                   />
@@ -84,7 +86,7 @@ export default function Login() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
+                  Mật khẩu
                 </label>
                 <div className="relative">
                   <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -94,10 +96,10 @@ export default function Login() {
                     disabled={isLoading}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all disabled:bg-gray-100"
                     {...register("password", {
-                      required: "Password is required",
+                      required: "Mật khẩu là bắt buộc",
                       minLength: {
                         value: 6,
-                        message: "Minimum 6 characters",
+                        message: "Tối thiểu 6 ký tự",
                       },
                     })}
                   />
@@ -117,13 +119,13 @@ export default function Login() {
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                     {...register("remember")}
                   />
-                  <span className="ml-2 text-gray-600">Remember me</span>
+                  <span className="ml-2 text-gray-600">Ghi nhớ đăng nhập</span>
                 </label>
                 <a
                   href="#"
                   className="text-blue-600 hover:text-green-800 font-medium"
                 >
-                  Forgot password?
+                  Quên mật khẩu?
                 </a>
               </div>
 
@@ -139,27 +141,20 @@ export default function Login() {
               >
                 {isLoading ? (
                   <>
-                    <FaSpinner className="animate-spin" /> Logging in...
+                    <FaSpinner className="animate-spin" /> Đang đăng nhập...
                   </>
                 ) : (
-                  "Sign In"
+                  "Đăng nhập"
                 )}
               </button>
             </form>
-
-            <p className="text-center text-sm text-gray-500 mt-6">
-              Don’t have an account?{" "}
-              <a href="#" className="text-blue-600 hover:underline font-medium">
-                Sign up
-              </a>
-            </p>
           </div>
         </div>
 
         <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-100 to-blue-700 items-center justify-center p-10">
           <div className="text-center text-white max-w-sm">
             <h2 className="text-2xl font-bold mb-2 uppercase">
-              Welcome to Ton Duc Thang University
+              Chào mừng đến với Hệ thống Quản lý Học tập
             </h2>
             <img
               src="https://tse2.mm.bing.net/th/id/OIP.-1gFbzqXrbFGv-HVHET5TAHaHa?r=0&w=960&h=960&rs=1&pid=ImgDetMain&o=7&rm=3"

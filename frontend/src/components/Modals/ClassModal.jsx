@@ -157,7 +157,6 @@ export default function ClassModal({
             leaveTo="opacity-0 scale-95 translate-y-2"
           >
             <Dialog.Panel className="w-full max-w-xl transform rounded-2xl bg-white dark:bg-gray-800 shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 transition-all flex flex-col max-h-[90vh]">
-              {/* Header */}
               <div
                 className={`flex items-center gap-3 px-6 py-4 border-b dark:border-gray-700 rounded-t-xl ${
                   isEditing
@@ -182,14 +181,12 @@ export default function ClassModal({
                 </Dialog.Title>
               </div>
 
-              {/* Body */}
               <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col flex-1 overflow-hidden"
               >
                 <div className="px-6 py-5 bg-white dark:bg-gray-900 overflow-y-auto flex-1">
                   <div className="space-y-5">
-                    {/* --- Tên lớp --- */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Tên lớp{" "}
@@ -212,7 +209,6 @@ export default function ClassModal({
                       )}
                     </div>
 
-                    {/* --- Môn học --- */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Môn học{" "}
@@ -234,7 +230,6 @@ export default function ClassModal({
                       />
                     </div>
 
-                    {/* --- Giảng viên --- */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Giảng viên{" "}
@@ -256,7 +251,6 @@ export default function ClassModal({
                       />
                     </div>
 
-                    {/* --- Học kỳ --- */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Học kỳ{" "}
@@ -278,7 +272,6 @@ export default function ClassModal({
                       />
                     </div>
 
-                    {/* --- Lịch học --- */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Số tuần học lý thuyết{" "}
@@ -448,7 +441,6 @@ export default function ClassModal({
                   </div>
                 </div>
 
-                {/* Footer */}
                 <div className="flex justify-end space-x-3 border-t dark:border-gray-700 pt-4 px-6 pb-5 bg-white dark:bg-gray-800">
                   <Button
                     type="button"

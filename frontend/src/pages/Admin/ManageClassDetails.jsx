@@ -121,7 +121,6 @@ export default function ClassDetail() {
     }
   };
 
-  // Skeleton components styled to match clean theme
   const InfoCardSkeleton = () => (
     <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 animate-pulse p-6">
       <div className="h-6 bg-gray-200 dark:bg-slate-700 w-1/3 mb-6"></div>
@@ -164,7 +163,6 @@ export default function ClassDetail() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 p-6 transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate(-1)}
@@ -198,7 +196,6 @@ export default function ClassDetail() {
             </div>
 
             <div className="p-6 space-y-4">
-              {/* Môn học */}
               <div className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-100 dark:border-slate-700/50">
                 <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                   <FaBook className="text-blue-600 dark:text-blue-400 text-xl" />
@@ -218,7 +215,6 @@ export default function ClassDetail() {
                 </div>
               </div>
 
-              {/* Giảng viên */}
               <div className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-100 dark:border-slate-700/50">
                 <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
                   <FaChalkboardTeacher className="text-green-600 dark:text-green-400 text-xl" />
@@ -239,7 +235,6 @@ export default function ClassDetail() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Học kỳ */}
                 <div className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-100 dark:border-slate-700/50">
                   <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                     <FaCalendarAlt className="text-purple-600 dark:text-purple-400 text-xl" />
@@ -254,7 +249,6 @@ export default function ClassDetail() {
                   </div>
                 </div>
 
-                {/* Lịch học */}
                 <div className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-100 dark:border-slate-700/50">
                   <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
                     <FaClock className="text-orange-600 dark:text-orange-400 text-xl" />
@@ -293,7 +287,6 @@ export default function ClassDetail() {
             </div>
           </div>
 
-          {/* Stats Card */}
           <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden flex flex-col">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between">
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
@@ -322,9 +315,7 @@ export default function ClassDetail() {
           </div>
         </div>
 
-        {/* Student List Section */}
         <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
-          {/* Toolbar */}
           <div className="p-5 border-b border-gray-200 dark:border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-50 dark:bg-slate-800">
             <div className="relative flex-1 max-w-md">
               <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -348,7 +339,6 @@ export default function ClassDetail() {
             </button>
           </div>
 
-          {/* Table */}
           <div className="overflow-x-auto">
             {filteredStudents.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 px-4 text-center">

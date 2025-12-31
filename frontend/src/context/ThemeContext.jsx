@@ -11,7 +11,6 @@ export const ThemeProvider = ({ children }) => {
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
-  // Apply dark class to HTML element
   useEffect(() => {
     const root = window.document.documentElement;
     if (isDarkMode) {

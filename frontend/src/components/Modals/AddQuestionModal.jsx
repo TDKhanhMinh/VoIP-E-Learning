@@ -31,11 +31,11 @@ const AddQuestionModal = ({
     <div className="fixed inset-0 bg-black/40 dark:bg-black/60 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-xl shadow-lg p-6 animate-[fadeIn_0.2s]">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
-          {title ?? "Import câu hỏi từ file .docx"}
+          {title ?? "Nhập câu hỏi từ tệp .docx"}
         </h2>
 
         <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-          {description ?? "Chọn file .docx chứa danh sách câu hỏi của bạn."}
+          {description ?? "Chọn tệp .docx chứa danh sách câu hỏi của bạn."}
         </p>
 
         <label className="w-full flex flex-col items-center justify-center p-5 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition">
@@ -61,7 +61,7 @@ const AddQuestionModal = ({
           </svg>
 
           <span className="text-gray-600 dark:text-gray-300">
-            {file ? file.name : `Chọn file ${fileType ?? ".docx"}`}
+            {file ? file.name : `Chọn tệp ${fileType ?? ".docx"}`}
           </span>
         </label>
 
@@ -78,7 +78,7 @@ const AddQuestionModal = ({
             className="px-5 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-50"
             disabled={!file}
           >
-            Import
+            Nhập câu hỏi
           </button>
         </div>
       </div>

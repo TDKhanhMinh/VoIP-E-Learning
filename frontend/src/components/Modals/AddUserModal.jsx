@@ -70,15 +70,15 @@ export default function AddUserModal({
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
               {isUpdate
-                ? "Edit the user information below"
-                : "Create a new account with the form below"}
+                ? "Chỉnh sửa thông tin người dùng bên dưới"
+                : "Tạo tài khoản mới với biểu mẫu bên dưới"}
             </p>
           </div>
 
           <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
             <div className="group">
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Full Name
+                Họ và Tên
               </label>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-500 transition-colors">
@@ -86,7 +86,7 @@ export default function AddUserModal({
                 </div>
                 <input
                   {...register("full_name", {
-                    required: "Full name is required",
+                    required: "Họ và tên là bắt buộc",
                   })}
                   className="w-full border-2 border-gray-200 dark:border-gray-600 rounded-xl pl-12 pr-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   placeholder="Nguyễn Văn A"
@@ -101,7 +101,7 @@ export default function AddUserModal({
 
             <div className="group">
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Email Address
+                Email
               </label>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-500 transition-colors">
@@ -111,10 +111,10 @@ export default function AddUserModal({
                   type="email"
                   disabled={isUpdate}
                   {...register("email", {
-                    required: "Email is required",
+                    required: "Email là bắt buộc",
                     pattern: {
                       value: /^\S+@\S+$/i,
-                      message: "Invalid email format",
+                      message: "Định dạng email không hợp lệ",
                     },
                   })}
                   className={`w-full border-2 rounded-xl pl-12 pr-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 ${
@@ -134,7 +134,7 @@ export default function AddUserModal({
 
             <div className="group">
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                {isUpdate ? "New Password (optional)" : "Password"}
+                {isUpdate ? "Mật khẩu mới (tùy chọn)" : "Mật khẩu"}
               </label>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-500 transition-colors">
@@ -143,15 +143,15 @@ export default function AddUserModal({
                 <input
                   type="password"
                   {...register("password", {
-                    required: !isUpdate && "Password is required",
+                    required: !isUpdate && "Mật khẩu là bắt buộc",
                     minLength: {
                       value: 6,
-                      message: "Minimum 6 characters",
+                      message: "Tối thiểu 6 ký tự",
                     },
                   })}
                   className="w-full border-2 border-gray-200 dark:border-gray-600 rounded-xl pl-12 pr-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   placeholder={
-                    isUpdate ? "Leave blank to keep old password" : "••••••••"
+                    isUpdate ? "Để trống nếu không đổi mật khẩu" : "••••••••"
                   }
                 />
               </div>
@@ -164,7 +164,7 @@ export default function AddUserModal({
 
             <div className="group">
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                User Role
+                Vai trò người dùng
               </label>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-500 transition-colors pointer-events-none">
@@ -174,8 +174,8 @@ export default function AddUserModal({
                   {...register("role", { required: true })}
                   className="w-full border-2 border-gray-200 dark:border-gray-600 rounded-xl pl-12 pr-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all appearance-none cursor-pointer"
                 >
-                  <option value="teacher">Teacher</option>
-                  <option value="student">Student</option>
+                  <option value="teacher">Giáo viên</option>
+                  <option value="student">Sinh viên</option>
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 dark:text-gray-500">
                   <svg
@@ -201,7 +201,7 @@ export default function AddUserModal({
                 onClick={onClose}
                 className="flex-1 px-6 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold text-gray-700 dark:text-gray-200 transition-all hover:border-gray-300 dark:hover:border-gray-500"
               >
-                Cancel
+                Hủy bỏ
               </button>
               <button
                 type="submit"
@@ -211,7 +211,7 @@ export default function AddUserModal({
                     : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-blue-500/30 hover:shadow-blue-500/40"
                 }`}
               >
-                {isUpdate ? "Update User" : "Add User"}
+                {isUpdate ? "Cập nhật người dùng" : "Thêm người dùng"}
               </button>
             </div>
           </form>

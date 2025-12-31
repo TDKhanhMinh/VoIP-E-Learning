@@ -10,7 +10,7 @@ function DescriptionCopy({ text }) {
     <p
       onClick={handleCopy}
       className="cursor-pointer truncate w-full hover:opacity-50"
-      title="Click để copy"
+      title="Nhấn để copy"
     >
       {text}
     </p>

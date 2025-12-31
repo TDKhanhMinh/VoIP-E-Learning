@@ -20,7 +20,7 @@ const DocumentCard = ({ document, rank, showScore, isAdmin, onDelete }) => {
             )}
             {showScore && (
               <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold shrink-0">
-                Score: {(document.score * 100).toFixed(1)}%
+                Điểm: {(document.score * 100).toFixed(1)}%
               </span>
             )}
           </div>

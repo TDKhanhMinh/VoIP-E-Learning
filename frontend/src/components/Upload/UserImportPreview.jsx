@@ -54,7 +54,6 @@ export default function UserImportPreview({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
             <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
@@ -75,7 +74,6 @@ export default function UserImportPreview({
           </button>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-3 gap-4 p-6 bg-gray-50 border-b border-gray-200">
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center justify-between">
@@ -120,7 +118,6 @@ export default function UserImportPreview({
           </div>
         </div>
 
-        {/* Table */}
         <div className="flex-1 overflow-auto p-6">
           <div className="mb-4 flex items-center justify-between">
             <label className="flex items-center gap-2 cursor-pointer">
@@ -150,24 +147,21 @@ export default function UserImportPreview({
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    #
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    Tên
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    Email
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    Mật khẩu
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    Vai trò
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    Trạng thái
-                  </th>
+                  {[
+                    "#",
+                    "Tên",
+                    "Email",
+                    "Mật khẩu",
+                    "Vai trò",
+                    "Trạng thái",
+                  ].map((header) => (
+                    <th
+                      key={header}
+                      className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase"
+                    >
+                      {header}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -255,13 +249,12 @@ export default function UserImportPreview({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-between gap-4 p-6 border-t border-gray-200 bg-gray-50">
           <div className="text-sm text-gray-600">
             <span className="font-medium text-gray-800">
               {selectedUsers.length}
             </span>{" "}
-            người dùng được chọn để import
+            người dùng được chọn để thêm vào hệ thống
           </div>
           <div className="flex gap-3">
             <button
@@ -275,7 +268,7 @@ export default function UserImportPreview({
               disabled={selectedUsers.length === 0}
               className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Xác nhận import ({selectedUsers.length})
+              Xác nhận ({selectedUsers.length})
             </button>
           </div>
         </div>

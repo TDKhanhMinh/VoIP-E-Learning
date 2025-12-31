@@ -89,9 +89,9 @@ export default function ManageUsers() {
       setRoleFilter("all");
       setSearchQuery("");
       await fetchUsers();
-      toast.success("User added successfully");
+      toast.success("Thêm người dùng thành công");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Error adding user");
+      toast.error(error?.response?.data?.message || "Lỗi khi thêm người dùng");
     }
   };
 
@@ -103,10 +103,12 @@ export default function ManageUsers() {
       console.log("User update:", res);
       await fetchUsers();
       setOpenModal(false);
-      toast.success("User updated successfully");
+      toast.success("Cập nhật người dùng thành công");
       setSelectedUser(null);
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Error updating user");
+      toast.error(
+        error?.response?.data?.message || "Lỗi khi cập nhật người dùng"
+      );
     }
   };
 
@@ -116,10 +118,10 @@ export default function ManageUsers() {
         available: !user.available,
       });
       fetchUsers();
-      toast.success("User locked successfully");
+      toast.success("Khóa người dùng thành công");
       console.log(" User locked:", res);
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Error locking user");
+      toast.error(error?.response?.data?.message || "Lỗi khi khóa người dùng");
     }
   };
 
@@ -206,11 +208,11 @@ export default function ManageUsers() {
       const failCount = results.filter((r) => r.status === "rejected").length;
 
       if (successCount > 0) {
-        toast.success(`Import thành công ${successCount} người dùng`);
+        toast.success(`Nhập thành công ${successCount} người dùng`);
       }
       if (failCount > 0) {
         toast.warning(
-          `${failCount} người dùng không thể import (có thể đã tồn tại)`
+          `${failCount} người dùng không thể nhập (có thể đã tồn tại)`
         );
       }
 
@@ -303,19 +305,19 @@ export default function ManageUsers() {
                 </div>
               </div>
               <div className="bg-blue-500 dark:bg-blue-600 rounded-2xl p-5 shadow-lg dark:shadow-blue-900/50 text-white">
-                <div className="text-sm opacity-90 mb-1">Admins</div>
+                <div className="text-sm opacity-90 mb-1">Quản trị viên</div>
                 <div className="text-3xl font-bold">
                   {users.filter((u) => u.role === "admin").length}
                 </div>
               </div>
               <div className="bg-blue-600 dark:bg-blue-700 rounded-2xl p-5 shadow-lg dark:shadow-blue-900/50 text-white">
-                <div className="text-sm opacity-90 mb-1">Teachers</div>
+                <div className="text-sm opacity-90 mb-1">Giáo viên</div>
                 <div className="text-3xl font-bold">
                   {users.filter((u) => u.role === "teacher").length}
                 </div>
               </div>
               <div className="bg-green-600 dark:bg-green-700 rounded-2xl p-5 shadow-lg dark:shadow-green-900/50 text-white">
-                <div className="text-sm opacity-90 mb-1">Students</div>
+                <div className="text-sm opacity-90 mb-1">Sinh viên</div>
                 <div className="text-3xl font-bold">
                   {users.filter((u) => u.role === "student").length}
                 </div>
@@ -330,7 +332,7 @@ export default function ManageUsers() {
               <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
               <input
                 type="text"
-                placeholder="Search by name or email..."
+                placeholder="Tìm kiếm theo tên hoặc email..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
@@ -345,10 +347,10 @@ export default function ManageUsers() {
                   onChange={(e) => setRoleFilter(e.target.value)}
                   className="pl-12 pr-8 py-3 border-2 border-gray-200 dark:border-slate-600 rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all appearance-none bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 cursor-pointer"
                 >
-                  <option value="all">All Roles</option>
-                  <option value="admin">Admin</option>
-                  <option value="teacher">Teacher</option>
-                  <option value="student">Student</option>
+                  <option value="all">Tất cả vai trò</option>
+                  <option value="admin">Quản trị viên</option>
+                  <option value="teacher">Giáo viên</option>
+                  <option value="student">Sinh viên</option>
                 </select>
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 dark:text-gray-500">
                   <svg
@@ -385,7 +387,7 @@ export default function ManageUsers() {
                 className="flex items-center gap-2 bg-blue-600 dark:bg-blue-700 text-white px-6 py-3 rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 shadow-lg dark:shadow-blue-900/50 transition-all font-semibold hover:shadow-xl hover:-translate-y-0.5"
               >
                 <FaPlus />
-                <span>Import File</span>
+                <span>Nhập File</span>
               </button>
             </div>
           </div>
@@ -451,11 +453,11 @@ export default function ManageUsers() {
                           <div className="flex justify-center">
                             {user.available ? (
                               <span className="px-4 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-bold border-2 border-green-200 dark:border-green-800">
-                                Active
+                                Hoạt động
                               </span>
                             ) : (
                               <span className="px-4 py-1.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full text-xs font-bold border-2 border-red-200 dark:border-red-800">
-                                Inactive
+                                Không hoạt động
                               </span>
                             )}
                           </div>
@@ -496,7 +498,7 @@ export default function ManageUsers() {
                             <FaUsers className="text-gray-400 dark:text-gray-500 text-2xl" />
                           </div>
                           <p className="text-gray-500 dark:text-gray-400 font-medium">
-                            No users found
+                            Không tìm thấy người dùng
                           </p>
                         </div>
                       </td>
@@ -552,7 +554,7 @@ export default function ManageUsers() {
               Chọn file CSV (.csv) chứa danh sách người dùng của bạn.
             </p>
             <p className="text-sm text-gray-600">
-              Format CSV: full_name, email, password (optional), role
+              Định dạng CSV: full_name, email, password (tùy chọn), role
             </p>
             <a
               href="/sample-users.csv"
