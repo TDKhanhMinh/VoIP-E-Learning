@@ -2,7 +2,7 @@ import express from "express";
 import * as chatController from "../controller/chatController.js";
 import { validate } from "../middlewares/validate.js";
 
-import { protect } from "./../middlewares/authMiddleware";
+import { protect } from "./../middlewares/authMiddleware.js";
 import {
   createConversationSchema,
   markAsReadSchema,
