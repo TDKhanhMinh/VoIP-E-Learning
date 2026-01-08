@@ -11,6 +11,7 @@ import PostItem from "../../components/Common/PostItems";
 import ChatWithTeacher from "../../components/Chat/ChatWithTeacher";
 import { userService } from "../../services/userService";
 import ClassDetailSkeleton from "./../../components/SkeletonLoading/ClassDetailSkeleton";
+import MessageCall from "../../components/Voip/MessageCall";
 export default function ClassDetails() {
   const { id } = useParams();
   const [classInfo, setClassInfo] = useState(null);
@@ -48,6 +49,7 @@ export default function ClassDetails() {
           const teacherInfo = await userService.getUserById(
             classDetails.teacher
           );
+          console.log("Info teacher", teacherInfo);
           setTeacher(teacherInfo);
         }
       } catch (err) {
@@ -120,7 +122,20 @@ export default function ClassDetails() {
             </button>
           </div>
 
-          <ChatWithTeacher TEACHER_ID={teacher?._id} />
+          <div className="flex items-center justify-between w-full px-5 py-4 rounded-xl bg-gradient-to-r from-gray-50 to-white border border-gray-200">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold text-gray-900">
+                Liên hệ giảng viên
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <ChatWithTeacher TEACHER_ID={teacher?._id} />
+              <MessageCall
+                target={{ email: teacher?.email, name: teacher?.full_name }}
+              />
+            </div>
+          </div>
         </div>
 
         <div>

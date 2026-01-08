@@ -132,14 +132,22 @@ export default function ChatWithTeacher({ TEACHER_ID }) {
     <div className=" z-50 font-sans">
       {!isOpen && (
         <button
-          className="px-4 mt-4 hover:bg-blue-500 hover:text-white w-full rounded-md h-10 flex justify-center items-center shadow-lg bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-blue-600"
+          className="
+    w-14 h-14
+    flex items-center justify-center
+    rounded-full
+    bg-gray-100 text-gray-700
+    shadow-lg
+    hover:bg-blue-500 hover:text-white
+    dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-blue-600
+    transition-colors duration-200
+  "
           onClick={() => {
             setIsOpen(true);
             navigate("/home/chat");
           }}
         >
-          Liên hệ Giảng viên
-          <IoChatbubblesOutline size={22} className="mx-2" />
+          <IoChatbubblesOutline size={22} />
         </button>
       )}
 
