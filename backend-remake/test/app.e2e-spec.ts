@@ -120,7 +120,7 @@ describe('HealthController (e2e)', () => {
       });
   });
 
-  it('/api/v1/health/ready reports optional MongoDB as disabled', () => {
+  it('/api/v1/health/ready reports the configured MongoDB state', () => {
     return request(app.getHttpServer())
       .get('/api/v1/health/ready')
       .expect(200)
@@ -132,7 +132,10 @@ describe('HealthController (e2e)', () => {
 
         expect(body.data?.status).toBe('ready');
         expect(body.data?.dependencies.mongodb).toEqual({
-          status: 'disabled',
+          status:
+            process.env.MONGO_ENABLED?.toLowerCase() === 'true'
+              ? 'up'
+              : 'disabled',
         });
       });
   });
