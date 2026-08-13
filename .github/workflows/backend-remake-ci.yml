@@ -1,0 +1,56 @@
+name: Backend Remake CI
+
+on:
+  push:
+    paths:
+      - "backend-remake/**"
+      - ".github/workflows/backend-remake-ci.yml"
+  pull_request:
+    paths:
+      - "backend-remake/**"
+      - ".github/workflows/backend-remake-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend-remake
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend-remake/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests with coverage
+        run: npm run test:ci
+
+      - name: E2E contract tests
+        run: npm run test:e2e -- --runInBand
+
+      - name: Production build
+        run: npm run build
+
+      - name: Docker build
+        run: docker build --tag backend-remake:ci .
