@@ -257,6 +257,53 @@ describe('HealthController (e2e)', () => {
       });
   });
 
+  it('registers, authenticates, refreshes and revokes a user session', async () => {
+    const agent = request.agent(app.getHttpServer());
+    const email = `student-${Date.now()}@example.com`;
+    const registered = await agent
+      .post('/api/v1/auth/register')
+      .send({ email, password: 'a-long-enough-password' })
+      .expect(201);
+    const registerBody = registered.body as ApiSuccessResponse<{
+      user: { id: string; email: string; roles: string[] };
+      accessToken: string;
+    }>;
+    expect(registerBody.data?.user).toEqual({
+      id: expect.any(String) as string,
+      email,
+      roles: ['student'],
+    });
+    expect(registerBody.data?.accessToken).toEqual(expect.any(String));
+    expect(registered.get('set-cookie')).toBeDefined();
+
+    await agent
+      .get('/api/v1/auth/me')
+      .set('authorization', `Bearer ${registerBody.data?.accessToken}`)
+      .expect(200)
+      .expect((response) => {
+        const body = response.body as ApiSuccessResponse<{ email: string }>;
+        expect(body.data?.email).toBe(email);
+      });
+
+    const refreshed = await agent.post('/api/v1/auth/refresh').expect(200);
+    const refreshBody = refreshed.body as ApiSuccessResponse<{
+      accessToken: string;
+    }>;
+    expect(refreshBody.data?.accessToken).toEqual(expect.any(String));
+
+    await agent
+      .post('/api/v1/auth/logout')
+      .set('authorization', `Bearer ${refreshBody.data?.accessToken}`)
+      .expect(204);
+    await agent
+      .post('/api/v1/auth/refresh')
+      .expect(401)
+      .expect((response) => {
+        const body = response.body as ApiErrorResponse;
+        expect(body.error.code).toBe('INVALID_REFRESH_TOKEN');
+      });
+  });
+
   afterEach(async () => {
     await app.close();
   });

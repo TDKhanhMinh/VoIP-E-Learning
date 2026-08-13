@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { Logger as PinoLogger } from 'nestjs-pino';
 import { getCorsOrigins } from '../config/runtime-config';
 
@@ -15,6 +16,7 @@ export function configureApp(app: NestExpressApplication): void {
   app.useLogger(app.get(PinoLogger));
   app.set('trust proxy', config.getOrThrow<boolean>('TRUST_PROXY') ? 1 : false);
   app.use(helmet());
+  app.use(cookieParser());
   app.enableCors({
     origin: getCorsOrigins(config),
     credentials: true,

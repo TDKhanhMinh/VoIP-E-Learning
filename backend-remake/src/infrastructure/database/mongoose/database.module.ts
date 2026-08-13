@@ -4,6 +4,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { SYSTEM_READINESS_PORT } from '../../../application/health/system-readiness.port';
 import { DisabledMongoReadinessAdapter } from './disabled-mongo-readiness.adapter';
 import { MongoReadinessAdapter } from './mongo-readiness.adapter';
+import { loadEnvironment } from '../../config/load-environment';
+
+loadEnvironment();
 
 @Module({})
 export class DatabaseModule {

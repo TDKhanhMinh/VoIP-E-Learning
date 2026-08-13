@@ -10,6 +10,7 @@ NestJS backend V2 for the VoIP E-Learning system. This project is the clean-arch
 - Global DTO validation, Helmet, CORS allowlist and rate limiting.
 - Structured Pino logging with secret redaction and `x-request-id` correlation.
 - Optional Mongoose infrastructure adapter controlled by `MONGO_ENABLED`.
+- MongoDB-backed User/Auth and Course pilot vertical slices.
 - Liveness: `GET /api/v1/health/live`.
 - Readiness: `GET /api/v1/health/ready`.
 - Swagger UI: `/api/docs`; OpenAPI JSON: `/api/docs-json`.
@@ -139,6 +140,56 @@ Copy `.env.example` and adjust values for the target environment. Important defa
 - `RATE_LIMIT_TTL_MS=60000` and `RATE_LIMIT_MAX=100` define the default throttle.
 - `TRUST_PROXY=true` should be enabled only behind a trusted reverse proxy.
 - SIP/Asterisk and AWS recording remain disabled until their adapters are implemented and smoke-tested.
+- JWT access and refresh secrets are required in production; never reuse development values.
+
+## Local MongoDB and tests
+
+The committed `compose.yaml` starts an authenticated single-node MongoDB replica set. It stores local data in the `mongo-data` Docker volume.
+
+```bash
+npm run infra:up
+copy .env.example .env
+copy .env.test.example .env.test
+```
+
+`.env.test` always targets a database ending in `_test`. The integration test harness rejects every other database name before it deletes data. Do not point this file to shared, staging or production MongoDB.
+
+```bash
+npm run test:integration
+npm run test:e2e
+npm run infra:down
+```
+
+GitHub Actions uses an isolated MongoDB service with its own `voip_elearning_test` database. SIP and AWS remain disabled in every test environment.
+
+## Persistence and migrations
+
+Each domain slice follows this boundary:
+
+```text
+HTTP controller -> application use case -> repository port -> Mongoose adapter -> MongoDB
+```
+
+Mongoose schemas, query filters and `ObjectId`/driver details remain in `infrastructure`. Repository ports and domain entities remain framework-free. Pagination queries use the deterministic `{ createdAt: -1, _id: -1 }` sort.
+
+Production has `MONGO_AUTO_INDEX=false`. Apply explicit migrations as part of deployment rather than relying on application startup:
+
+```bash
+npm run migration:status
+npm run migration:up
+```
+
+Migrations are append-only and recorded in `schema_migrations`. Use expand-migrate-contract for destructive schema changes.
+
+## Authentication and authorization
+
+- `POST /api/v1/auth/register` creates a student account.
+- `POST /api/v1/auth/login` issues a short-lived access token and sends the refresh token as an `HttpOnly`, `SameSite=Lax` cookie.
+- `POST /api/v1/auth/refresh` rotates the refresh token. Reuse of an older refresh token revokes that session.
+- `POST /api/v1/auth/logout` revokes the active session; `GET /api/v1/auth/me` requires a bearer access token.
+- `JwtAccessGuard` authenticates requests; `RolesGuard` handles broad roles. Ownership checks belong in application policies such as `assertResourceOwnership`, not only in controllers.
+
+The Course pilot demonstrates a protected vertical slice: signed-in users can list courses, while `admin` and `teacher` can create them. Public registration only grants `student`; role administration will be introduced with the dedicated User administration slice.
 
 ## Setup
 
@@ -154,6 +205,7 @@ npm run start:dev
 npm run lint
 npm run format:check
 npm run test
+npm run test:integration
 npm run test:e2e
 npm run build
 npm audit --omit=dev --audit-level=high
@@ -173,8 +225,9 @@ docker run --rm -p 3000:3000 --env-file .env backend-remake:local
 3. Preserve the existing frontend-facing contract unless a versioned change is approved.
 4. Keep Mongoose schemas and third-party SDKs in infrastructure adapters.
 5. Keep authorization and business invariants inside application/domain policies.
-6. Do not enable SIP/Asterisk or AWS recording until new adapters and runtime smoke tests exist.
-7. Record runtime evidence separately from unit/build evidence.
+6. Add indexes through migrations; map duplicate-key errors to application conflicts.
+7. Do not enable SIP/Asterisk or AWS recording until new adapters and runtime smoke tests exist.
+8. Record runtime evidence separately from unit/build evidence.
 
 ## Planned migration order
 

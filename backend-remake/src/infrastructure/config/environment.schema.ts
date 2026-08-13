@@ -33,6 +33,24 @@ export const environmentValidationSchema = Joi.object({
     otherwise: Joi.string().allow('').optional(),
   }),
   MONGO_AUTO_INDEX: booleanEnvironmentValue.default(false),
+  JWT_ACCESS_SECRET: Joi.when('NODE_ENV', {
+    is: 'production',
+    then: Joi.string().min(32).required(),
+    otherwise: Joi.string()
+      .min(32)
+      .default('development-access-secret-not-for-production-12345'),
+  }),
+  JWT_REFRESH_SECRET: Joi.when('NODE_ENV', {
+    is: 'production',
+    then: Joi.string().min(32).required(),
+    otherwise: Joi.string()
+      .min(32)
+      .default('development-refresh-secret-not-for-production-12345'),
+  }),
+  JWT_ISSUER: Joi.string().default('voip-elearning-api'),
+  JWT_AUDIENCE: Joi.string().default('voip-elearning-client'),
+  JWT_ACCESS_TOKEN_TTL: Joi.string().default('15m'),
+  JWT_REFRESH_TOKEN_TTL: Joi.string().default('30d'),
   SIP_ENABLED: booleanEnvironmentValue.default(false),
   AWS_RECORDING_ENABLED: booleanEnvironmentValue.default(false),
 }).unknown(true);

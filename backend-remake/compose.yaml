@@ -1,0 +1,39 @@
+services:
+  mongo:
+    image: mongo:8.0
+    command: ['mongod', '--replSet', 'rs0', '--bind_ip_all']
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: local-password
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'mongosh --quiet "mongodb://root:local-password@localhost:27017/admin?authSource=admin" --eval "db.adminCommand({ ping: 1 }).ok"',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  mongo-init:
+    image: mongo:8.0
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: 'no'
+    command:
+      [
+        'mongosh',
+        'mongodb://root:local-password@mongo:27017/admin?authSource=admin',
+        '--quiet',
+        '--eval',
+        'try { rs.status() } catch (error) { rs.initiate({ _id: "rs0", members: [{ _id: 0, host: "mongo:27017" }] }) }',
+      ]
+
+volumes:
+  mongo-data:

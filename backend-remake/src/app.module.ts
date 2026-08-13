@@ -12,18 +12,24 @@ import { CLOCK_PORT } from './application/ports/clock.port';
 import type { ClockPort } from './application/ports/clock.port';
 import { GetSystemHealthUseCase } from './application/use-cases/get-system-health.use-case';
 import { environmentValidationSchema } from './infrastructure/config/environment.schema';
+import { loadEnvironment } from './infrastructure/config/load-environment';
 import { DatabaseModule } from './infrastructure/database/mongoose/database.module';
 import { createLoggerConfig } from './infrastructure/logging/logger.config';
 import { SystemClockAdapter } from './infrastructure/time/system-clock.adapter';
+import { AuthModule } from './infrastructure/auth/auth.module';
+import { CourseModule } from './infrastructure/database/mongoose/courses/course.module';
 import { GlobalExceptionFilter } from './interface-adapters/http/filters/global-exception.filter';
 import { HealthController } from './interface-adapters/http/health.controller';
 import { ResponseEnvelopeInterceptor } from './interface-adapters/http/interceptors/response-envelope.interceptor';
+
+loadEnvironment();
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
+      envFilePath: [`.env.${process.env.NODE_ENV ?? 'development'}`, '.env'],
       validationSchema: environmentValidationSchema,
       validationOptions: {
         abortEarly: false,
@@ -46,6 +52,8 @@ import { ResponseEnvelopeInterceptor } from './interface-adapters/http/intercept
       ],
     }),
     DatabaseModule.register(),
+    AuthModule.register(),
+    CourseModule.register(),
   ],
   controllers: [HealthController],
   providers: [
