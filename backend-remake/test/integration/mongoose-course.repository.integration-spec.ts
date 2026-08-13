@@ -5,7 +5,6 @@ import {
   type CourseRepositoryPort,
 } from '../../src/application/courses/ports/course.repository.port';
 import { Course } from '../../src/domain/courses/course.entity';
-import { ApplicationError } from '../../src/application/errors/application.error';
 import { createPageRequest } from '../../src/application/pagination/page-request';
 import {
   clearTestDatabase,
@@ -56,7 +55,7 @@ describe('MongooseCourseRepository (integration)', () => {
     await courses.save(createCourse('course-1', 'CS-101', new Date()));
     await expect(
       courses.save(createCourse('course-2', 'cs-101', new Date())),
-    ).rejects.toMatchObject<ApplicationError>({
+    ).rejects.toMatchObject({
       code: 'COURSE_CODE_ALREADY_EXISTS',
       kind: 'conflict',
     });

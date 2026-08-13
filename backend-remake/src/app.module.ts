@@ -27,6 +27,7 @@ import { LearningModule } from './infrastructure/database/mongoose/learning/lear
 import { GlobalExceptionFilter } from './interface-adapters/http/filters/global-exception.filter';
 import { HealthController } from './interface-adapters/http/health.controller';
 import { ResponseEnvelopeInterceptor } from './interface-adapters/http/interceptors/response-envelope.interceptor';
+import { DefaultAuthenticationGuard } from './interface-adapters/http/auth/guards/default-authentication.guard';
 
 loadEnvironment();
 
@@ -87,6 +88,10 @@ loadEnvironment();
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: DefaultAuthenticationGuard,
     },
     {
       provide: APP_INTERCEPTOR,

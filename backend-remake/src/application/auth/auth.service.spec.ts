@@ -54,31 +54,7 @@ describe('AuthService', () => {
     });
   });
 
-  it('registers a student and creates a hashed, rotating session', async () => {
-    users.findByEmailNormalized.mockResolvedValue(null);
-    const result = await service.register(
-      'Student@Example.com',
-      'long-enough-password',
-    );
-    const savedUser = users.save.mock.calls[0]?.[0];
-    const savedSession = sessions.create.mock.calls[0]?.[0];
-    expect(savedUser).toMatchObject({
-      emailNormalized: 'student@example.com',
-      roles: ['student'],
-    });
-    expect(savedSession?.userId).toEqual(expect.any(String));
-    expect(savedSession?.refreshTokenHash).toBe('hashed-refresh-token');
-    expect(result).toMatchObject({
-      accessToken: 'access-token',
-      user: { email: 'Student@Example.com', roles: ['student'] },
-    });
-  });
-
-  it('rejects duplicate registration and invalid login without leaking account details', async () => {
-    users.findByEmailNormalized.mockResolvedValueOnce(user);
-    await expect(
-      service.register(user.email, 'long-enough-password'),
-    ).rejects.toMatchObject({ code: 'EMAIL_ALREADY_EXISTS' });
+  it('rejects invalid login without leaking account details', async () => {
     users.findByEmailNormalized.mockResolvedValueOnce(null);
     await expect(
       service.login('missing@example.com', 'password'),

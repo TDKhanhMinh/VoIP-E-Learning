@@ -32,31 +32,6 @@ interface AuthServiceDependencies {
 export class AuthService {
   constructor(private readonly dependencies: AuthServiceDependencies) {}
 
-  async register(
-    email: string,
-    password: string,
-  ): Promise<AuthenticatedSession> {
-    const emailNormalized = email.trim().toLowerCase();
-    if (await this.dependencies.users.findByEmailNormalized(emailNormalized)) {
-      throw new ApplicationError('An account already exists for this email', {
-        code: 'EMAIL_ALREADY_EXISTS',
-        kind: 'conflict',
-      });
-    }
-    const now = new Date();
-    const user = User.create({
-      id: randomUUID(),
-      email,
-      emailNormalized,
-      passwordHash: await this.dependencies.passwordHasher.hash(password),
-      roles: ['student'],
-      createdAt: now,
-      updatedAt: now,
-    });
-    await this.dependencies.users.save(user);
-    return this.createSession(user);
-  }
-
   async login(email: string, password: string): Promise<AuthenticatedSession> {
     const user = await this.dependencies.users.findByEmailNormalized(
       email.trim().toLowerCase(),

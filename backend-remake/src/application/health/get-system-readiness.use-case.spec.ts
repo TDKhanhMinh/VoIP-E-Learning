@@ -7,7 +7,10 @@ describe('GetSystemReadinessUseCase', () => {
     const readiness = new SystemReadiness(true, new Date(), {
       mongodb: { status: 'disabled' },
     });
-    const check = jest.fn<SystemReadinessPort['check']>();
+    const check = jest.fn<
+      ReturnType<SystemReadinessPort['check']>,
+      Parameters<SystemReadinessPort['check']>
+    >();
     check.mockResolvedValue(readiness);
     const port: SystemReadinessPort = { check };
     const useCase = new GetSystemReadinessUseCase(port);

@@ -1,5 +1,4 @@
 import { Course } from '../../domain/courses/course.entity';
-import { ApplicationError } from '../errors/application.error';
 import { createPageRequest } from '../pagination/page-request';
 import { PaginatedResult } from '../pagination/paginated-result';
 import { CreateCourseUseCase } from './create-course.use-case';
@@ -37,7 +36,7 @@ describe('Course use cases', () => {
     courses.findByCodeNormalized.mockResolvedValue(course);
     await expect(
       useCase.execute(actor, { code: 'CS-101', name: 'Duplicate' }),
-    ).rejects.toMatchObject<ApplicationError>({
+    ).rejects.toMatchObject({
       code: 'COURSE_CODE_ALREADY_EXISTS',
     });
   });

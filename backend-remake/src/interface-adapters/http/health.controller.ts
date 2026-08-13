@@ -8,6 +8,7 @@ import {
   type HealthResponse,
   type ReadinessResponse,
 } from './health.presenter';
+import { PublicRoute } from './auth/decorators/public-route.decorator';
 
 @ApiTags('Health')
 @Controller('health')
@@ -18,6 +19,7 @@ export class HealthController {
   ) {}
 
   @Get('live')
+  @PublicRoute('health.liveness')
   @ApiOperation({ summary: 'Check whether the API process is alive' })
   @ApiOkResponse({ description: 'The API process is alive' })
   getLiveness(): HealthResponse {
@@ -25,6 +27,7 @@ export class HealthController {
   }
 
   @Get('ready')
+  @PublicRoute('health.readiness')
   @ApiOperation({ summary: 'Check required runtime dependencies' })
   @ApiOkResponse({ description: 'Required dependencies are ready' })
   async getReadiness(): Promise<ReadinessResponse> {

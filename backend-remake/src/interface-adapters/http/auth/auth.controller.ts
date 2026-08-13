@@ -19,8 +19,9 @@ import {
 import type { CurrentActor } from '../../../application/auth/ports/token-service.port';
 import { ApplicationError } from '../../../application/errors/application.error';
 import { CurrentActorDecorator } from './decorators/current-actor.decorator';
+import { PublicRoute } from './decorators/public-route.decorator';
 import { JwtAccessGuard } from './guards/jwt-access.guard';
-import { LoginDto, RegisterDto } from './dto/auth.dto';
+import { LoginDto } from './dto/auth.dto';
 
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
@@ -29,19 +30,8 @@ export class AuthController {
     private readonly config: ConfigService,
   ) {}
 
-  @Post('register')
-  @HttpCode(HttpStatus.CREATED)
-  async register(
-    @Body() body: RegisterDto,
-    @Res({ passthrough: true }) response: Response,
-  ): Promise<{ user: PublicUser; accessToken: string }> {
-    return this.withRefreshCookie(
-      response,
-      await this.authService.register(body.email, body.password),
-    );
-  }
-
   @Post('login')
+  @PublicRoute('auth.login')
   @HttpCode(HttpStatus.OK)
   async login(
     @Body() body: LoginDto,
@@ -54,6 +44,7 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @PublicRoute('auth.refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(
     @Res({ passthrough: true }) response: Response,

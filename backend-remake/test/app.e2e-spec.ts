@@ -1,5 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  SetMetadata,
+} from '@nestjs/common';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { IsString, Length } from 'class-validator';
 import request from 'supertest';
@@ -16,6 +23,16 @@ import { SkipResponseEnvelope } from './../src/interface-adapters/http/decorator
 import type { HealthResponse } from './../src/interface-adapters/http/health.presenter';
 import { PaginationQueryPipe } from './../src/interface-adapters/http/pipes/pagination-query.pipe';
 import { configureApp } from './../src/infrastructure/web/configure-app';
+import { PUBLIC_ROUTE_METADATA } from './../src/interface-adapters/http/auth/decorators/public-route.decorator';
+import {
+  USER_REPOSITORY,
+  type UserRepositoryPort,
+} from './../src/application/auth/ports/user.repository.port';
+import {
+  PASSWORD_HASHER,
+  type PasswordHasherPort,
+} from './../src/application/auth/ports/password-hasher.port';
+import { User } from './../src/domain/users/user.entity';
 
 interface TestItem {
   id: number;
@@ -28,6 +45,7 @@ class TestValidationDto {
 }
 
 @Controller('__test/errors')
+@SetMetadata(PUBLIC_ROUTE_METADATA, 'test.fixture.error-contracts')
 class TestErrorController {
   @Get('application')
   throwApplicationError(): never {
@@ -78,13 +96,24 @@ class TestErrorController {
   }
 }
 
+@Controller('__test/private')
+class TestPrivateController {
+  @Get()
+  getPrivateFixture(): { status: string } {
+    return { status: 'private' };
+  }
+}
+
 describe('HealthController (e2e)', () => {
   let app: NestExpressApplication;
+  let moduleFixture: TestingModule;
+  const itWithMongo =
+    process.env.MONGO_ENABLED?.toLowerCase() === 'true' ? it : it.skip;
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+    moduleFixture = await Test.createTestingModule({
       imports: [AppModule],
-      controllers: [TestErrorController],
+      controllers: [TestErrorController, TestPrivateController],
     }).compile();
 
     app = moduleFixture.createNestApplication<NestExpressApplication>({
@@ -140,16 +169,8 @@ describe('HealthController (e2e)', () => {
       });
   });
 
-  it('/api/docs-json exposes the OpenAPI document', () => {
-    return request(app.getHttpServer())
-      .get('/api/docs-json')
-      .expect(200)
-      .expect((response) => {
-        const body = response.body as { openapi?: unknown; paths?: unknown };
-
-        expect(body.openapi).toBe('3.0.0');
-        expect(body.paths).toBeDefined();
-      });
+  it('does not expose Swagger unless explicitly enabled', () => {
+    return request(app.getHttpServer()).get('/api/docs-json').expect(404);
   });
 
   it('formats framework HTTP exceptions', () => {
@@ -260,52 +281,92 @@ describe('HealthController (e2e)', () => {
       });
   });
 
-  it('registers, authenticates, refreshes and revokes a user session', async () => {
-    const agent = request.agent(app.getHttpServer());
-    const email = `student-${Date.now()}@example.com`;
-    const registered = await agent
-      .post('/api/v1/auth/register')
-      .send({ email, password: 'a-long-enough-password' })
-      .expect(201);
-    const registerBody = registered.body as ApiSuccessResponse<{
-      user: { id: string; email: string; roles: string[] };
-      accessToken: string;
-    }>;
-    expect(registerBody.data?.user).toEqual({
-      id: expect.any(String) as string,
-      email,
-      roles: ['student'],
-    });
-    expect(registerBody.data?.accessToken).toEqual(expect.any(String));
-    expect(registered.get('set-cookie')).toBeDefined();
-
-    await agent
-      .get('/api/v1/auth/me')
-      .set('authorization', `Bearer ${registerBody.data?.accessToken}`)
-      .expect(200)
-      .expect((response) => {
-        const body = response.body as ApiSuccessResponse<{ email: string }>;
-        expect(body.data?.email).toBe(email);
-      });
-
-    const refreshed = await agent.post('/api/v1/auth/refresh').expect(200);
-    const refreshBody = refreshed.body as ApiSuccessResponse<{
-      accessToken: string;
-    }>;
-    expect(refreshBody.data?.accessToken).toEqual(expect.any(String));
-
-    await agent
-      .post('/api/v1/auth/logout')
-      .set('authorization', `Bearer ${refreshBody.data?.accessToken}`)
-      .expect(204);
-    await agent
-      .post('/api/v1/auth/refresh')
+  it('requires authentication unless a route is explicitly allowlisted', async () => {
+    await request(app.getHttpServer())
+      .get('/api/v1/__test/private')
       .expect(401)
       .expect((response) => {
         const body = response.body as ApiErrorResponse;
-        expect(body.error.code).toBe('INVALID_REFRESH_TOKEN');
+        expect(body.error.code).toBe('AUTHENTICATION_REQUIRED');
       });
   });
+
+  itWithMongo('requires authentication for mounted Course reads', () =>
+    request(app.getHttpServer()).get('/api/v1/courses').expect(401),
+  );
+
+  itWithMongo(
+    'keeps registration unmounted and exposes only public user fields',
+    async () => {
+      const agent = request.agent(app.getHttpServer());
+      const email = `student-${Date.now()}@example.com`;
+      await agent
+        .post('/api/v1/auth/register')
+        .send({ email, password: 'a-long-enough-password' })
+        .expect(404);
+
+      const users = moduleFixture.get<UserRepositoryPort>(USER_REPOSITORY);
+      const passwordHasher =
+        moduleFixture.get<PasswordHasherPort>(PASSWORD_HASHER);
+      const now = new Date();
+      await users.save(
+        User.create({
+          id: '507f1f77bcf86cd799439011',
+          email,
+          emailNormalized: email.toLowerCase(),
+          passwordHash: await passwordHasher.hash('a-long-enough-password'),
+          roles: ['student'],
+          createdAt: now,
+          updatedAt: now,
+        }),
+      );
+
+      const loggedIn = await agent
+        .post('/api/v1/auth/login')
+        .send({ email, password: 'a-long-enough-password' })
+        .expect(200);
+      const loginBody = loggedIn.body as ApiSuccessResponse<{
+        user: { id: string; email: string; roles: string[] };
+        accessToken: string;
+      }>;
+      expect(loginBody.data?.user).toEqual({
+        id: expect.any(String) as string,
+        email,
+        roles: ['student'],
+      });
+      expect(loginBody.data?.accessToken).toEqual(expect.any(String));
+      expect(loggedIn.get('set-cookie')).toBeDefined();
+      expect(JSON.stringify(loginBody)).not.toContain('passwordHash');
+      expect(JSON.stringify(loginBody)).not.toContain('sipPassword');
+
+      await agent
+        .get('/api/v1/auth/me')
+        .set('authorization', `Bearer ${loginBody.data?.accessToken}`)
+        .expect(200)
+        .expect((response) => {
+          const body = response.body as ApiSuccessResponse<{ email: string }>;
+          expect(body.data?.email).toBe(email);
+        });
+
+      const refreshed = await agent.post('/api/v1/auth/refresh').expect(200);
+      const refreshBody = refreshed.body as ApiSuccessResponse<{
+        accessToken: string;
+      }>;
+      expect(refreshBody.data?.accessToken).toEqual(expect.any(String));
+
+      await agent
+        .post('/api/v1/auth/logout')
+        .set('authorization', `Bearer ${refreshBody.data?.accessToken}`)
+        .expect(204);
+      await agent
+        .post('/api/v1/auth/refresh')
+        .expect(401)
+        .expect((response) => {
+          const body = response.body as ApiErrorResponse;
+          expect(body.error.code).toBe('INVALID_REFRESH_TOKEN');
+        });
+    },
+  );
 
   afterEach(async () => {
     await app.close();

@@ -13,8 +13,11 @@ NestJS backend V2 for the VoIP E-Learning system. This project is the clean-arch
 - MongoDB-backed User/Auth and Course pilot vertical slices.
 - Liveness: `GET /api/v1/health/live`.
 - Readiness: `GET /api/v1/health/ready`.
-- Swagger UI: `/api/docs`; OpenAPI JSON: `/api/docs-json`.
-- SIP/Asterisk and AWS recording are disabled by default in `.env.example`.
+- Authentication is deny-by-default with a four-route anonymous allowlist.
+- Swagger is disabled by default; opt-in non-release docs use `/api/docs` and `/api/docs-json`.
+- Every external provider is composition OFF during Phase 00.
+
+Phase 00 decisions, V1 surface inventory and migration contracts are indexed in [docs/phase-00/README.md](docs/phase-00/README.md).
 
 ## API response contract
 
@@ -139,7 +142,8 @@ Copy `.env.example` and adjust values for the target environment. Important defa
 - `CORS_ORIGINS` is a comma-separated allowlist.
 - `RATE_LIMIT_TTL_MS=60000` and `RATE_LIMIT_MAX=100` define the default throttle.
 - `TRUST_PROXY=true` should be enabled only behind a trusted reverse proxy.
-- SIP/Asterisk and AWS recording remain disabled until their adapters are implemented and smoke-tested.
+- `SWAGGER_ENABLED=false` keeps API documentation unmounted by default.
+- Every provider flag is locked OFF in Phase 00. Keep/retire/deferred lifecycle is documented in the integration capability matrix; a flag alone cannot compose a provider.
 - JWT access and refresh secrets are required in production; never reuse development values.
 
 ## Local MongoDB and tests
@@ -183,13 +187,13 @@ Migrations are append-only and recorded in `schema_migrations`. Use expand-migra
 
 ## Authentication and authorization
 
-- `POST /api/v1/auth/register` creates a student account.
 - `POST /api/v1/auth/login` issues a short-lived access token and sends the refresh token as an `HttpOnly`, `SameSite=Lax` cookie.
 - `POST /api/v1/auth/refresh` rotates the refresh token. Reuse of an older refresh token revokes that session.
 - `POST /api/v1/auth/logout` revokes the active session; `GET /api/v1/auth/me` requires a bearer access token.
-- `JwtAccessGuard` authenticates requests; `RolesGuard` handles broad roles. Ownership checks belong in application policies such as `assertResourceOwnership`, not only in controllers.
+- `POST /api/v1/auth/register` is intentionally not mounted. User creation will be an authenticated admin use case.
+- `DefaultAuthenticationGuard` authenticates every route unless it has a typed `@PublicRoute` allowlist entry; `RolesGuard` handles broad roles. Ownership checks belong in application policies such as `assertResourceOwnership`, not only in controllers.
 
-The Course pilot demonstrates a protected vertical slice: signed-in users can list courses, while `admin` and `teacher` can create them. Public registration only grants `student`; role administration will be introduced with the dedicated User administration slice.
+The Course pilot demonstrates a protected vertical slice: signed-in users can list courses, while `admin` and `teacher` can create them. Secure first-admin/user administration is introduced only in the dedicated User administration slice.
 
 ## Setup
 
@@ -204,6 +208,7 @@ npm run start:dev
 ```bash
 npm run lint
 npm run format:check
+npm run security:check
 npm run test
 npm run test:integration
 npm run test:e2e
@@ -226,7 +231,7 @@ docker run --rm -p 3000:3000 --env-file .env backend-remake:local
 4. Keep Mongoose schemas and third-party SDKs in infrastructure adapters.
 5. Keep authorization and business invariants inside application/domain policies.
 6. Add indexes through migrations; map duplicate-key errors to application conflicts.
-7. Do not enable SIP/Asterisk or AWS recording until new adapters and runtime smoke tests exist.
+7. Do not enable any provider until its capability gate, adapter, authorization, provider-off/smoke tests and approval exist.
 8. Record runtime evidence separately from unit/build evidence.
 
 ## Planned migration order
@@ -237,4 +242,4 @@ docker run --rm -p 3000:3000 --env-file .env backend-remake:local
 4. Assignment, Submission and Online Test.
 5. Auth and User hardening.
 6. Chat, Forum, Socket.IO and background jobs.
-7. LiveKit, Google Drive, Gemini and other integrations.
+7. LiveKit, Cloudinary, email and other approved integrations. Google Drive is retired; Recording/AWS/Gemini and SIP/Asterisk remain deferred/disabled.

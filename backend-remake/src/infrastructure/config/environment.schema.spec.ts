@@ -13,8 +13,17 @@ describe('environmentValidationSchema', () => {
       API_PREFIX: 'api',
       API_VERSION: '1',
       MONGO_ENABLED: false,
+      SWAGGER_ENABLED: false,
+      V1_COMPATIBILITY_ADAPTER_ENABLED: false,
+      GOOGLE_OAUTH_ENABLED: false,
+      GOOGLE_DRIVE_ENABLED: false,
+      CLOUDINARY_ENABLED: false,
+      LIVEKIT_ENABLED: false,
+      SMTP_ENABLED: false,
+      RECORDING_ENABLED: false,
       SIP_ENABLED: false,
       AWS_RECORDING_ENABLED: false,
+      GEMINI_ENABLED: false,
     });
   });
 
@@ -25,5 +34,20 @@ describe('environmentValidationSchema', () => {
     );
 
     expect(result.error?.message).toContain('MONGO_URI');
+  });
+
+  it('does not accept Phase 00 provider activation by environment alone', () => {
+    const result = environmentValidationSchema.validate(
+      {
+        GOOGLE_DRIVE_ENABLED: 'true',
+        SIP_ENABLED: 'true',
+        AWS_RECORDING_ENABLED: 'true',
+      },
+      { abortEarly: false },
+    );
+
+    expect(result.error?.message).toContain('GOOGLE_DRIVE_ENABLED');
+    expect(result.error?.message).toContain('SIP_ENABLED');
+    expect(result.error?.message).toContain('AWS_RECORDING_ENABLED');
   });
 });

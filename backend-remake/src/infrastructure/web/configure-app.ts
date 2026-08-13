@@ -38,15 +38,17 @@ export function configureApp(app: NestExpressApplication): void {
   );
   app.enableShutdownHooks();
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('VoIP E-Learning Remake API')
-    .setDescription('Clean Architecture API contract for backend-remake')
-    .setVersion(apiVersion)
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  if (config.getOrThrow<boolean>('SWAGGER_ENABLED')) {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('VoIP E-Learning Remake API')
+      .setDescription('Clean Architecture API contract for backend-remake')
+      .setVersion(apiVersion)
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
 
-  SwaggerModule.setup(`${apiPrefix}/docs`, app, document, {
-    jsonDocumentUrl: `${apiPrefix}/docs-json`,
-  });
+    SwaggerModule.setup(`${apiPrefix}/docs`, app, document, {
+      jsonDocumentUrl: `${apiPrefix}/docs-json`,
+    });
+  }
 }

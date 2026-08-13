@@ -1,6 +1,9 @@
 import Joi from 'joi';
 
 const booleanEnvironmentValue = Joi.boolean().truthy('true').falsy('false');
+const phase00LockedOffIntegration = booleanEnvironmentValue
+  .valid(false)
+  .default(false);
 
 export const environmentValidationSchema = Joi.object({
   NODE_ENV: Joi.string()
@@ -24,6 +27,10 @@ export const environmentValidationSchema = Joi.object({
     .default('info'),
   RATE_LIMIT_TTL_MS: Joi.number().integer().min(1000).default(60000),
   RATE_LIMIT_MAX: Joi.number().integer().min(1).default(100),
+  SWAGGER_ENABLED: booleanEnvironmentValue.default(false),
+  V1_COMPATIBILITY_ADAPTER_ENABLED: booleanEnvironmentValue
+    .valid(false)
+    .default(false),
   MONGO_ENABLED: booleanEnvironmentValue.default(false),
   MONGO_URI: Joi.when('MONGO_ENABLED', {
     is: true,
@@ -51,6 +58,13 @@ export const environmentValidationSchema = Joi.object({
   JWT_AUDIENCE: Joi.string().default('voip-elearning-client'),
   JWT_ACCESS_TOKEN_TTL: Joi.string().default('15m'),
   JWT_REFRESH_TOKEN_TTL: Joi.string().default('30d'),
-  SIP_ENABLED: booleanEnvironmentValue.default(false),
-  AWS_RECORDING_ENABLED: booleanEnvironmentValue.default(false),
+  GOOGLE_OAUTH_ENABLED: phase00LockedOffIntegration,
+  GOOGLE_DRIVE_ENABLED: phase00LockedOffIntegration,
+  CLOUDINARY_ENABLED: phase00LockedOffIntegration,
+  LIVEKIT_ENABLED: phase00LockedOffIntegration,
+  SMTP_ENABLED: phase00LockedOffIntegration,
+  RECORDING_ENABLED: phase00LockedOffIntegration,
+  AWS_RECORDING_ENABLED: phase00LockedOffIntegration,
+  GEMINI_ENABLED: phase00LockedOffIntegration,
+  SIP_ENABLED: phase00LockedOffIntegration,
 }).unknown(true);
