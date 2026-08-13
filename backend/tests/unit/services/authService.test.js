@@ -141,7 +141,8 @@ describe("Auth Service", () => {
         full_name: mockUser.full_name,
         email: mockUser.email,
         role: mockUser.role,
-        sipPassword: mockUser.sipPassword,
+        // SIP/Asterisk is currently unavailable.
+        // sipPassword: mockUser.sipPassword,
         token: "jwt_token_abc",
       });
     });

@@ -7,7 +7,8 @@ import connectDB from "./config/db.js";
 import { initOnlineTestCron } from "./cron/updateOnlineTest.js";
 import { submitTestSession } from "./cron/submitTestSession.js";
 import authRoutes from "./router/authRouter.js";
-import voipRoutes from "./router/voipRouter.js";
+// SIP/Asterisk is currently unavailable.
+// import voipRoutes from "./router/voipRouter.js";
 import userRoutes from "./router/userRouter.js";
 import semesterRoutes from "./router/semesterRouter.js";
 import courseRoutes from "./router/courseRouter.js";
@@ -35,8 +36,9 @@ import recommendRoutes from "./router/recommendRouter.js";
 import http from "http";
 import bodyParser from "body-parser";
 import livekitRouter from "./router/livekitRouter.js";
-import recordingRoutes from "./router/recordingRouter.js";
-import webHookRoutes from "./router/webHookRouter.js";
+// AWS S3 recording is currently unavailable.
+// import recordingRoutes from "./router/recordingRouter.js";
+// import webHookRoutes from "./router/webHookRouter.js";
 import { Server } from "socket.io";
 import discussionSocket from "./sockets/discussionSocket.js";
 import chatSocket from "./sockets/chatSocket.js";
@@ -65,7 +67,8 @@ app.use(
     credentials: true,
   })
 );
-app.use("/api/webhook", webHookRoutes);
+// AWS S3 recording is currently unavailable.
+// app.use("/api/webhook", webHookRoutes);
 
 app.use(bodyParser.json({ limit: "2mb" }));
 app.use(express.json());
@@ -103,14 +106,16 @@ app.use("/api/drive", driveRoutes);
 app.use("/api/file", fileRoutes);
 app.use("/api/schedule", scheduleRoutes);
 app.use("/api/room", roomRouters);
-app.use("/api/voip", voipRoutes);
+// SIP/Asterisk is currently unavailable.
+// app.use("/api/voip", voipRoutes);
 app.use("/api/livekit", livekitRouter);
 app.use("/api/post", postRoutes);
 app.use("/api/comment", commentRoutes);
 app.use("/api/recommend", recommendRoutes);
 app.use("/api/topic", topicRoutes);
 app.use("/api/chat", chatRoutes);
-app.use("/api/recording", recordingRoutes);
+// AWS S3 recording is currently unavailable.
+// app.use("/api/recording", recordingRoutes);
 
 initOnlineTestCron();
 submitTestSession();

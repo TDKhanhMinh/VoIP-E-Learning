@@ -45,7 +45,8 @@ export const login = async (email, password) => {
       full_name: user.full_name,
       email: user.email,
       role: user.role,
-      sipPassword: user.sipPassword,
+      // SIP/Asterisk is currently unavailable.
+      // sipPassword: user.sipPassword,
       token: generateToken(user._id, user.email, user.role),
     };
   } else {

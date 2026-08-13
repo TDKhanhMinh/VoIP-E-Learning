@@ -5,7 +5,7 @@ import {
   FaFileSignature,
   FaFileUpload,
   FaBell,
-  FaPlayCircle,
+  // FaPlayCircle, // AWS S3 recording is currently unavailable.
   FaBook,
 } from "react-icons/fa";
 
@@ -59,6 +59,7 @@ export default function ClassNavigation({ id }) {
       bg: "bg-yellow-50",
       border: "hover:border-yellow-200",
     },
+    /* AWS S3 recording is currently unavailable.
     {
       to: `/teacher/class-details/${id}/recordings`,
       label: "Bài giảng",
@@ -67,6 +68,7 @@ export default function ClassNavigation({ id }) {
       bg: "bg-rose-50",
       border: "hover:border-rose-200",
     },
+    */
   ];
 
   return (

@@ -11,7 +11,8 @@ import PostItem from "../../components/Common/PostItems";
 import ChatWithTeacher from "../../components/Chat/ChatWithTeacher";
 import { userService } from "../../services/userService";
 import ClassDetailSkeleton from "./../../components/SkeletonLoading/ClassDetailSkeleton";
-import MessageCall from "../../components/Voip/MessageCall";
+// SIP/Asterisk is currently unavailable.
+// import MessageCall from "../../components/Voip/MessageCall";
 export default function ClassDetails() {
   const { id } = useParams();
   const [classInfo, setClassInfo] = useState(null);
@@ -131,9 +132,11 @@ export default function ClassDetails() {
 
             <div className="flex items-center gap-2">
               <ChatWithTeacher TEACHER_ID={teacher?._id} />
+              {/* SIP/Asterisk is currently unavailable.
               <MessageCall
                 target={{ email: teacher?.email, name: teacher?.full_name }}
               />
+              */}
             </div>
           </div>
         </div>

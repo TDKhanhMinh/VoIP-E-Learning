@@ -1,8 +1,9 @@
 import { RouterProvider } from "react-router-dom";
 import { publicRoutes } from "./routers";
-import { useEffect } from "react";
-import { setIncomingCallHandler } from "./services/sipClientService";
-import { useCallStore } from "./context/callStore";
+// SIP/Asterisk is currently unavailable. Keep these imports for quick restore.
+// import { useEffect } from "react";
+// import { setIncomingCallHandler } from "./services/sipClientService";
+// import { useCallStore } from "./context/callStore";
 import { Suspense } from "react";
 
 const LoadingSpinner = () => (
@@ -11,11 +12,13 @@ const LoadingSpinner = () => (
   </div>
 );
 function App() {
-  useEffect(() => {
-    setIncomingCallHandler((invitation) => {
-      useCallStore.getState().setIncomingCall(invitation);
-    });
-  }, []);
+  // SIP/Asterisk is currently unavailable. Re-enable this block with the
+  // imports above when incoming calls are supported again.
+  // useEffect(() => {
+  //   setIncomingCallHandler((invitation) => {
+  //     useCallStore.getState().setIncomingCall(invitation);
+  //   });
+  // }, []);
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <RouterProvider router={publicRoutes} />;

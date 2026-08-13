@@ -2,10 +2,15 @@ import { useState } from "react";
 import { MoreHorizontal, X } from "lucide-react";
 import clsx from 'clsx';
 import { AnimatePresence } from 'framer-motion';
+// ESLint does not detect the motion namespace when it is used as motion.* JSX.
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import ChatWithAdmin from './../Chat/ChatWithAdmin';
-import MessageCall from './../Voip/MessageCall';
-export default function SupportWidget({ targetUser }) {
+// SIP/Asterisk is currently unavailable.
+// import MessageCall from './../Voip/MessageCall';
+// SIP/Asterisk is currently unavailable.
+// export default function SupportWidget({ targetUser }) {
+export default function SupportWidget() {
     const [isExpanded, setIsExpanded] = useState(false);
     const containerVariants = {
         hidden: { opacity: 0, y: 20, scale: 0.8, transition: { duration: 0.2 } },
@@ -39,9 +44,11 @@ export default function SupportWidget({ targetUser }) {
                         exit="hidden"
                         className="flex flex-col gap-3 mb-1 items-end"
                     >
+                        {/* SIP/Asterisk is currently unavailable.
                         <motion.div variants={itemVariants}>
                             <MessageCall target={targetUser} />
                         </motion.div>
+                        */}
                         <motion.div variants={itemVariants}>
                             <ChatWithAdmin />
                         </motion.div>

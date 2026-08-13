@@ -1,12 +1,13 @@
 import { useLocalParticipant } from "@livekit/components-react";
 import { TbChalkboard } from "react-icons/tb";
 import { TbChalkboardOff } from "react-icons/tb";
-import RecordButton from './RecordButton';
+// AWS S3 recording is currently unavailable.
+// import RecordButton from './RecordButton';
 const TeacherControls = ({
   showWhiteboard,
   setShowWhiteboard,
   roomName,
-  classId,
+  // classId, // AWS S3 recording is currently unavailable.
 }) => {
   const { localParticipant } = useLocalParticipant();
 
@@ -36,7 +37,9 @@ const TeacherControls = ({
 
   return (
     <div className="fixed bottom-3 left-60 transform -translate-x-1/2 z-50 flex items-center gap-2 justify-center">
+      {/* AWS S3 recording is currently unavailable.
       <RecordButton roomName={roomName} classId={classId} />
+      */}
       <button
         onClick={handleToggle}
         className={`px-8 py-3 rounded-lg font-bold text-white ${

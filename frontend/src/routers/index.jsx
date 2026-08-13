@@ -46,8 +46,9 @@ import LMS404Page from "../pages/LMS404Page";
 import TeacherGuard from "../pages/Teacher/TeacherGuard";
 import Schedule from "../pages/Student/Schedule";
 import Recommend from "../pages/Student/Recommend";
-import ManageRecords from "./../pages/Teacher/ManageRecords";
-import ClassRecords from "./../pages/Teacher/ClassRecords";
+// AWS S3 recording is currently unavailable.
+// import ManageRecords from "./../pages/Teacher/ManageRecords";
+// import ClassRecords from "./../pages/Teacher/ClassRecords";
 import { lazy } from "react";
 
 const ManageClasses = lazy(() => import("./../pages/Admin/ManageClasses"));
@@ -103,7 +104,8 @@ const publicRoutes = createBrowserRouter([
           { index: true, element: <TeacherDashboard /> },
           { path: "assignments", element: <ManageAssignments /> },
           { path: "attendances", element: <ManageAttendance /> },
-          { path: "recordings", element: <ManageRecords /> },
+          // AWS S3 recording is currently unavailable.
+          // { path: "recordings", element: <ManageRecords /> },
           { path: "forum", element: <Forum /> },
           { path: "test-results/:testId", element: <TestResult /> },
           { path: "tests", element: <ManageTest /> },
@@ -122,10 +124,11 @@ const publicRoutes = createBrowserRouter([
             path: "class-details/:id/notifications",
             element: <ClassNotification />,
           },
-          {
-            path: "class-details/:id/recordings",
-            element: <ClassRecords />,
-          },
+          // AWS S3 recording is currently unavailable.
+          // {
+          //   path: "class-details/:id/recordings",
+          //   element: <ClassRecords />,
+          // },
           {
             path: "class-details/:id/attendance",
             element: <ClassAttendance />,

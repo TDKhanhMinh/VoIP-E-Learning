@@ -11,7 +11,8 @@ import {
   FaCog,
   FaChevronLeft,
 } from "react-icons/fa";
-import { MdOutlineRecordVoiceOver } from "react-icons/md";
+// AWS S3 recording is currently unavailable.
+// import { MdOutlineRecordVoiceOver } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { IoCalendarOutline } from "react-icons/io5";
 import { ToastContainer } from "react-toastify";
@@ -63,11 +64,12 @@ export default function TeacherLayout() {
       label: "Điểm danh",
     },
     { path: "/teacher/submissions", icon: FaFileAlt, label: "Bài nộp" },
-    {
-      path: "/teacher/recordings",
-      icon: MdOutlineRecordVoiceOver,
-      label: "Tóm tắt bài học trực tuyến",
-    },
+    // AWS S3 recording is currently unavailable.
+    // {
+    //   path: "/teacher/recordings",
+    //   icon: MdOutlineRecordVoiceOver,
+    //   label: "Tóm tắt bài học trực tuyến",
+    // },
     { path: "/teacher/notifications", icon: FaBell, label: "Thông báo" },
     { path: "/teacher/forum", icon: MdOutlineForum, label: "Diễn đàn" },
     {

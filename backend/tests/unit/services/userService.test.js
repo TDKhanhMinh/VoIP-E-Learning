@@ -90,7 +90,9 @@ describe("User Service", () => {
   describe("createUser", () => {
     const userData = { email: "test@test.com", password: "123" };
 
-    it("should create user, sync asterisk and return user without password", async () => {
+    // SIP/Asterisk is currently unavailable.
+    // it("should create user, sync asterisk and return user without password", async () => {
+    it("should create user without contacting Asterisk and return user without password", async () => {
       mocks.mockFindOne.mockResolvedValue(null);
 
       const createdUserDoc = {
@@ -109,11 +111,13 @@ describe("User Service", () => {
         sipPassword: userData.password,
       });
 
-      expect(syncUserToAsterisk).toHaveBeenCalledWith({
-        _id: "user-id",
-        email: userData.email,
-        passwordPlain: "123",
-      });
+      // SIP/Asterisk is currently unavailable.
+      // expect(syncUserToAsterisk).toHaveBeenCalledWith({
+      //   _id: "user-id",
+      //   email: userData.email,
+      //   passwordPlain: "123",
+      // });
+      expect(syncUserToAsterisk).not.toHaveBeenCalled();
 
       expect(result).not.toHaveProperty("password");
       expect(result).toHaveProperty("email", userData.email);
@@ -129,6 +133,7 @@ describe("User Service", () => {
       expect(User.create).not.toHaveBeenCalled();
     });
 
+    /* SIP/Asterisk is currently unavailable. Keep this test for restoration.
     it("should log error but continue if Asterisk sync fails", async () => {
       mocks.mockFindOne.mockResolvedValue(null);
 
@@ -152,6 +157,7 @@ describe("User Service", () => {
         "Asterisk fail"
       );
     });
+    */
   });
 
   describe("updateUser", () => {

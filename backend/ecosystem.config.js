@@ -4,9 +4,10 @@ export const apps = [
         script: "src/server.js",
         watch: false,
     },
-    {
-        name: "worker",
-        script: "src/service/aiWorkerService.js",
-        watch: false,
-    },
+    // AWS S3 recording and its AI worker are currently unavailable.
+    // {
+    //     name: "worker",
+    //     script: "src/service/aiWorkerService.js",
+    //     watch: false,
+    // },
 ];

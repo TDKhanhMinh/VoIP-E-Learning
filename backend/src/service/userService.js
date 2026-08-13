@@ -1,5 +1,6 @@
 import User from "../model/user.js";
-import { syncUserToAsterisk } from "./asteriskSyncService.js";
+// SIP/Asterisk is currently unavailable.
+// import { syncUserToAsterisk } from "./asteriskSyncService.js";
 import bcrypt from "bcryptjs";
 
 export const getAllUser = async (role = "") => {
@@ -13,15 +14,17 @@ export const createUser = async (data) => {
 
   let user = await User.create({ ...data, sipPassword: data.password });
 
-  try {
-    await syncUserToAsterisk({
-      _id: user._id,
-      email: user.email,
-      passwordPlain: user.sipPassword,
-    });
-  } catch (err) {
-    console.error("Lỗi đồng bộ Asterisk:", err.message);
-  }
+  // SIP/Asterisk is currently unavailable. Keep the legacy SIP data above so
+  // the integration can be restored without a database migration.
+  // try {
+  //   await syncUserToAsterisk({
+  //     _id: user._id,
+  //     email: user.email,
+  //     passwordPlain: user.sipPassword,
+  //   });
+  // } catch (err) {
+  //   console.error("Lỗi đồng bộ Asterisk:", err.message);
+  // }
 
   user = user.toObject();
   delete user.password;
