@@ -8,7 +8,7 @@ import {
 } from '../../../../application/courses/ports/course.repository.port';
 import { CourseController } from '../../../../interface-adapters/http/courses/course.controller';
 import { MongooseCourseRepository } from './mongoose-course.repository';
-import { CoursePersistenceModel, CourseSchema } from './course.schema';
+import { CourseSchema } from './course.schema';
 
 @Module({})
 export class CourseModule {
@@ -18,9 +18,7 @@ export class CourseModule {
     return {
       module: CourseModule,
       imports: [
-        MongooseModule.forFeature([
-          { name: CoursePersistenceModel.name, schema: CourseSchema },
-        ]),
+        MongooseModule.forFeature([{ name: 'Course', schema: CourseSchema }]),
       ],
       controllers: [CourseController],
       providers: [

@@ -9,7 +9,7 @@ import { type CourseDocument, CoursePersistenceModel } from './course.schema';
 
 export class MongooseCourseRepository implements CourseRepositoryPort {
   constructor(
-    @InjectModel(CoursePersistenceModel.name)
+    @InjectModel('Course')
     private readonly model: Model<CoursePersistenceModel>,
   ) {}
   async findByCodeNormalized(codeNormalized: string): Promise<Course | null> {
@@ -23,6 +23,9 @@ export class MongooseCourseRepository implements CourseRepositoryPort {
         code: course.code,
         codeNormalized: course.codeNormalized,
         name: course.name,
+        title: course.title,
+        credit: course.credit,
+        description: course.description,
         ownerId: course.ownerId,
         createdAt: course.createdAt,
         updatedAt: course.updatedAt,
@@ -58,6 +61,9 @@ export class MongooseCourseRepository implements CourseRepositoryPort {
       code: document.code,
       codeNormalized: document.codeNormalized,
       name: document.name,
+      title: document.title,
+      credit: document.credit,
+      description: document.description,
       ownerId: document.ownerId,
       createdAt: document.createdAt,
       updatedAt: document.updatedAt,

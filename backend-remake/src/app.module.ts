@@ -18,6 +18,7 @@ import { createLoggerConfig } from './infrastructure/logging/logger.config';
 import { SystemClockAdapter } from './infrastructure/time/system-clock.adapter';
 import { AuthModule } from './infrastructure/auth/auth.module';
 import { CourseModule } from './infrastructure/database/mongoose/courses/course.module';
+import { LegacyModelsModule } from './infrastructure/database/mongoose/legacy-models/legacy-models.module';
 import { GlobalExceptionFilter } from './interface-adapters/http/filters/global-exception.filter';
 import { HealthController } from './interface-adapters/http/health.controller';
 import { ResponseEnvelopeInterceptor } from './interface-adapters/http/interceptors/response-envelope.interceptor';
@@ -54,6 +55,7 @@ loadEnvironment();
     DatabaseModule.register(),
     AuthModule.register(),
     CourseModule.register(),
+    LegacyModelsModule.register(),
   ],
   controllers: [HealthController],
   providers: [

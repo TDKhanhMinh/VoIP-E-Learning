@@ -3,6 +3,10 @@ export interface CourseProperties {
   code: string;
   codeNormalized: string;
   name: string;
+  /** V1 equivalent of `name`; retained for lossless data migration. */
+  title?: string;
+  credit?: number;
+  description?: string | null;
   ownerId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -31,6 +35,15 @@ export class Course {
   }
   get name(): string {
     return this.properties.name;
+  }
+  get title(): string | undefined {
+    return this.properties.title;
+  }
+  get credit(): number | undefined {
+    return this.properties.credit;
+  }
+  get description(): string | null | undefined {
+    return this.properties.description;
   }
   get ownerId(): string {
     return this.properties.ownerId;

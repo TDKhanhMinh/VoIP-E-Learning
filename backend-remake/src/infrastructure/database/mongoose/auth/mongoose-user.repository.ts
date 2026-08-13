@@ -7,7 +7,7 @@ import { type UserDocument, UserPersistenceModel } from './user.schema';
 
 export class MongooseUserRepository implements UserRepositoryPort {
   constructor(
-    @InjectModel(UserPersistenceModel.name)
+    @InjectModel('User')
     private readonly model: Model<UserPersistenceModel>,
   ) {}
 
@@ -31,9 +31,14 @@ export class MongooseUserRepository implements UserRepositoryPort {
     try {
       await this.model.create({
         _id: user.id,
+        full_name: user.fullName,
         email: user.email,
         emailNormalized: user.emailNormalized,
+        password: user.legacyPasswordHash,
         passwordHash: user.passwordHash,
+        sipPassword: user.sipPassword,
+        available: user.available,
+        role: user.legacyRole,
         roles: [...user.roles],
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
@@ -51,9 +56,14 @@ export class MongooseUserRepository implements UserRepositoryPort {
   private toDomain(document: UserDocument): User {
     return User.create({
       id: document.id,
+      fullName: document.full_name,
       email: document.email,
       emailNormalized: document.emailNormalized,
+      legacyPasswordHash: document.password,
       passwordHash: document.passwordHash,
+      sipPassword: document.sipPassword,
+      available: document.available,
+      legacyRole: document.role,
       roles: document.roles,
       createdAt: document.createdAt,
       updatedAt: document.updatedAt,

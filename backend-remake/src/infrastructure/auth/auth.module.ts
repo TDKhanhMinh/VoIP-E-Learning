@@ -24,10 +24,7 @@ import {
   AuthSessionPersistenceModel,
   AuthSessionSchema,
 } from '../database/mongoose/auth/auth-session.schema';
-import {
-  UserPersistenceModel,
-  UserSchema,
-} from '../database/mongoose/auth/user.schema';
+import { UserSchema } from '../database/mongoose/auth/user.schema';
 import { AuthController } from '../../interface-adapters/http/auth/auth.controller';
 import { JwtAccessGuard } from '../../interface-adapters/http/auth/guards/jwt-access.guard';
 import { RolesGuard } from '../../interface-adapters/http/auth/guards/roles.guard';
@@ -45,7 +42,7 @@ export class AuthModule {
       imports: [
         JwtModule.register({}),
         MongooseModule.forFeature([
-          { name: UserPersistenceModel.name, schema: UserSchema },
+          { name: 'User', schema: UserSchema },
           { name: AuthSessionPersistenceModel.name, schema: AuthSessionSchema },
         ]),
       ],
