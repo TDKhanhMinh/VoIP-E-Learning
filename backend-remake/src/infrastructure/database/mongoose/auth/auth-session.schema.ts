@@ -9,7 +9,7 @@ export class AuthSessionPersistenceModel {
   @Prop({ required: true, index: true }) userId!: string;
   @Prop({ required: true, select: false }) refreshTokenHash!: string;
   @Prop({ required: true, index: true }) expiresAt!: Date;
-  @Prop({ default: null }) revokedAt!: Date | null;
+  @Prop({ type: Date, default: null }) revokedAt!: Date | null;
 }
 
 export const AuthSessionSchema = SchemaFactory.createForClass(
