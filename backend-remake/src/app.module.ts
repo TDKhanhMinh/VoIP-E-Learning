@@ -18,7 +18,12 @@ import { createLoggerConfig } from './infrastructure/logging/logger.config';
 import { SystemClockAdapter } from './infrastructure/time/system-clock.adapter';
 import { AuthModule } from './infrastructure/auth/auth.module';
 import { CourseModule } from './infrastructure/database/mongoose/courses/course.module';
-import { LegacyModelsModule } from './infrastructure/database/mongoose/legacy-models/legacy-models.module';
+import { AcademicsModule } from './infrastructure/database/mongoose/academics/academics.module';
+import { AssessmentsModule } from './infrastructure/database/mongoose/assessments/assessments.module';
+import { CollaborationModule } from './infrastructure/database/mongoose/collaboration/collaboration.module';
+import { CommunityModule } from './infrastructure/database/mongoose/community/community.module';
+import { KnowledgeModule } from './infrastructure/database/mongoose/knowledge/knowledge.module';
+import { LearningModule } from './infrastructure/database/mongoose/learning/learning.module';
 import { GlobalExceptionFilter } from './interface-adapters/http/filters/global-exception.filter';
 import { HealthController } from './interface-adapters/http/health.controller';
 import { ResponseEnvelopeInterceptor } from './interface-adapters/http/interceptors/response-envelope.interceptor';
@@ -55,7 +60,12 @@ loadEnvironment();
     DatabaseModule.register(),
     AuthModule.register(),
     CourseModule.register(),
-    LegacyModelsModule.register(),
+    AcademicsModule.register(),
+    LearningModule.register(),
+    AssessmentsModule.register(),
+    CommunityModule.register(),
+    CollaborationModule.register(),
+    KnowledgeModule.register(),
   ],
   controllers: [HealthController],
   providers: [

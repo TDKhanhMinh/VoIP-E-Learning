@@ -3,10 +3,10 @@
  * no validation or behavior: V1 data rules are migrated as schema metadata and
  * will move into individual use cases only when a feature slice is implemented.
  */
-export abstract class LegacyModelEntity<T extends LegacyRecord> {
+export abstract class ModelEntity<T extends ModelRecord> {
   public constructor(private readonly properties: Readonly<T>) {}
 
-  get id(): LegacyObjectId {
+  get id(): ModelObjectId {
     return this.properties.id;
   }
 
@@ -23,10 +23,10 @@ export abstract class LegacyModelEntity<T extends LegacyRecord> {
   }
 }
 
-export type LegacyObjectId = string;
+export type ModelObjectId = string;
 
-export interface LegacyRecord {
-  id: LegacyObjectId;
+export interface ModelRecord {
+  id: ModelObjectId;
   createdAt?: Date;
   updatedAt?: Date;
 }

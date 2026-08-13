@@ -1,8 +1,11 @@
 import {
-  type LegacyObjectId,
-  LegacyModelEntity,
-  type LegacyRecord,
-} from './legacy-model.entity';
+  type ModelObjectId,
+  ModelEntity as LegacyModelEntity,
+  type ModelRecord,
+} from './model.entity';
+
+type LegacyObjectId = ModelObjectId;
+type LegacyRecord = ModelRecord;
 
 export type AttendanceStatus = 'present' | 'absent' | 'late';
 export type ConversationType = 'private' | 'group';

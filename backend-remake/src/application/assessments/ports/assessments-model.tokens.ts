@@ -1,0 +1,6 @@
+export const ASSESSMENTS_MODEL_TOKENS = {
+  onlineTest: Symbol('ASSESSMENT_ONLINE_TEST_REPOSITORY'),
+  testAttempt: Symbol('ASSESSMENT_TEST_ATTEMPT_REPOSITORY'),
+  testQuestion: Symbol('ASSESSMENT_TEST_QUESTION_REPOSITORY'),
+  testSession: Symbol('ASSESSMENT_TEST_SESSION_REPOSITORY'),
+} as const;

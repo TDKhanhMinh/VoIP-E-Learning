@@ -385,7 +385,7 @@ const topicSchema = new Schema(
   { timestamps: true, collection: 'topics' },
 );
 
-export const LEGACY_MODEL_DEFINITIONS = [
+export const V1_MODEL_DEFINITIONS = [
   { name: 'Announcement', schema: announcementSchema },
   { name: 'Assignment', schema: assignmentSchema },
   { name: 'Attendance', schema: attendanceSchema },
@@ -408,3 +408,15 @@ export const LEGACY_MODEL_DEFINITIONS = [
   { name: 'TestSession', schema: testSessionSchema },
   { name: 'Topic', schema: topicSchema },
 ] as const;
+
+export type V1PersistenceModelName =
+  (typeof V1_MODEL_DEFINITIONS)[number]['name'];
+
+export const v1ModelDefinitionsFor = (
+  names: readonly V1PersistenceModelName[],
+) => {
+  const requestedNames = new Set(names);
+  return V1_MODEL_DEFINITIONS.filter((definition) =>
+    requestedNames.has(definition.name),
+  );
+};

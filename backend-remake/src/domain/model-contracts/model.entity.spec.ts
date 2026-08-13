@@ -1,6 +1,6 @@
 import { AnnouncementEntity } from './v1-models.entity';
 
-describe('LegacyModelEntity', () => {
+describe('ModelEntity', () => {
   it('exposes an immutable, framework-free V1 model record', () => {
     const createdAt = new Date('2026-01-01T00:00:00.000Z');
     const announcement = new AnnouncementEntity({

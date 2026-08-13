@@ -1,5 +1,8 @@
-import { V1_MODEL_CATALOG } from '../../../../domain/legacy-models/v1-model.catalog';
-import { LEGACY_MODEL_DEFINITIONS } from './legacy-models.schemas';
+import { V1_MODEL_CATALOG } from '../../../../domain/model-contracts/v1-model.catalog';
+import {
+  V1_MODEL_DEFINITIONS,
+  v1ModelDefinitionsFor,
+} from './v1-model-definitions.schemas';
 
 describe('V1 model persistence catalog', () => {
   it('accounts for every active V1 model exactly once', () => {
@@ -31,9 +34,7 @@ describe('V1 model persistence catalog', () => {
   });
 
   it('preserves V1 schema names, references, indexes and defaults', () => {
-    expect(
-      LEGACY_MODEL_DEFINITIONS.map((definition) => definition.name),
-    ).toEqual([
+    expect(V1_MODEL_DEFINITIONS.map((definition) => definition.name)).toEqual([
       'Announcement',
       'Assignment',
       'Attendance',
@@ -57,13 +58,13 @@ describe('V1 model persistence catalog', () => {
       'Topic',
     ]);
 
-    const attendance = LEGACY_MODEL_DEFINITIONS.find(
+    const attendance = V1_MODEL_DEFINITIONS.find(
       (definition) => definition.name === 'Attendance',
     )?.schema;
-    const classModel = LEGACY_MODEL_DEFINITIONS.find(
+    const classModel = V1_MODEL_DEFINITIONS.find(
       (definition) => definition.name === 'Class',
     )?.schema;
-    const document = LEGACY_MODEL_DEFINITIONS.find(
+    const document = V1_MODEL_DEFINITIONS.find(
       (definition) => definition.name === 'Document',
     )?.schema;
 
@@ -81,5 +82,35 @@ describe('V1 model persistence catalog', () => {
         [{ level: 1 }, expect.any(Object)],
       ]),
     );
+  });
+
+  it('assigns each shared persistence model to one feature boundary', () => {
+    expect(new Set(Object.values(V1_MODEL_CATALOG))).toEqual(
+      new Set([
+        'academics',
+        'assessments',
+        'auth-foundation',
+        'collaboration',
+        'community',
+        'course-pilot',
+        'knowledge',
+        'learning',
+      ]),
+    );
+    expect(
+      v1ModelDefinitionsFor([
+        'Attendance',
+        'Class',
+        'ClassStudent',
+        'Semester',
+        'TeachingSchedule',
+      ]).map((definition) => definition.name),
+    ).toEqual([
+      'Attendance',
+      'Class',
+      'ClassStudent',
+      'Semester',
+      'TeachingSchedule',
+    ]);
   });
 });
