@@ -116,6 +116,51 @@ try {
   });
 }
 
+const persistenceGuardFiles = [
+  'backend-remake/src/infrastructure/database/mongoose/auth/user.schema.ts',
+  'backend-remake/src/infrastructure/database/mongoose/courses/course.schema.ts',
+];
+for (const persistenceGuardFile of persistenceGuardFiles) {
+  const content = readFileSync(
+    resolve(repositoryRoot, persistenceGuardFile),
+    'utf8',
+  );
+  if (/@Prop\(\{\s*type:\s*String\s*\}\)\s*_id/u.test(content))
+    violations.push({
+      file: persistenceGuardFile,
+      rule: 'string-persistence-id',
+    });
+}
+
+const operationalUserFiles = [
+  'backend-remake/src/domain/users/user.entity.ts',
+  'backend-remake/src/infrastructure/database/mongoose/auth/user.schema.ts',
+  'backend-remake/src/infrastructure/database/mongoose/auth/mongoose-user.repository.ts',
+];
+for (const operationalUserFile of operationalUserFiles) {
+  const content = readFileSync(
+    resolve(repositoryRoot, operationalUserFile),
+    'utf8',
+  );
+  if (/\b(?:legacyPasswordHash|sipPassword)\b/u.test(content))
+    violations.push({
+      file: operationalUserFile,
+      rule: 'legacy-secret-operational-field',
+    });
+}
+
+const createCourseUseCase =
+  'backend-remake/src/application/courses/create-course.use-case.ts';
+if (
+  /randomUUID/u.test(
+    readFileSync(resolve(repositoryRoot, createCourseUseCase), 'utf8'),
+  )
+)
+  violations.push({
+    file: createCourseUseCase,
+    rule: 'uuid-persistence-drift',
+  });
+
 if (violations.length > 0) {
   process.stderr.write(
     `Security scan failed (${repositoryScope ? 'repository' : 'backend-remake'} scope):\n`,

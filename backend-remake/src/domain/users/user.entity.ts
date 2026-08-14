@@ -1,5 +1,7 @@
 export const USER_ROLES = ['admin', 'teacher', 'student'] as const;
 export type UserRole = (typeof USER_ROLES)[number];
+export const USER_ACCOUNT_STATUSES = ['active', 'inactive'] as const;
+export type UserAccountStatus = (typeof USER_ACCOUNT_STATUSES)[number];
 
 export interface UserProperties {
   id: string;
@@ -7,13 +9,8 @@ export interface UserProperties {
   fullName?: string;
   email: string;
   emailNormalized: string;
-  /** Retained only for a lossless V1 data migration. */
-  legacyPasswordHash?: string;
   passwordHash: string;
-  /** Inert migration field while SIP integration remains disabled. */
-  sipPassword?: string;
-  available?: boolean;
-  legacyRole?: UserRole;
+  accountStatus?: UserAccountStatus;
   roles: readonly UserRole[];
   createdAt: Date;
   updatedAt: Date;
@@ -28,6 +25,7 @@ export class User {
       email: properties.email.trim(),
       emailNormalized: properties.emailNormalized.trim().toLowerCase(),
       roles: [...properties.roles],
+      accountStatus: properties.accountStatus ?? 'active',
     });
   }
 
@@ -43,17 +41,8 @@ export class User {
   get fullName(): string | undefined {
     return this.properties.fullName;
   }
-  get legacyPasswordHash(): string | undefined {
-    return this.properties.legacyPasswordHash;
-  }
-  get sipPassword(): string | undefined {
-    return this.properties.sipPassword;
-  }
-  get available(): boolean | undefined {
-    return this.properties.available;
-  }
-  get legacyRole(): UserRole | undefined {
-    return this.properties.legacyRole;
+  get accountStatus(): UserAccountStatus {
+    return this.properties.accountStatus ?? 'active';
   }
   get passwordHash(): string {
     return this.properties.passwordHash;

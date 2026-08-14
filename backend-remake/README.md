@@ -18,6 +18,7 @@ NestJS backend V2 for the VoIP E-Learning system. This project is the clean-arch
 - Every external provider is composition OFF during Phase 00.
 
 Phase 00 decisions, V1 surface inventory and migration contracts are indexed in [docs/phase-00/README.md](docs/phase-00/README.md).
+Phase 01 persistence, migration and test-foundation evidence is indexed in [docs/phase-01/README.md](docs/phase-01/README.md).
 
 ## API response contract
 
@@ -26,8 +27,8 @@ Every successful HTTP response is wrapped by a global interceptor:
 ```json
 {
   "success": true,
-  "data": {},
   "meta": {
+    "data": {},
     "timestamp": "2026-08-13T00:00:00.000Z",
     "path": "/api/v1/health/live",
     "method": "GET",
@@ -93,7 +94,7 @@ Controllers parse the query with `PaginationQueryPipe`, pass the resulting `Page
 }
 ```
 
-Only paginated responses use `meta.data` and omit top-level `data`. Non-paginated responses keep the standard `{ success, data, meta }` envelope.
+Every success response uses `meta.data`; paginated responses additionally use `meta.pagination`. There is no top-level business `data` field.
 
 Repository adapters use `pageRequest.offset` and `pageRequest.limit` for database queries and must return the matching total item count. They must also apply a deterministic sort to prevent duplicate or missing rows between pages.
 
@@ -142,6 +143,8 @@ Copy `.env.example` and adjust values for the target environment. Important defa
 - `CORS_ORIGINS` is a comma-separated allowlist.
 - `RATE_LIMIT_TTL_MS=60000` and `RATE_LIMIT_MAX=100` define the default throttle.
 - `TRUST_PROXY=true` should be enabled only behind a trusted reverse proxy.
+- Production requires `LOG_FILE_ENABLED=true`. Mount `LOG_FILE_PATH` on durable
+  storage and configure external rotation/retention before release.
 - `SWAGGER_ENABLED=false` keeps API documentation unmounted by default.
 - Every provider flag is locked OFF in Phase 00. Keep/retire/deferred lifecycle is documented in the integration capability matrix; a flag alone cannot compose a provider.
 - JWT access and refresh secrets are required in production; never reuse development values.
@@ -184,6 +187,19 @@ npm run migration:up
 ```
 
 Migrations are append-only and recorded in `schema_migrations`. Use expand-migrate-contract for destructive schema changes.
+
+The ledger stores a deterministic checksum, state, checkpoint and structured
+report. Inspect or rehearse before applying writes:
+
+```bash
+npm run migration:status
+npm run migration:dry-run -- --batch-size=100
+npm run migration:up -- --batch-size=100
+```
+
+An interrupted migration requires review and an explicit `migration:resume`.
+Production migrations require the Phase 01 controlled-clone runbook and owner
+approval; local synthetic fixtures are not production evidence.
 
 ## Authentication and authorization
 

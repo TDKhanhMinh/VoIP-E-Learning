@@ -1,18 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose';
 
 export type CourseDocument = HydratedDocument<CoursePersistenceModel>;
 
 @Schema({ collection: 'courses', timestamps: true, versionKey: false })
 export class CoursePersistenceModel {
-  @Prop({ type: String }) _id!: string;
+  @Prop({ type: MongooseSchema.Types.ObjectId }) _id!: Types.ObjectId;
   @Prop({ required: true, trim: true }) code!: string;
   @Prop({ required: true, trim: true }) codeNormalized!: string;
   @Prop({ required: true, trim: true }) name!: string;
   @Prop({ type: String }) title?: string;
   @Prop({ type: Number, min: 1 }) credit?: number;
   @Prop({ type: String, default: null }) description?: string | null;
-  @Prop({ required: true, index: true }) ownerId!: string;
+  @Prop({ type: MongooseSchema.Types.ObjectId, index: true })
+  ownerId?: Types.ObjectId;
   createdAt!: Date;
   updatedAt!: Date;
 }

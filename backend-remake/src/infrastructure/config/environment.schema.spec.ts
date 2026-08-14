@@ -12,6 +12,7 @@ describe('environmentValidationSchema', () => {
       PORT: 3000,
       API_PREFIX: 'api',
       API_VERSION: '1',
+      LOG_FILE_ENABLED: false,
       MONGO_ENABLED: false,
       SWAGGER_ENABLED: false,
       V1_COMPATIBILITY_ADAPTER_ENABLED: false,
@@ -34,6 +35,27 @@ describe('environmentValidationSchema', () => {
     );
 
     expect(result.error?.message).toContain('MONGO_URI');
+  });
+
+  it('requires file logging in production and provides a default path', () => {
+    const result = environmentValidationSchema.validate({
+      NODE_ENV: 'production',
+      JWT_ACCESS_SECRET: 'a'.repeat(32),
+      JWT_REFRESH_SECRET: 'b'.repeat(32),
+    });
+    expect(result.error).toBeUndefined();
+    expect(result.value).toMatchObject({
+      LOG_FILE_ENABLED: true,
+      LOG_FILE_PATH: 'logs/backend-remake.log',
+    });
+
+    const disabled = environmentValidationSchema.validate({
+      NODE_ENV: 'production',
+      LOG_FILE_ENABLED: 'false',
+      JWT_ACCESS_SECRET: 'a'.repeat(32),
+      JWT_REFRESH_SECRET: 'b'.repeat(32),
+    });
+    expect(disabled.error?.message).toContain('LOG_FILE_ENABLED');
   });
 
   it('does not accept Phase 00 provider activation by environment alone', () => {

@@ -64,8 +64,10 @@ export class ResponseEnvelopeInterceptor<T> implements NestInterceptor<
 
         return {
           success: true,
-          data: data === undefined ? null : data,
-          meta,
+          meta: {
+            ...meta,
+            data: data === undefined ? null : data,
+          },
         };
       }),
     );

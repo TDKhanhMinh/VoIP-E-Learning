@@ -133,9 +133,10 @@ describe('HealthController (e2e)', () => {
         const body = response.body as ApiSuccessResponse<HealthResponse>;
 
         expect(body.success).toBe(true);
-        expect(body.data?.status).toBe('ok');
-        expect(typeof body.data?.checkedAt).toBe('string');
+        expect(body.meta.data?.status).toBe('ok');
+        expect(typeof body.meta.data?.checkedAt).toBe('string');
         expect(body.meta).toEqual({
+          data: expect.objectContaining({ status: 'ok' }) as HealthResponse,
           timestamp: expect.any(String) as string,
           path: '/api/v1/health/live',
           method: 'GET',
@@ -159,8 +160,8 @@ describe('HealthController (e2e)', () => {
           dependencies: Record<string, { status: string }>;
         }>;
 
-        expect(body.data?.status).toBe('ready');
-        expect(body.data?.dependencies.mongodb).toEqual({
+        expect(body.meta.data?.status).toBe('ready');
+        expect(body.meta.data?.dependencies.mongodb).toEqual({
           status:
             process.env.MONGO_ENABLED?.toLowerCase() === 'true'
               ? 'up'
@@ -329,34 +330,34 @@ describe('HealthController (e2e)', () => {
         user: { id: string; email: string; roles: string[] };
         accessToken: string;
       }>;
-      expect(loginBody.data?.user).toEqual({
+      expect(loginBody.meta.data?.user).toEqual({
         id: expect.any(String) as string,
         email,
         roles: ['student'],
       });
-      expect(loginBody.data?.accessToken).toEqual(expect.any(String));
+      expect(loginBody.meta.data?.accessToken).toEqual(expect.any(String));
       expect(loggedIn.get('set-cookie')).toBeDefined();
       expect(JSON.stringify(loginBody)).not.toContain('passwordHash');
       expect(JSON.stringify(loginBody)).not.toContain('sipPassword');
 
       await agent
         .get('/api/v1/auth/me')
-        .set('authorization', `Bearer ${loginBody.data?.accessToken}`)
+        .set('authorization', `Bearer ${loginBody.meta.data?.accessToken}`)
         .expect(200)
         .expect((response) => {
           const body = response.body as ApiSuccessResponse<{ email: string }>;
-          expect(body.data?.email).toBe(email);
+          expect(body.meta.data?.email).toBe(email);
         });
 
       const refreshed = await agent.post('/api/v1/auth/refresh').expect(200);
       const refreshBody = refreshed.body as ApiSuccessResponse<{
         accessToken: string;
       }>;
-      expect(refreshBody.data?.accessToken).toEqual(expect.any(String));
+      expect(refreshBody.meta.data?.accessToken).toEqual(expect.any(String));
 
       await agent
         .post('/api/v1/auth/logout')
-        .set('authorization', `Bearer ${refreshBody.data?.accessToken}`)
+        .set('authorization', `Bearer ${refreshBody.meta.data?.accessToken}`)
         .expect(204);
       await agent
         .post('/api/v1/auth/refresh')

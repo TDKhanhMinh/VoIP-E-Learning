@@ -12,16 +12,19 @@ describe('Course use cases', () => {
     list: jest.fn(),
   };
   const actor = {
-    userId: 'teacher-1',
+    userId: '507f1f77bcf86cd799439011',
     sessionId: 'session-1',
     roles: ['teacher'] as const,
   };
 
-  beforeEach(() => jest.resetAllMocks());
+  beforeEach(() => jest.clearAllMocks());
+
+  const ids = { generate: jest.fn(() => '507f191e810c19729de860ea') };
+  const clock = { now: jest.fn(() => new Date('2026-08-14T00:00:00.000Z')) };
 
   it('creates normalized courses and rejects duplicate codes', async () => {
     courses.findByCodeNormalized.mockResolvedValue(null);
-    const useCase = new CreateCourseUseCase(courses);
+    const useCase = new CreateCourseUseCase(courses, ids, clock);
     const course = await useCase.execute(actor, {
       code: ' cs-101 ',
       name: ' Introduction to CS ',
@@ -31,6 +34,8 @@ describe('Course use cases', () => {
       codeNormalized: 'cs-101',
       name: 'Introduction to CS',
       ownerId: actor.userId,
+      id: '507f191e810c19729de860ea',
+      createdAt: new Date('2026-08-14T00:00:00.000Z'),
     });
     expect(courses.save.mock.calls).toContainEqual([course]);
     courses.findByCodeNormalized.mockResolvedValue(course);

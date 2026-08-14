@@ -14,10 +14,13 @@ export interface ApiResponseMeta {
   requestId: string;
 }
 
+export interface ApiSuccessResponseMeta<T> extends ApiResponseMeta {
+  data: T | null;
+}
+
 export interface ApiSuccessResponse<T> {
   success: true;
-  data: T | null;
-  meta: ApiResponseMeta;
+  meta: ApiSuccessResponseMeta<T>;
 }
 
 export interface ApiPaginatedResponseMeta<T> extends ApiResponseMeta {
