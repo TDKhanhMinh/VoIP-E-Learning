@@ -6,6 +6,9 @@ export interface AuthSession {
   refreshTokenHash: string;
   expiresAt: Date;
   revokedAt: Date | null;
+  userAgent?: string;
+  ipAddress?: string;
+  lastUsedAt?: Date;
 }
 
 export interface AuthSessionRepositoryPort {
@@ -17,4 +20,5 @@ export interface AuthSessionRepositoryPort {
     expiresAt: Date,
   ): Promise<void>;
   revoke(id: string): Promise<void>;
+  revokeAllForUser(userId: string): Promise<number>;
 }

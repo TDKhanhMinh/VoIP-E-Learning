@@ -1,7 +1,7 @@
 import { PUBLIC_HTTP_ROUTES } from './public-http-route.contract';
 
 describe('public HTTP route contract', () => {
-  it('contains only the Phase 00 anonymous allowlist', () => {
+  it('contains only the infrastructure and credential anonymous allowlist', () => {
     expect(PUBLIC_HTTP_ROUTES).toEqual([
       expect.objectContaining({
         id: 'health.liveness',
@@ -22,6 +22,21 @@ describe('public HTTP route contract', () => {
         id: 'auth.refresh',
         method: 'POST',
         path: '/api/v1/auth/refresh',
+      }),
+      expect.objectContaining({
+        id: 'auth.password-reset.request',
+        method: 'POST',
+        path: '/api/v1/auth/password-reset/request',
+      }),
+      expect.objectContaining({
+        id: 'auth.password-reset.confirm',
+        method: 'POST',
+        path: '/api/v1/auth/password-reset/confirm',
+      }),
+      expect.objectContaining({
+        id: 'auth.email-verification.confirm',
+        method: 'POST',
+        path: '/api/v1/auth/email-verification/confirm',
       }),
     ]);
   });

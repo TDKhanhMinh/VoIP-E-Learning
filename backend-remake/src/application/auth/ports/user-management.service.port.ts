@@ -1,23 +1,30 @@
 import type { User, UserRole } from '../../../domain/users/user.entity';
+import type { UserAccountStatus } from '../../../domain/users/user.entity';
+import type { PageRequest } from '../../pagination/page-request';
+import type { PaginatedResult } from '../../pagination/paginated-result';
 
 export interface CreateManagedUserInput {
   email: string;
   password: string;
   fullName?: string;
-  role?: UserRole;
-  sipPassword?: string;
+  role: UserRole;
 }
 
 export interface UpdateManagedUserInput {
   email?: string;
   fullName?: string;
   role?: UserRole;
-  available?: boolean;
+  accountStatus?: 'active' | 'inactive';
+  password?: string;
 }
 
 /** V1 user-management service contract. Authentication remains owned by AuthService. */
 export interface UserManagementServicePort {
-  listUsers(role?: UserRole): Promise<readonly User[]>;
+  listUsers(options: {
+    role?: UserRole;
+    accountStatus?: UserAccountStatus;
+    pageRequest: PageRequest;
+  }): Promise<PaginatedResult<User>>;
   getUserById(userId: string): Promise<User | null>;
   getUserByEmail(email: string): Promise<User | null>;
   createUser(input: CreateManagedUserInput): Promise<User>;

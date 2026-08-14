@@ -125,7 +125,7 @@ function buildUserUpdate(
         ? document.full_name.trim()
         : undefined;
   if (fullName) set.fullName = fullName;
-  if (role) set.roles = [role];
+  if (role) set.role = role;
   if (passwordHash) set.passwordHash = passwordHash;
   return { $set: set };
 }

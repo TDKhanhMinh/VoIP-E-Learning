@@ -16,6 +16,7 @@
     "migration:dry-run": "npm run build && node dist/infrastructure/database/mongoose/migrations/migrate.js --dry-run",
     "migration:up": "npm run build && node dist/infrastructure/database/mongoose/migrations/migrate.js",
     "migration:resume": "npm run build && node dist/infrastructure/database/mongoose/migrations/migrate.js --resume",
+    "bootstrap:first-admin": "node scripts/bootstrap-first-admin.mjs",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

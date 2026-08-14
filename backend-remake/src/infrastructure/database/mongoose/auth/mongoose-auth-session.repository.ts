@@ -26,6 +26,9 @@ export class MongooseAuthSessionRepository implements AuthSessionRepositoryPort 
           refreshTokenHash: document.refreshTokenHash,
           expiresAt: document.expiresAt,
           revokedAt: document.revokedAt,
+          userAgent: document.userAgent,
+          ipAddress: document.ipAddress,
+          lastUsedAt: document.lastUsedAt,
         }
       : null;
   }
@@ -37,7 +40,7 @@ export class MongooseAuthSessionRepository implements AuthSessionRepositoryPort 
     await this.model
       .updateOne(
         { id, revokedAt: null },
-        { $set: { refreshTokenHash, expiresAt } },
+        { $set: { refreshTokenHash, expiresAt, lastUsedAt: new Date() } },
       )
       .exec();
   }
@@ -45,5 +48,15 @@ export class MongooseAuthSessionRepository implements AuthSessionRepositoryPort 
     await this.model
       .updateOne({ id, revokedAt: null }, { $set: { revokedAt: new Date() } })
       .exec();
+  }
+
+  async revokeAllForUser(userId: string): Promise<number> {
+    const result = await this.model
+      .updateMany(
+        { userId, revokedAt: null },
+        { $set: { revokedAt: new Date() } },
+      )
+      .exec();
+    return result.modifiedCount;
   }
 }

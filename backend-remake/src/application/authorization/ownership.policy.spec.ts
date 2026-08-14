@@ -4,13 +4,13 @@ describe('assertResourceOwnership', () => {
   it('allows the resource owner and administrators', () => {
     expect(() =>
       assertResourceOwnership(
-        { userId: 'owner', sessionId: 'session', roles: ['student'] },
+        { userId: 'owner', sessionId: 'session', role: 'student' },
         'owner',
       ),
     ).not.toThrow();
     expect(() =>
       assertResourceOwnership(
-        { userId: 'admin', sessionId: 'session', roles: ['admin'] },
+        { userId: 'admin', sessionId: 'session', role: 'admin' },
         'owner',
       ),
     ).not.toThrow();
@@ -18,7 +18,7 @@ describe('assertResourceOwnership', () => {
   it('rejects other authenticated users', () => {
     expect(() =>
       assertResourceOwnership(
-        { userId: 'student', sessionId: 'session', roles: ['student'] },
+        { userId: 'student', sessionId: 'session', role: 'student' },
         'owner',
       ),
     ).toThrow('You do not own this resource');

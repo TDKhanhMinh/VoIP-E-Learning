@@ -10,6 +10,9 @@ export class AuthSessionPersistenceModel {
   @Prop({ required: true, select: false }) refreshTokenHash!: string;
   @Prop({ required: true, index: true }) expiresAt!: Date;
   @Prop({ type: Date, default: null }) revokedAt!: Date | null;
+  @Prop({ type: String }) userAgent?: string;
+  @Prop({ type: String }) ipAddress?: string;
+  @Prop({ type: Date }) lastUsedAt?: Date;
 }
 
 export const AuthSessionSchema = SchemaFactory.createForClass(

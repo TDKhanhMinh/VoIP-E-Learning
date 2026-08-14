@@ -5,7 +5,7 @@ export const TOKEN_SERVICE = Symbol('TOKEN_SERVICE');
 export interface CurrentActor {
   userId: string;
   sessionId: string;
-  roles: readonly UserRole[];
+  role: UserRole;
 }
 
 export interface IssuedTokens {

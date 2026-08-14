@@ -14,7 +14,7 @@ describe('Course use cases', () => {
   const actor = {
     userId: '507f1f77bcf86cd799439011',
     sessionId: 'session-1',
-    roles: ['teacher'] as const,
+    role: 'teacher' as const,
   };
 
   beforeEach(() => jest.clearAllMocks());

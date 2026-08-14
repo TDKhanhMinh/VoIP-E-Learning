@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Inject,
   Post,
+  Patch,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -16,17 +17,27 @@ import {
   type AuthenticatedSession,
   type PublicUser,
 } from '../../../application/auth/auth.service';
+import { CredentialLifecycleService } from '../../../application/auth/credential-lifecycle.service';
 import type { CurrentActor } from '../../../application/auth/ports/token-service.port';
 import { ApplicationError } from '../../../application/errors/application.error';
 import { CurrentActorDecorator } from './decorators/current-actor.decorator';
+import { AllowUnverified } from './decorators/allow-unverified.decorator';
 import { PublicRoute } from './decorators/public-route.decorator';
 import { JwtAccessGuard } from './guards/jwt-access.guard';
-import { LoginDto } from './dto/auth.dto';
+import {
+  ChangePasswordDto,
+  EmailVerificationConfirmDto,
+  LoginDto,
+  PasswordResetConfirmDto,
+  PasswordResetRequestDto,
+} from './dto/auth.dto';
 
 @Controller({ path: 'auth', version: '1' })
+@AllowUnverified()
 export class AuthController {
   constructor(
     @Inject(AuthService) private readonly authService: AuthService,
+    private readonly credentialLifecycle: CredentialLifecycleService,
     private readonly config: ConfigService,
   ) {}
 
@@ -39,7 +50,10 @@ export class AuthController {
   ): Promise<{ user: PublicUser; accessToken: string }> {
     return this.withRefreshCookie(
       response,
-      await this.authService.login(body.email, body.password),
+      await this.authService.login(body.email, body.password, {
+        userAgent: this.requestUserAgent(response),
+        ipAddress: this.requestIp(response),
+      }),
     );
   }
 
@@ -82,6 +96,56 @@ export class AuthController {
     return this.authService.currentUser(actor);
   }
 
+  @Patch('password')
+  @UseGuards(JwtAccessGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async changePassword(
+    @CurrentActorDecorator() actor: CurrentActor,
+    @Body() body: ChangePasswordDto,
+  ): Promise<void> {
+    await this.authService.changePassword(
+      actor,
+      body.currentPassword,
+      body.newPassword,
+    );
+  }
+
+  @Post('password-reset/request')
+  @PublicRoute('auth.password-reset.request')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async requestPasswordReset(
+    @Body() body: PasswordResetRequestDto,
+  ): Promise<void> {
+    await this.credentialLifecycle.requestPasswordReset(body.email);
+  }
+
+  @Post('password-reset/confirm')
+  @PublicRoute('auth.password-reset.confirm')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async confirmPasswordReset(
+    @Body() body: PasswordResetConfirmDto,
+  ): Promise<void> {
+    await this.credentialLifecycle.resetPassword(body.token, body.newPassword);
+  }
+
+  @Post('email-verification/confirm')
+  @PublicRoute('auth.email-verification.confirm')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async confirmEmailVerification(
+    @Body() body: EmailVerificationConfirmDto,
+  ): Promise<void> {
+    await this.credentialLifecycle.verifyEmail(body.token);
+  }
+
+  @Post('email-verification/request')
+  @UseGuards(JwtAccessGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async requestEmailVerification(
+    @CurrentActorDecorator() actor: CurrentActor,
+  ): Promise<void> {
+    await this.credentialLifecycle.requestEmailVerification(actor.userId);
+  }
+
   private withRefreshCookie(
     response: Response,
     session: AuthenticatedSession,
@@ -102,5 +166,21 @@ export class AuthController {
       sameSite: 'lax' as const,
       path: `/${apiPrefix}/v${apiVersion}/auth`,
     };
+  }
+
+  private requestUserAgent(response: Response): string | undefined {
+    const value = this.request(response).headers['user-agent'];
+    return Array.isArray(value) ? value[0] : value;
+  }
+
+  private requestIp(response: Response): string | undefined {
+    return this.request(response).ip;
+  }
+
+  private request(response: Response): {
+    headers: Record<string, string | string[] | undefined>;
+    ip?: string;
+  } {
+    return response.req;
   }
 }

@@ -67,7 +67,15 @@ export const environmentValidationSchema = Joi.object({
   JWT_ISSUER: Joi.string().default('voip-elearning-api'),
   JWT_AUDIENCE: Joi.string().default('voip-elearning-client'),
   JWT_ACCESS_TOKEN_TTL: Joi.string().default('15m'),
-  JWT_REFRESH_TOKEN_TTL: Joi.string().default('30d'),
+  JWT_REFRESH_TOKEN_TTL: Joi.string().default('24h'),
+  PASSWORD_RESET_TOKEN_TTL: Joi.string().default('1h'),
+  EMAIL_VERIFICATION_TOKEN_TTL: Joi.string().default('15m'),
+  CREDENTIAL_TOKEN_RATE_WINDOW_MS: Joi.number()
+    .integer()
+    .min(1000)
+    .default(3_600_000),
+  CREDENTIAL_TOKEN_RATE_MAX: Joi.number().integer().min(1).default(3),
+  GOOGLE_OAUTH_DEFAULT_ROLE: Joi.string().valid('guest').default('guest'),
   GOOGLE_OAUTH_ENABLED: phase00LockedOffIntegration,
   GOOGLE_DRIVE_ENABLED: phase00LockedOffIntegration,
   CLOUDINARY_ENABLED: phase00LockedOffIntegration,

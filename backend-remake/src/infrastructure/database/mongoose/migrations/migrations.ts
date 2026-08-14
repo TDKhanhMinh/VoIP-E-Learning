@@ -1,4 +1,9 @@
-import { emptyMigrationReport, type MongoMigration } from './migration';
+import {
+  emptyMigrationReport,
+  type MongoMigration,
+  type MongoMigrationReport,
+} from './migration';
+import { ObjectId, type Document } from 'mongodb';
 import { backfillUserCourseFoundation } from './user-course-backfill';
 
 const createInitialIndexes: MongoMigration = {
@@ -143,10 +148,73 @@ const backfillUserCourse: MongoMigration = {
   up: backfillUserCourseFoundation,
 };
 
+const normalizeSingleUserRole: MongoMigration = {
+  id: '202608140002-normalize-user-single-role',
+  description:
+    'Normalize legacy role arrays into the Phase 02 single-role User contract.',
+  kind: 'data',
+  checksumSource: 'phase-02-single-role-v1',
+  blockingWarnings: ['userMissingCanonicalRole'],
+  async up(context) {
+    const { database, dryRun, batchSize, checkpoint } = context;
+    const report: MongoMigrationReport = emptyMigrationReport();
+    const users = database.collection('users');
+    const resumeAfter = checkpoint?.startsWith('users:')
+      ? new ObjectId(checkpoint.slice('users:'.length))
+      : undefined;
+    const cursor = users
+      .find({
+        $or: [{ roles: { $exists: true } }, { role: { $exists: false } }],
+        ...(resumeAfter ? { _id: { $gt: resumeAfter } } : {}),
+      })
+      .sort({ _id: 1 });
+    for await (const document of cursor) {
+      report.scanned += 1;
+      const role = canonicalRole(document);
+      if (!role) {
+        report.warnings.userMissingCanonicalRole =
+          (report.warnings.userMissingCanonicalRole ?? 0) + 1;
+        report.skipped += 1;
+        continue;
+      }
+      if (!dryRun) {
+        const result = await users.updateOne(
+          { _id: document._id },
+          { $set: { role }, $unset: { roles: '' } },
+        );
+        report.changed += result.modifiedCount;
+      } else report.changed += 1;
+      if (report.scanned % batchSize === 0) {
+        report.checkpoint = `users:${String(document._id)}`;
+        await context.reportCheckpoint({
+          ...report,
+          warnings: { ...report.warnings },
+        });
+      }
+    }
+    report.checkpoint = 'complete';
+    return report;
+  },
+};
+
+function canonicalRole(document: Document): string | undefined {
+  const supported = new Set(['admin', 'teacher', 'student', 'guest']);
+  if (typeof document.role === 'string' && supported.has(document.role))
+    return document.role;
+  if (Array.isArray(document.roles)) {
+    const roles = document.roles.filter(
+      (role): role is string => typeof role === 'string' && supported.has(role),
+    );
+    if (roles.length === 1) return roles[0];
+  }
+  return undefined;
+}
+
 export const mongoMigrations: readonly MongoMigration[] = [
   // Fresh clones backfill and reconcile before unique indexes are built. Sites
   // with the two Phase 00 index migrations already applied retain their ledger.
   backfillUserCourse,
+  normalizeSingleUserRole,
   createInitialIndexes,
   createV1ModelIndexes,
 ];

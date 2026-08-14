@@ -1,4 +1,5 @@
-export const USER_ROLES = ['admin', 'teacher', 'student'] as const;
+// `guest` is the least-privileged role used for OAuth auto-provisioning.
+export const USER_ROLES = ['admin', 'teacher', 'student', 'guest'] as const;
 export type UserRole = (typeof USER_ROLES)[number];
 export const USER_ACCOUNT_STATUSES = ['active', 'inactive'] as const;
 export type UserAccountStatus = (typeof USER_ACCOUNT_STATUSES)[number];
@@ -11,7 +12,8 @@ export interface UserProperties {
   emailNormalized: string;
   passwordHash: string;
   accountStatus?: UserAccountStatus;
-  roles: readonly UserRole[];
+  emailVerifiedAt?: Date | null;
+  role: UserRole;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,11 +22,13 @@ export class User {
   private constructor(private readonly properties: UserProperties) {}
 
   static create(properties: UserProperties): User {
+    if (!USER_ROLES.includes(properties.role))
+      throw new Error('User must have exactly one supported role.');
     return new User({
       ...properties,
       email: properties.email.trim(),
       emailNormalized: properties.emailNormalized.trim().toLowerCase(),
-      roles: [...properties.roles],
+      role: properties.role,
       accountStatus: properties.accountStatus ?? 'active',
     });
   }
@@ -44,11 +48,14 @@ export class User {
   get accountStatus(): UserAccountStatus {
     return this.properties.accountStatus ?? 'active';
   }
+  get emailVerifiedAt(): Date | null {
+    return this.properties.emailVerifiedAt ?? null;
+  }
   get passwordHash(): string {
     return this.properties.passwordHash;
   }
-  get roles(): readonly UserRole[] {
-    return this.properties.roles;
+  get role(): UserRole {
+    return this.properties.role;
   }
   get createdAt(): Date {
     return this.properties.createdAt;

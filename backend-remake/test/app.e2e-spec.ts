@@ -10,6 +10,7 @@ import {
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { IsString, Length } from 'class-validator';
 import request from 'supertest';
+import { Types } from 'mongoose';
 import { AppModule } from './../src/app.module';
 import { ApplicationError } from './../src/application/errors/application.error';
 import type { PageRequest } from './../src/application/pagination/page-request';
@@ -316,7 +317,7 @@ describe('HealthController (e2e)', () => {
           email,
           emailNormalized: email.toLowerCase(),
           passwordHash: await passwordHasher.hash('a-long-enough-password'),
-          roles: ['student'],
+          role: 'student',
           createdAt: now,
           updatedAt: now,
         }),
@@ -327,13 +328,13 @@ describe('HealthController (e2e)', () => {
         .send({ email, password: 'a-long-enough-password' })
         .expect(200);
       const loginBody = loggedIn.body as ApiSuccessResponse<{
-        user: { id: string; email: string; roles: string[] };
+        user: { id: string; email: string; role: string };
         accessToken: string;
       }>;
       expect(loginBody.meta.data?.user).toEqual({
         id: expect.any(String) as string,
         email,
-        roles: ['student'],
+        role: 'student',
       });
       expect(loginBody.meta.data?.accessToken).toEqual(expect.any(String));
       expect(loggedIn.get('set-cookie')).toBeDefined();
@@ -366,6 +367,123 @@ describe('HealthController (e2e)', () => {
           const body = response.body as ApiErrorResponse;
           expect(body.error.code).toBe('INVALID_REFRESH_TOKEN');
         });
+    },
+  );
+
+  itWithMongo(
+    'enforces admin-only user management and revokes sessions after role changes',
+    async () => {
+      const adminEmail = `admin-${Date.now()}@example.com`;
+      const studentEmail = `managed-${Date.now()}@example.com`;
+      const adminId = new Types.ObjectId().toHexString();
+      const studentId = new Types.ObjectId().toHexString();
+      const users = moduleFixture.get<UserRepositoryPort>(USER_REPOSITORY);
+      const passwordHasher =
+        moduleFixture.get<PasswordHasherPort>(PASSWORD_HASHER);
+      const now = new Date();
+      await users.save(
+        User.create({
+          id: adminId,
+          email: adminEmail,
+          emailNormalized: adminEmail.toLowerCase(),
+          passwordHash: await passwordHasher.hash('admin-password'),
+          role: 'admin',
+          emailVerifiedAt: now,
+          createdAt: now,
+          updatedAt: now,
+        }),
+      );
+      await users.save(
+        User.create({
+          id: studentId,
+          email: studentEmail,
+          emailNormalized: studentEmail.toLowerCase(),
+          passwordHash: await passwordHasher.hash('student-password'),
+          role: 'student',
+          createdAt: now,
+          updatedAt: now,
+        }),
+      );
+
+      const admin = request.agent(app.getHttpServer());
+      const student = request.agent(app.getHttpServer());
+      const adminLogin = await admin
+        .post('/api/v1/auth/login')
+        .send({ email: adminEmail, password: 'admin-password' })
+        .expect(200);
+      const adminAccessToken = (
+        adminLogin.body as ApiSuccessResponse<{
+          accessToken: string;
+        }>
+      ).meta.data?.accessToken;
+      const studentLogin = await student
+        .post('/api/v1/auth/login')
+        .send({ email: studentEmail, password: 'student-password' })
+        .expect(200);
+      const studentAccessToken = (
+        studentLogin.body as ApiSuccessResponse<{
+          accessToken: string;
+        }>
+      ).meta.data?.accessToken;
+
+      await student
+        .get('/api/v1/courses')
+        .set('authorization', `Bearer ${studentAccessToken}`)
+        .expect(403)
+        .expect((response) => {
+          const body = response.body as ApiErrorResponse;
+          expect(body.error.code).toBe('EMAIL_VERIFICATION_REQUIRED');
+        });
+
+      await admin
+        .get('/api/v1/users?role=student')
+        .set('authorization', `Bearer ${adminAccessToken}`)
+        .expect(200)
+        .expect((response) => {
+          const body = response.body as ApiPaginatedResponse<{
+            email: string;
+            role: string;
+          }>;
+          expect(body.meta.data).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({ email: studentEmail, role: 'student' }),
+            ]),
+          );
+          expect(JSON.stringify(body)).not.toContain('passwordHash');
+        });
+
+      await admin
+        .patch(`/api/v1/users/${studentId}`)
+        .set('authorization', `Bearer ${adminAccessToken}`)
+        .send({ role: 'teacher' })
+        .expect(200);
+
+      await student
+        .get('/api/v1/auth/me')
+        .set('authorization', `Bearer ${studentAccessToken}`)
+        .expect(401);
+
+      const teacherLogin = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({ email: studentEmail, password: 'student-password' })
+        .expect(200);
+      const teacherAccessToken = (
+        teacherLogin.body as ApiSuccessResponse<{ accessToken: string }>
+      ).meta.data?.accessToken;
+      await request(app.getHttpServer())
+        .get('/api/v1/users')
+        .set('authorization', `Bearer ${teacherAccessToken}`)
+        .expect(403);
+
+      await admin
+        .patch(`/api/v1/users/${studentId}`)
+        .set('authorization', `Bearer ${adminAccessToken}`)
+        .send({ accountStatus: 'inactive' })
+        .expect(200);
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({ email: studentEmail, password: 'student-password' })
+        .expect(401);
     },
   );
 

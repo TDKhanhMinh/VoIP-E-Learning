@@ -66,7 +66,7 @@ describe('User/Course migration foundation (integration)', () => {
       email: 'Teacher@Example.COM',
       emailNormalized: 'teacher@example.com',
       passwordHash: expect.stringMatching(/^\$2b\$/u) as string,
-      roles: ['teacher'],
+      role: 'teacher',
       accountStatus: 'inactive',
     });
     await expect(

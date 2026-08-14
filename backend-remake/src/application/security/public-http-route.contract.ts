@@ -28,6 +28,27 @@ export const PUBLIC_HTTP_ROUTES = [
     rationale:
       'Refresh-cookie exchange required after an access token expires.',
   },
+  {
+    id: 'auth.password-reset.request',
+    method: 'POST',
+    path: '/api/v1/auth/password-reset/request',
+    availability: 'production',
+    rationale: 'Password reset request cannot require an existing session.',
+  },
+  {
+    id: 'auth.password-reset.confirm',
+    method: 'POST',
+    path: '/api/v1/auth/password-reset/confirm',
+    availability: 'production',
+    rationale: 'Password reset confirmation uses a one-time credential token.',
+  },
+  {
+    id: 'auth.email-verification.confirm',
+    method: 'POST',
+    path: '/api/v1/auth/email-verification/confirm',
+    availability: 'production',
+    rationale: 'Email verification confirmation uses a one-time token.',
+  },
 ] as const;
 
 export type PublicHttpRouteId = (typeof PUBLIC_HTTP_ROUTES)[number]['id'];

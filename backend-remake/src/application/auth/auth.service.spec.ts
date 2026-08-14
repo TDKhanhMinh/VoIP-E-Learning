@@ -11,7 +11,7 @@ describe('AuthService', () => {
     email: 'Teacher@example.com',
     emailNormalized: 'teacher@example.com',
     passwordHash: 'hash',
-    roles: ['teacher'],
+    role: 'teacher',
     createdAt: new Date('2026-01-01'),
     updatedAt: new Date('2026-01-01'),
   });
@@ -26,12 +26,16 @@ describe('AuthService', () => {
       findByEmailNormalized: jest.fn(),
       findById: jest.fn(),
       save: jest.fn(),
+      list: jest.fn(),
+      update: jest.fn(),
+      hardDelete: jest.fn(),
     };
     sessions = {
       create: jest.fn(),
       findById: jest.fn(),
       rotateRefreshToken: jest.fn(),
       revoke: jest.fn(),
+      revokeAllForUser: jest.fn(),
     };
     passwordHasher = {
       hash: jest.fn().mockResolvedValue('hashed-refresh-token'),
@@ -77,11 +81,29 @@ describe('AuthService', () => {
     });
   });
 
+  it('rejects an inactive account even when its password is valid', async () => {
+    const inactiveUser = User.create({
+      id: user.id,
+      email: user.email,
+      emailNormalized: user.emailNormalized,
+      passwordHash: user.passwordHash,
+      role: user.role,
+      accountStatus: 'inactive',
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    });
+    users.findByEmailNormalized.mockResolvedValue(inactiveUser);
+    passwordHasher.verify.mockResolvedValue(true);
+    await expect(
+      service.login(inactiveUser.email, 'correct-password'),
+    ).rejects.toMatchObject({ code: 'INVALID_CREDENTIALS' });
+  });
+
   it('rotates a valid refresh token and revokes a replayed token', async () => {
     tokenService.verifyRefresh.mockResolvedValue({
       userId: user.id,
       sessionId: 'session-1',
-      roles: user.roles,
+      role: user.role,
     });
     sessions.findById.mockResolvedValue({
       id: 'session-1',
@@ -112,7 +134,7 @@ describe('AuthService', () => {
     tokenService.verifyRefresh.mockResolvedValue({
       userId: user.id,
       sessionId: 'session-1',
-      roles: user.roles,
+      role: user.role,
     });
     sessions.findById.mockResolvedValue(null);
     await expect(service.refresh('refresh-token')).rejects.toMatchObject({
@@ -123,18 +145,37 @@ describe('AuthService', () => {
       service.currentUser({
         userId: user.id,
         sessionId: 'session-1',
-        roles: user.roles,
+        role: user.role,
       }),
-    ).resolves.toEqual({ id: user.id, email: user.email, roles: user.roles });
+    ).resolves.toEqual({ id: user.id, email: user.email, role: user.role });
     users.findById.mockResolvedValue(null);
     await expect(
       service.currentUser({
         userId: user.id,
         sessionId: 'session-1',
-        roles: user.roles,
+        role: user.role,
       }),
     ).rejects.toMatchObject({ code: 'USER_NOT_FOUND' });
     await service.logout('session-1');
     expect(sessions.revoke.mock.calls).toContainEqual(['session-1']);
+  });
+
+  it('changes password and revokes every session', async () => {
+    users.findById.mockResolvedValue(user);
+    users.update.mockResolvedValue(user);
+    passwordHasher.verify.mockResolvedValue(true);
+    await expect(
+      service.changePassword(
+        { userId: user.id, sessionId: 'session-1', role: user.role },
+        'old-password',
+        'new-password',
+      ),
+    ).resolves.toBeUndefined();
+    expect(passwordHasher.hash.mock.calls).toContainEqual(['new-password']);
+    expect(users.update.mock.calls).toContainEqual([
+      user.id,
+      { passwordHash: 'hashed-refresh-token' },
+    ]);
+    expect(sessions.revokeAllForUser.mock.calls).toContainEqual([user.id]);
   });
 });

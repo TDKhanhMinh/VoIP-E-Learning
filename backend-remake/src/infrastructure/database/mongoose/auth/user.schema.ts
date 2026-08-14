@@ -18,8 +18,9 @@ export class UserPersistenceModel {
   @Prop({ required: true, select: false }) passwordHash!: string;
   @Prop({ type: String, enum: USER_ACCOUNT_STATUSES, default: 'active' })
   accountStatus!: UserAccountStatus;
-  @Prop({ type: [String], enum: USER_ROLES, default: ['student'] })
-  roles!: UserRole[];
+  @Prop({ type: String, enum: USER_ROLES, required: true, default: 'student' })
+  role!: UserRole;
+  @Prop({ type: Date, default: null }) emailVerifiedAt!: Date | null;
   createdAt!: Date;
   updatedAt!: Date;
 }

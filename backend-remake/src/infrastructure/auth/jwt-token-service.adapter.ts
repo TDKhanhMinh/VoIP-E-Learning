@@ -13,7 +13,7 @@ type TokenKind = 'access' | 'refresh';
 interface TokenPayload {
   sub: string;
   sid: string;
-  roles: UserRole[];
+  role: UserRole;
   tokenType: TokenKind;
 }
 
@@ -54,7 +54,7 @@ export class JwtTokenServiceAdapter implements TokenServicePort {
       {
         sub: actor.userId,
         sid: actor.sessionId,
-        roles: [...actor.roles],
+        role: actor.role,
         tokenType,
       } satisfies TokenPayload,
       {
@@ -84,13 +84,13 @@ export class JwtTokenServiceAdapter implements TokenServicePort {
         payload.tokenType !== tokenType ||
         !payload.sub ||
         !payload.sid ||
-        !Array.isArray(payload.roles)
+        !payload.role
       )
         throw new Error('Invalid token claims');
       return {
         userId: payload.sub,
         sessionId: payload.sid,
-        roles: payload.roles,
+        role: payload.role,
       };
     } catch {
       throw new ApplicationError('Token is invalid or expired', {
