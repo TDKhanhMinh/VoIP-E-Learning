@@ -10,6 +10,7 @@ import {
 } from '../../../../application/ports/id-generator.port';
 import { CreateCourseUseCase } from '../../../../application/courses/create-course.use-case';
 import { ListCoursesUseCase } from '../../../../application/courses/list-courses.use-case';
+import { CourseCatalogService } from '../../../../application/courses/course-catalog.service';
 import {
   COURSE_REPOSITORY,
   type CourseRepositoryPort,
@@ -31,6 +32,15 @@ export class CourseModule {
       controllers: [CourseController],
       providers: [
         MongooseCourseRepository,
+        {
+          provide: CourseCatalogService,
+          inject: [COURSE_REPOSITORY, ID_GENERATOR, CLOCK_PORT],
+          useFactory: (
+            courses: CourseRepositoryPort,
+            ids: IdGeneratorPort,
+            clock: ClockPort,
+          ) => new CourseCatalogService(courses, ids, clock),
+        },
         { provide: COURSE_REPOSITORY, useExisting: MongooseCourseRepository },
         {
           provide: CreateCourseUseCase,

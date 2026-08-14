@@ -7,7 +7,9 @@ import type { CourseRepositoryPort } from './ports/course.repository.port';
 
 export interface CreateCourseCommand {
   code: string;
-  name: string;
+  title: string;
+  credit: number;
+  description: string;
 }
 
 export class CreateCourseUseCase {
@@ -32,7 +34,10 @@ export class CreateCourseUseCase {
       id: this.ids.generate(),
       code: command.code,
       codeNormalized,
-      name: command.name,
+      name: command.title,
+      title: command.title,
+      credit: command.credit,
+      description: command.description,
       ownerId: actor.userId,
       createdAt: now,
       updatedAt: now,

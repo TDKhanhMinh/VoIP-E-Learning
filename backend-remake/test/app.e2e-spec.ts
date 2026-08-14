@@ -10,7 +10,8 @@ import {
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { IsString, Length } from 'class-validator';
 import request from 'supertest';
-import { Types } from 'mongoose';
+import { getModelToken } from '@nestjs/mongoose';
+import { type Model, Types } from 'mongoose';
 import { AppModule } from './../src/app.module';
 import { ApplicationError } from './../src/application/errors/application.error';
 import type { PageRequest } from './../src/application/pagination/page-request';
@@ -34,6 +35,14 @@ import {
   type PasswordHasherPort,
 } from './../src/application/auth/ports/password-hasher.port';
 import { User } from './../src/domain/users/user.entity';
+import type { CourseResponse } from './../src/interface-adapters/http/courses/course.presenter';
+import type { SemesterResponse } from './../src/interface-adapters/http/semesters/semester.presenter';
+import { CoursePersistenceModel } from './../src/infrastructure/database/mongoose/courses/course.schema';
+import { SemesterPersistenceModel } from './../src/infrastructure/database/mongoose/semesters/semester.schema';
+import {
+  clearTestDatabase,
+  testDatabaseConnection,
+} from './support/mongo-test-database';
 
 interface TestItem {
   id: number;
@@ -122,6 +131,18 @@ describe('HealthController (e2e)', () => {
     });
     configureApp(app);
     await app.init();
+    if (process.env.MONGO_ENABLED?.toLowerCase() === 'true') {
+      const connection = testDatabaseConnection(moduleFixture);
+      await moduleFixture
+        .get<Model<CoursePersistenceModel>>(getModelToken('Course'))
+        .createIndexes();
+      await moduleFixture
+        .get<Model<SemesterPersistenceModel>>(
+          getModelToken(SemesterPersistenceModel.name),
+        )
+        .createIndexes();
+      await clearTestDatabase(connection);
+    }
   });
 
   it('/api/v1/health/live (GET)', () => {
@@ -484,6 +505,314 @@ describe('HealthController (e2e)', () => {
         .post('/api/v1/auth/login')
         .send({ email: studentEmail, password: 'student-password' })
         .expect(401);
+    },
+  );
+
+  itWithMongo(
+    'supports Course and Semester catalog CRUD with safe reference policy',
+    async () => {
+      const adminEmail = `catalog-admin-${Date.now()}@example.com`;
+      const studentEmail = `catalog-student-${Date.now()}@example.com`;
+      const adminId = new Types.ObjectId().toHexString();
+      const studentId = new Types.ObjectId().toHexString();
+      const users = moduleFixture.get<UserRepositoryPort>(USER_REPOSITORY);
+      const passwordHasher =
+        moduleFixture.get<PasswordHasherPort>(PASSWORD_HASHER);
+      const now = new Date();
+      await users.save(
+        User.create({
+          id: adminId,
+          email: adminEmail,
+          emailNormalized: adminEmail,
+          passwordHash: await passwordHasher.hash('catalog-admin-password'),
+          role: 'admin',
+          emailVerifiedAt: now,
+          createdAt: now,
+          updatedAt: now,
+        }),
+      );
+      await users.save(
+        User.create({
+          id: studentId,
+          email: studentEmail,
+          emailNormalized: studentEmail,
+          passwordHash: await passwordHasher.hash('catalog-student-password'),
+          role: 'student',
+          emailVerifiedAt: now,
+          createdAt: now,
+          updatedAt: now,
+        }),
+      );
+
+      const adminLogin = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({ email: adminEmail, password: 'catalog-admin-password' })
+        .expect(200);
+      const adminToken = (
+        adminLogin.body as ApiSuccessResponse<{ accessToken: string }>
+      ).meta.data?.accessToken;
+      const studentLogin = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({ email: studentEmail, password: 'catalog-student-password' })
+        .expect(200);
+      const studentToken = (
+        studentLogin.body as ApiSuccessResponse<{ accessToken: string }>
+      ).meta.data?.accessToken;
+
+      await request(app.getHttpServer())
+        .post('/api/v1/courses')
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({ code: 'CS-INCOMPLETE', title: 'Incomplete course' })
+        .expect(422);
+
+      const courseResponse = await request(app.getHttpServer())
+        .post('/api/v1/courses')
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({
+          code: 'CS-301',
+          title: 'Distributed Systems',
+          credit: 3,
+          description: 'Catalog course',
+        })
+        .expect(201);
+      const courseBody =
+        courseResponse.body as ApiSuccessResponse<CourseResponse>;
+      const courseId = courseBody.meta.data?.id;
+      expect(courseId).toEqual(expect.any(String));
+      expect(courseBody.meta.data).toMatchObject({
+        id: courseId,
+        code: 'CS-301',
+        name: 'Distributed Systems',
+        title: 'Distributed Systems',
+        credit: 3,
+        description: 'Catalog course',
+        archivedAt: null,
+      });
+
+      await request(app.getHttpServer())
+        .post('/api/v1/courses')
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({
+          code: 'CS-302',
+          title: 'Operating Systems',
+          credit: 4,
+          description: 'Second catalog course',
+        })
+        .expect(201);
+
+      await request(app.getHttpServer())
+        .post('/api/v1/courses')
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({
+          code: 'cs-301',
+          title: 'Duplicate Course Code',
+          credit: 3,
+          description: 'Must conflict',
+        })
+        .expect(409)
+        .expect((response) => {
+          const body = response.body as ApiErrorResponse;
+          expect(body.error.code).toBe('COURSE_CODE_ALREADY_EXISTS');
+        });
+
+      const database = testDatabaseConnection(moduleFixture).db!;
+      const legacyCourseId = new Types.ObjectId();
+      await database.collection('courses').insertOne({
+        _id: legacyCourseId,
+        code: 'CS-LEGACY',
+        codeNormalized: 'cs-legacy',
+        name: 'Legacy Distributed Computing',
+        title: 'Legacy Distributed Computing',
+        credit: 5,
+        description: 'Reconciled legacy ObjectId course',
+        archivedAt: null,
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      await request(app.getHttpServer())
+        .get(`/api/v1/courses/${courseId}`)
+        .set('authorization', `Bearer ${studentToken}`)
+        .expect(200)
+        .expect((response) => {
+          const body = response.body as ApiSuccessResponse<CourseResponse>;
+          expect(body.meta.data).toMatchObject({
+            id: courseId,
+            code: 'CS-301',
+            title: 'Distributed Systems',
+            credit: 3,
+            description: 'Catalog course',
+          });
+        });
+      await request(app.getHttpServer())
+        .get(`/api/v1/courses/${legacyCourseId.toHexString()}`)
+        .set('authorization', `Bearer ${studentToken}`)
+        .expect(200)
+        .expect((response) => {
+          const body = response.body as ApiSuccessResponse<CourseResponse>;
+          expect(body.meta.data).toMatchObject({
+            id: legacyCourseId.toHexString(),
+            code: 'CS-LEGACY',
+            title: 'Legacy Distributed Computing',
+            credit: 5,
+            description: 'Reconciled legacy ObjectId course',
+          });
+        });
+
+      await request(app.getHttpServer())
+        .get('/api/v1/courses')
+        .set('authorization', `Bearer ${studentToken}`)
+        .query({ code: ' CS-301 ', page: 1, limit: 1 })
+        .expect(200)
+        .expect((response) => {
+          const body = response.body as ApiPaginatedResponse<CourseResponse>;
+          expect(body.meta.data).toHaveLength(1);
+          expect(body.meta.data[0]).toMatchObject({ code: 'CS-301' });
+          expect(body.meta.pagination).toMatchObject({
+            page: 1,
+            limit: 1,
+            totalItems: 1,
+            totalPages: 1,
+          });
+        });
+      await request(app.getHttpServer())
+        .post('/api/v1/courses')
+        .set('authorization', `Bearer ${studentToken}`)
+        .send({
+          code: 'CS-403',
+          title: 'Unauthorized',
+          credit: 3,
+          description: 'Student write must be rejected',
+        })
+        .expect(403);
+      await request(app.getHttpServer())
+        .patch(`/api/v1/courses/${courseId}`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({ description: 'Updated catalog course' })
+        .expect(200);
+      await request(app.getHttpServer())
+        .get('/api/v1/courses/code/CS-301')
+        .set('authorization', `Bearer ${studentToken}`)
+        .expect(200);
+
+      const semesterResponse = await request(app.getHttpServer())
+        .post('/api/v1/semesters')
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({
+          name: 'Fall 2026',
+          startDate: '2026-09-01T00:00:00.000Z',
+          endDate: '2026-12-20T00:00:00.000Z',
+          midTermStartDate: '2026-10-15T00:00:00.000Z',
+          midTermEndDate: '2026-10-25T00:00:00.000Z',
+        })
+        .expect(201);
+      const semesterId = (
+        semesterResponse.body as ApiSuccessResponse<{ id: string }>
+      ).meta.data?.id;
+      expect(semesterId).toEqual(expect.any(String));
+      await request(app.getHttpServer())
+        .post('/api/v1/semesters')
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({
+          name: ' fall 2026 ',
+          startDate: '2027-01-01T00:00:00.000Z',
+          endDate: '2027-05-20T00:00:00.000Z',
+        })
+        .expect(409)
+        .expect((response) => {
+          const body = response.body as ApiErrorResponse;
+          expect(body.error.code).toBe('SEMESTER_NAME_ALREADY_EXISTS');
+        });
+      await request(app.getHttpServer())
+        .patch(`/api/v1/semesters/${semesterId}`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({
+          midTermStartDate: '2026-08-20T00:00:00.000Z',
+          midTermEndDate: '2026-10-20T00:00:00.000Z',
+        })
+        .expect(422)
+        .expect((response) => {
+          const body = response.body as ApiErrorResponse;
+          expect(body.error.code).toBe('SEMESTER_INVALID_DATES');
+        });
+
+      const classes = database.collection('classes');
+      await classes.insertOne({
+        course: new Types.ObjectId(courseId),
+        semester: new Types.ObjectId(semesterId),
+      });
+      await request(app.getHttpServer())
+        .delete(`/api/v1/courses/${courseId}`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .expect(409)
+        .expect((response) => {
+          const body = response.body as ApiErrorResponse;
+          expect(body.error.code).toBe('COURSE_HAS_DEPENDENCIES');
+        });
+      await request(app.getHttpServer())
+        .delete(`/api/v1/semesters/${semesterId}`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .expect(409)
+        .expect((response) => {
+          const body = response.body as ApiErrorResponse;
+          expect(body.error.code).toBe('SEMESTER_HAS_DEPENDENCIES');
+        });
+
+      await classes.deleteMany({});
+      await classes.insertOne({
+        courseId: new Types.ObjectId(courseId),
+        semesterId: new Types.ObjectId(semesterId),
+      });
+      await request(app.getHttpServer())
+        .delete(`/api/v1/courses/${courseId}`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .expect(409)
+        .expect((response) => {
+          const body = response.body as ApiErrorResponse;
+          expect(body.error.code).toBe('COURSE_HAS_DEPENDENCIES');
+        });
+      await request(app.getHttpServer())
+        .delete(`/api/v1/semesters/${semesterId}`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .expect(409)
+        .expect((response) => {
+          const body = response.body as ApiErrorResponse;
+          expect(body.error.code).toBe('SEMESTER_HAS_DEPENDENCIES');
+        });
+
+      await classes.deleteMany({});
+      await request(app.getHttpServer())
+        .delete(`/api/v1/semesters/${semesterId}`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .expect(204);
+      await request(app.getHttpServer())
+        .delete(`/api/v1/courses/${courseId}`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .expect(204);
+
+      await request(app.getHttpServer())
+        .get(`/api/v1/courses/${courseId}`)
+        .set('authorization', `Bearer ${studentToken}`)
+        .expect(404);
+      await request(app.getHttpServer())
+        .get('/api/v1/courses')
+        .set('authorization', `Bearer ${studentToken}`)
+        .query({ code: 'CS-301' })
+        .expect(200)
+        .expect((response) => {
+          const body = response.body as ApiPaginatedResponse<CourseResponse>;
+          expect(body.meta.data).toEqual([]);
+          expect(body.meta.pagination.totalItems).toBe(0);
+        });
+      await request(app.getHttpServer())
+        .get('/api/v1/semesters')
+        .set('authorization', `Bearer ${studentToken}`)
+        .expect(200)
+        .expect((response) => {
+          const body = response.body as ApiPaginatedResponse<SemesterResponse>;
+          expect(body.meta.data).toEqual([]);
+          expect(body.meta.pagination.totalItems).toBe(0);
+        });
     },
   );
 

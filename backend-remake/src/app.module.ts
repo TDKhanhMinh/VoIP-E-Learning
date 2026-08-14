@@ -18,6 +18,7 @@ import { createLoggerConfig } from './infrastructure/logging/logger.config';
 import { PlatformModule } from './infrastructure/platform/platform.module';
 import { AuthModule } from './infrastructure/auth/auth.module';
 import { CourseModule } from './infrastructure/database/mongoose/courses/course.module';
+import { SemesterModule } from './infrastructure/database/mongoose/semesters/semester.module';
 import { AcademicsModule } from './infrastructure/database/mongoose/academics/academics.module';
 import { AssessmentsModule } from './infrastructure/database/mongoose/assessments/assessments.module';
 import { CollaborationModule } from './infrastructure/database/mongoose/collaboration/collaboration.module';
@@ -62,6 +63,7 @@ loadEnvironment();
     DatabaseModule.register(),
     AuthModule.register(),
     CourseModule.register(),
+    SemesterModule.register(),
     AcademicsModule.register(),
     LearningModule.register(),
     AssessmentsModule.register(),

@@ -9,6 +9,7 @@ export interface CourseProperties {
   description?: string | null;
   /** New records retain the creating actor; V1 records may not have an owner. */
   ownerId?: string;
+  archivedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -54,5 +55,8 @@ export class Course {
   }
   get updatedAt(): Date {
     return this.properties.updatedAt;
+  }
+  get archivedAt(): Date | null {
+    return this.properties.archivedAt ?? null;
   }
 }

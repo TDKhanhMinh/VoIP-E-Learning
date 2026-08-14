@@ -7,9 +7,12 @@ import type { CourseRepositoryPort } from './ports/course.repository.port';
 
 describe('Course use cases', () => {
   const courses: jest.Mocked<CourseRepositoryPort> = {
+    findById: jest.fn(),
     findByCodeNormalized: jest.fn(),
     save: jest.fn(),
+    update: jest.fn(),
     list: jest.fn(),
+    countReferences: jest.fn(),
   };
   const actor = {
     userId: '507f1f77bcf86cd799439011',
@@ -27,7 +30,9 @@ describe('Course use cases', () => {
     const useCase = new CreateCourseUseCase(courses, ids, clock);
     const course = await useCase.execute(actor, {
       code: ' cs-101 ',
-      name: ' Introduction to CS ',
+      title: ' Introduction to CS ',
+      credit: 3,
+      description: 'Course description',
     });
     expect(course).toMatchObject({
       code: 'CS-101',
@@ -40,7 +45,12 @@ describe('Course use cases', () => {
     expect(courses.save.mock.calls).toContainEqual([course]);
     courses.findByCodeNormalized.mockResolvedValue(course);
     await expect(
-      useCase.execute(actor, { code: 'CS-101', name: 'Duplicate' }),
+      useCase.execute(actor, {
+        code: 'CS-101',
+        title: 'Duplicate',
+        credit: 3,
+        description: 'Duplicate course',
+      }),
     ).rejects.toMatchObject({
       code: 'COURSE_CODE_ALREADY_EXISTS',
     });
@@ -52,6 +62,9 @@ describe('Course use cases', () => {
       code: 'CS-101',
       codeNormalized: 'cs-101',
       name: 'Intro',
+      title: 'Intro',
+      credit: 3,
+      description: 'Intro course',
       ownerId: actor.userId,
       createdAt: new Date(),
       updatedAt: new Date(),
