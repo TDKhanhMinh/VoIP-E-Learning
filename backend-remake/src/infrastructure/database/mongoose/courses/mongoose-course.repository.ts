@@ -6,6 +6,7 @@ import { PaginatedResult } from '../../../../application/pagination/paginated-re
 import type { CourseRepositoryPort } from '../../../../application/courses/ports/course.repository.port';
 import { Course } from '../../../../domain/courses/course.entity';
 import { type CourseDocument, CoursePersistenceModel } from './course.schema';
+import { fromMongoObjectId, toMongoObjectId } from '../mongo-object-id.mapper';
 
 export class MongooseCourseRepository implements CourseRepositoryPort {
   constructor(
@@ -19,14 +20,16 @@ export class MongooseCourseRepository implements CourseRepositoryPort {
   async save(course: Course): Promise<void> {
     try {
       await this.model.create({
-        _id: course.id,
+        _id: toMongoObjectId(course.id, 'course.id'),
         code: course.code,
         codeNormalized: course.codeNormalized,
         name: course.name,
         title: course.title,
         credit: course.credit,
         description: course.description,
-        ownerId: course.ownerId,
+        ownerId: course.ownerId
+          ? toMongoObjectId(course.ownerId, 'course.ownerId')
+          : undefined,
         createdAt: course.createdAt,
         updatedAt: course.updatedAt,
       });
@@ -57,14 +60,16 @@ export class MongooseCourseRepository implements CourseRepositoryPort {
   }
   private toDomain(document: CourseDocument): Course {
     return Course.create({
-      id: document.id,
+      id: fromMongoObjectId(document._id),
       code: document.code,
       codeNormalized: document.codeNormalized,
       name: document.name,
       title: document.title,
       credit: document.credit,
       description: document.description,
-      ownerId: document.ownerId,
+      ownerId: document.ownerId
+        ? fromMongoObjectId(document.ownerId)
+        : undefined,
       createdAt: document.createdAt,
       updatedAt: document.updatedAt,
     });

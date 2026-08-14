@@ -15,7 +15,7 @@ import { environmentValidationSchema } from './infrastructure/config/environment
 import { loadEnvironment } from './infrastructure/config/load-environment';
 import { DatabaseModule } from './infrastructure/database/mongoose/database.module';
 import { createLoggerConfig } from './infrastructure/logging/logger.config';
-import { SystemClockAdapter } from './infrastructure/time/system-clock.adapter';
+import { PlatformModule } from './infrastructure/platform/platform.module';
 import { AuthModule } from './infrastructure/auth/auth.module';
 import { CourseModule } from './infrastructure/database/mongoose/courses/course.module';
 import { AcademicsModule } from './infrastructure/database/mongoose/academics/academics.module';
@@ -43,6 +43,7 @@ loadEnvironment();
         allowUnknown: true,
       },
     }),
+    PlatformModule,
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -70,10 +71,6 @@ loadEnvironment();
   ],
   controllers: [HealthController],
   providers: [
-    {
-      provide: CLOCK_PORT,
-      useClass: SystemClockAdapter,
-    },
     {
       provide: GetSystemHealthUseCase,
       inject: [CLOCK_PORT],

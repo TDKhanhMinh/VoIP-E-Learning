@@ -1,9 +1,13 @@
-import type { MongoMigration } from './migration';
+import { emptyMigrationReport, type MongoMigration } from './migration';
+import { backfillUserCourseFoundation } from './user-course-backfill';
 
 const createInitialIndexes: MongoMigration = {
   id: '202608130001-create-auth-and-course-indexes',
   description: 'Create unique, TTL and deterministic pagination indexes.',
-  async up(database) {
+  kind: 'schema',
+  checksumSource: 'phase-00-index-baseline-v1',
+  async up({ database, dryRun }) {
+    if (dryRun) return emptyMigrationReport();
     await database.collection('users').createIndexes([
       {
         key: { emailNormalized: 1 },
@@ -35,6 +39,7 @@ const createInitialIndexes: MongoMigration = {
         name: 'courses_owner_created_at',
       },
     ]);
+    return emptyMigrationReport();
   },
 };
 
@@ -42,7 +47,10 @@ const createV1ModelIndexes: MongoMigration = {
   id: '202608130002-create-v1-model-indexes',
   description:
     'Create V1 model indexes preserved by the clean architecture remake.',
-  async up(database) {
+  kind: 'schema',
+  checksumSource: 'phase-00-v1-model-index-baseline-v1',
+  async up({ database, dryRun }) {
+    if (dryRun) return emptyMigrationReport();
     await database
       .collection('users')
       .createIndexes([
@@ -110,10 +118,35 @@ const createV1ModelIndexes: MongoMigration = {
       .createIndexes([
         { key: { name: 1 }, name: 'semesters_name_unique', unique: true },
       ]);
+    return emptyMigrationReport();
   },
 };
 
+const backfillUserCourse: MongoMigration = {
+  id: '202608140001-backfill-user-course-foundation',
+  description:
+    'Backfill canonical User and Course fields without changing ObjectId identifiers.',
+  kind: 'data',
+  checksumSource: 'phase-01-user-course-backfill-v1',
+  blockingWarnings: [
+    'userNonObjectId',
+    'courseNonObjectId',
+    'duplicateEmailNormalized',
+    'duplicateCourseCodeNormalized',
+    'duplicateCourseTitle',
+    'userMissingEmail',
+    'userInvalidRole',
+    'userMissingBcryptHash',
+    'courseMissingCodeOrTitle',
+    'courseMalformedOwnerId',
+  ],
+  up: backfillUserCourseFoundation,
+};
+
 export const mongoMigrations: readonly MongoMigration[] = [
+  // Fresh clones backfill and reconcile before unique indexes are built. Sites
+  // with the two Phase 00 index migrations already applied retain their ledger.
+  backfillUserCourse,
   createInitialIndexes,
   createV1ModelIndexes,
 ];

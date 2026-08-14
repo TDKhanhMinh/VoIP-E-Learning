@@ -4,6 +4,7 @@ import { ApplicationError } from '../../../../application/errors/application.err
 import type { UserRepositoryPort } from '../../../../application/auth/ports/user.repository.port';
 import { User } from '../../../../domain/users/user.entity';
 import { type UserDocument, UserPersistenceModel } from './user.schema';
+import { fromMongoObjectId, toMongoObjectId } from '../mongo-object-id.mapper';
 
 export class MongooseUserRepository implements UserRepositoryPort {
   constructor(
@@ -21,7 +22,7 @@ export class MongooseUserRepository implements UserRepositoryPort {
 
   async findById(id: string): Promise<User | null> {
     const document = await this.model
-      .findById(id)
+      .findById(toMongoObjectId(id, 'user.id'))
       .select('+passwordHash')
       .exec();
     return document ? this.toDomain(document) : null;
@@ -30,15 +31,12 @@ export class MongooseUserRepository implements UserRepositoryPort {
   async save(user: User): Promise<void> {
     try {
       await this.model.create({
-        _id: user.id,
-        full_name: user.fullName,
+        _id: toMongoObjectId(user.id, 'user.id'),
+        fullName: user.fullName,
         email: user.email,
         emailNormalized: user.emailNormalized,
-        password: user.legacyPasswordHash,
         passwordHash: user.passwordHash,
-        sipPassword: user.sipPassword,
-        available: user.available,
-        role: user.legacyRole,
+        accountStatus: user.accountStatus,
         roles: [...user.roles],
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
@@ -55,15 +53,12 @@ export class MongooseUserRepository implements UserRepositoryPort {
 
   private toDomain(document: UserDocument): User {
     return User.create({
-      id: document.id,
-      fullName: document.full_name,
+      id: fromMongoObjectId(document._id),
+      fullName: document.fullName,
       email: document.email,
       emailNormalized: document.emailNormalized,
-      legacyPasswordHash: document.password,
       passwordHash: document.passwordHash,
-      sipPassword: document.sipPassword,
-      available: document.available,
-      legacyRole: document.role,
+      accountStatus: document.accountStatus,
       roles: document.roles,
       createdAt: document.createdAt,
       updatedAt: document.updatedAt,

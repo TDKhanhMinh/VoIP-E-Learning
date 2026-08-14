@@ -14,25 +14,46 @@ permissions:
   contents: read
 
 jobs:
-  verify:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-    services:
-      mongo:
-        image: mongo:8.0
-        env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: local-password
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "mongosh --quiet 'mongodb://root:local-password@localhost:27017/admin?authSource=admin' --eval 'db.adminCommand({ ping: 1 }).ok'"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 20
+    defaults:
+      run:
+        working-directory: backend-remake
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend-remake/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Check Phase 00 security contracts
+        run: npm run security:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Full source and test typecheck
+        run: npx tsc --noEmit
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
     env:
       NODE_ENV: test
       MONGO_ENABLED: true
-      MONGO_URI: mongodb://root:local-password@localhost:27017/voip_elearning_test?authSource=admin
+      MONGO_URI: mongodb://root:local-password@localhost:27017/voip_elearning_test?authSource=admin&replicaSet=rs0
       MONGO_AUTO_INDEX: true
       JWT_ACCESS_SECRET: ci-access-secret-that-is-never-used-outside-tests-12345
       JWT_REFRESH_SECRET: ci-refresh-secret-that-is-never-used-outside-tests-12345
@@ -56,17 +77,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Audit production dependencies
-        run: npm audit --omit=dev --audit-level=high
-
-      - name: Check formatting
-        run: npm run format:check
-
-      - name: Check Phase 00 security contracts
-        run: npm run security:check
-
-      - name: Lint
-        run: npm run lint
+      - name: Start MongoDB replica set
+        run: npm run infra:up
 
       - name: Unit tests with coverage
         run: npm run test:ci
@@ -76,6 +88,34 @@ jobs:
 
       - name: HTTP E2E contract tests
         run: npm run test:e2e
+
+      - name: Stop MongoDB replica set
+        if: always()
+        run: docker compose down --volumes
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend-remake
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend-remake/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Production build
         run: npm run build

@@ -25,6 +25,16 @@ export const environmentValidationSchema = Joi.object({
   LOG_LEVEL: Joi.string()
     .valid('fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent')
     .default('info'),
+  LOG_FILE_ENABLED: Joi.when('NODE_ENV', {
+    is: 'production',
+    then: booleanEnvironmentValue.valid(true).default(true),
+    otherwise: booleanEnvironmentValue.default(false),
+  }),
+  LOG_FILE_PATH: Joi.when('LOG_FILE_ENABLED', {
+    is: true,
+    then: Joi.string().trim().min(1).default('logs/backend-remake.log'),
+    otherwise: Joi.string().allow('').optional(),
+  }),
   RATE_LIMIT_TTL_MS: Joi.number().integer().min(1000).default(60000),
   RATE_LIMIT_MAX: Joi.number().integer().min(1).default(100),
   SWAGGER_ENABLED: booleanEnvironmentValue.default(false),

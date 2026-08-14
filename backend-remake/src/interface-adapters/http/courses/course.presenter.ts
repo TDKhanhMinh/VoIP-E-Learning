@@ -4,7 +4,7 @@ export interface CourseResponse {
   id: string;
   code: string;
   name: string;
-  ownerId: string;
+  ownerId?: string;
   createdAt: string;
   updatedAt: string;
 }
