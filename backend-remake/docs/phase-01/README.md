@@ -34,6 +34,9 @@ Phase 02+ business capabilities and does not authorize a production migration.
 - Production file logging boundary, correlation ID and expanded redaction.
 - CI gates for formatting, lint, security, unit, full typecheck, replica-set
   integration, HTTP E2E, build and Docker image build.
+- The approved operations baseline is documented and reviewable: app/access
+  logs retain 30 days and rotate daily or at 10 MB; protected `master` requires
+  the exact `Build`, `Test` and `Lint` checks plus one approving review.
 
 ## Deliberately incomplete gates
 
@@ -43,11 +46,13 @@ Phase 02+ business capabilities and does not authorize a production migration.
   not confirmed.
 - A controlled backup/clone dry-run and reconciliation report are mandatory
   before cutover.
-- File-log rotation, retention, shipping and durable storage ownership remain an
-  operations clarification. The application writes structured files but does
-  not claim that an external rotation policy exists.
-- Branch protection and exact required-check names require repository-owner
-  configuration and are not proven by a workflow file.
+- Log retention and rotation parameters are approved and represented by the
+  committed logrotate template. Installation, durable storage ownership and
+  log-shipping evidence remain deployment gates.
+- Branch and required-check policy is approved, and the workflow exposes exact
+  `Build`, `Test` and `Lint` job names. Repository-owner evidence that protection
+  is active on `master` remains external and pending.
 
 See [migration-runbook.md](migration-runbook.md) for the safe rehearsal flow and
-[validation-evidence.md](validation-evidence.md) for the evidence boundary.
+[operations-policy.md](operations-policy.md) for approved operating parameters,
+and [validation-evidence.md](validation-evidence.md) for the evidence boundary.

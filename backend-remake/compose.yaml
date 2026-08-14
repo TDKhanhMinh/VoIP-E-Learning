@@ -1,19 +1,48 @@
 services:
+  mongo-keyfile:
+    image: mongo:8.0
+    user: root
+    restart: 'no'
+    entrypoint: ['bash', '-c']
+    command:
+      - |
+        if [ ! -s /keyfile/keyfile ]; then
+          openssl rand -base64 756 > /keyfile/keyfile
+        fi
+        chown 999:999 /keyfile/keyfile
+        chmod 400 /keyfile/keyfile
+    volumes:
+      - mongo-keyfile:/keyfile
+
   mongo:
     image: mongo:8.0
-    command: ['mongod', '--replSet', 'rs0', '--bind_ip_all']
+    depends_on:
+      mongo-keyfile:
+        condition: service_completed_successfully
+    command:
+      [
+        'mongod',
+        '--port',
+        '${MONGO_PORT:-27017}',
+        '--replSet',
+        'rs0',
+        '--keyFile',
+        '/etc/mongo-keyfile/keyfile',
+        '--bind_ip_all',
+      ]
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: local-password
     ports:
-      - '27017:27017'
+      - '${MONGO_PORT:-27017}:${MONGO_PORT:-27017}'
     volumes:
       - mongo-data:/data/db
+      - mongo-keyfile:/etc/mongo-keyfile:ro
     healthcheck:
       test:
         [
           'CMD-SHELL',
-          'mongosh --quiet "mongodb://root:local-password@localhost:27017/admin?authSource=admin" --eval "db.adminCommand({ ping: 1 }).ok"',
+          'mongosh --quiet "mongodb://root:local-password@localhost:${MONGO_PORT:-27017}/admin?authSource=admin" --eval "db.adminCommand({ ping: 1 }).ok"',
         ]
       interval: 5s
       timeout: 5s
@@ -29,11 +58,12 @@ services:
     command:
       [
         'mongosh',
-        'mongodb://root:local-password@mongo:27017/admin?authSource=admin',
+        'mongodb://root:local-password@mongo:${MONGO_PORT:-27017}/admin?authSource=admin',
         '--quiet',
         '--eval',
-        'try { rs.status() } catch (error) { rs.initiate({ _id: "rs0", members: [{ _id: 0, host: "localhost:27017" }] }) }; while (!db.hello().isWritablePrimary) { sleep(500) }',
+        'try { rs.status() } catch (error) { rs.initiate({ _id: "rs0", members: [{ _id: 0, host: "localhost:${MONGO_PORT:-27017}" }] }) }; while (!db.hello().isWritablePrimary) { sleep(500) }',
       ]
 
 volumes:
   mongo-data:
+  mongo-keyfile:

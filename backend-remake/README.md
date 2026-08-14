@@ -144,14 +144,26 @@ Copy `.env.example` and adjust values for the target environment. Important defa
 - `RATE_LIMIT_TTL_MS=60000` and `RATE_LIMIT_MAX=100` define the default throttle.
 - `TRUST_PROXY=true` should be enabled only behind a trusted reverse proxy.
 - Production requires `LOG_FILE_ENABLED=true`. Mount `LOG_FILE_PATH` on durable
-  storage and configure external rotation/retention before release.
+  storage and install the approved 30-day, daily-or-10-MB rotation policy from
+  `ops/logrotate/backend-remake` before release.
 - `SWAGGER_ENABLED=false` keeps API documentation unmounted by default.
 - Every provider flag is locked OFF in Phase 00. Keep/retire/deferred lifecycle is documented in the integration capability matrix; a flag alone cannot compose a provider.
 - JWT access and refresh secrets are required in production; never reuse development values.
 
 ## Local MongoDB and tests
 
-The committed `compose.yaml` starts an authenticated single-node MongoDB replica set. It stores local data in the `mongo-data` Docker volume.
+The committed `compose.yaml` starts an authenticated single-node MongoDB
+replica set. It stores local data in the `mongo-data` Docker volume and creates
+the replica-set key in a separate Docker volume. The key is never written to
+the repository.
+
+If port `27017` is already used by another local MongoDB, set `MONGO_PORT`
+before starting Compose and use the same port in `MONGO_URI`. The default stays
+`27017` for CI.
+
+```powershell
+$env:MONGO_PORT = '27018'
+```
 
 ```bash
 npm run infra:up
